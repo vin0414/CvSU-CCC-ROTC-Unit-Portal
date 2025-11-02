@@ -42,8 +42,8 @@ img {
             <div class="page-body">
                 <div class="container-xl">
                     <div class="row g-3">
-                        <div class="col-lg-4"></div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-header">
                                     <div class="card-title">
@@ -72,16 +72,33 @@ img {
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row g-1">
-                                        <div class="col-lg-12">
+                                    <div class="row g-2">
+                                        <div class="col-lg-8">
                                             <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x200&data=<?=$qrcode['token'] ?? 'N/A' ?>"
                                                 alt="QRCode" class="form-control" />
                                         </div>
-                                        <div class="col-lg-12">
-                                            <label class="form-label text-center">Control No</label>
-                                            <p class="form-control text-center">
-                                                <?=$qrcode['control_number'] ?? 'N/A' ?>
-                                            </p>
+                                        <div class="col-lg-4">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row g-1">
+                                                        <div class="col-lg-12">
+                                                            <img src="<?=site_url('assets/images/profile/')?><?=$student['photo']?>"
+                                                                alt="photo" class="form-control"
+                                                                style="height:150px;" />
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <label class="form-label">Control #</label>
+                                                            <p class="form-control">
+                                                                <?=$qrcode['control_number'] ?? 'N/A' ?></p>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <label class="form-label">School ID</label>
+                                                            <p class="form-control">
+                                                                <?=$student['school_id'] ?? 'N/A' ?></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <?php if(empty($qrcode)): ?>
                                         <div class="col-lg-12">
