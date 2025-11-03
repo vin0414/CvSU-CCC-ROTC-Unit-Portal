@@ -440,6 +440,25 @@ class Administrator extends BaseController
         }
     }
 
+    public function viewAttendance()
+    {
+        $uri = $this->request->getUri();
+        $date = $uri->getSegment(3);   // attendance/view/{date}
+        $token = $uri->getSegment(4);  // attendance/view/{date}/{token}
+        $data['title'] = "View Attendance";
+        $attendanceModel = new attendanceModel();
+        $data['attendance'] = $attendanceModel->where('date',$date)
+                    ->where('token',$token)
+                    ->findAll();
+        //get student
+        $user = $attendanceModel->where('date',$date)
+                    ->where('token',$token)->first();
+        //student
+        $studentModel = new studentModel();
+        $data['student'] = $studentModel->where('student_id',$user['student_id'])->first();
+        return view('admin/attendance/view-attendance',$data);
+    }
+
     public function gradingSystem()
     {
         if(!$this->hasPermission('grading_system'))
