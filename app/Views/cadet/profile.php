@@ -387,7 +387,7 @@
                                             <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
                                             <path d="M14 4l0 4l-6 0l0 -4" />
                                         </svg>
-                                        <?=($cadet['cadet_id']) ? 'Save Changes': 'Save Data' ?>
+                                        <?= !empty($cadet['cadet_id']) ? 'Save Changes' : 'Save Data' ?>
                                     </button>
                                 </div>
                             </form>
