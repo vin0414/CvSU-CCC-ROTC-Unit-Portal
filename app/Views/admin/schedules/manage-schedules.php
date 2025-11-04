@@ -39,25 +39,15 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('schedules/manage')?>" class="btn btn-default">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-inbox">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path
-                                            d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
-                                        <path d="M4 13h3l3 3h4l3 -3h3" />
-                                    </svg>
-                                    Manage
-                                </a>
-                                <a href="<?=site_url('schedules/create')?>"
-                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                <a href="<?=site_url('schedules/create')?>" class="btn btn-default">
                                     <i class="ti ti-plus"></i>&nbsp;Add
                                 </a>
-                                <a href="<?=site_url('schedules/create')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
-                                    <i class="ti ti-plus"></i>
+                                <a href="<?=site_url('schedules')?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                    <i class="ti ti-arrow-left"></i>&nbsp;Back
+                                </a>
+                                <a href="<?=site_url('schedules')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
+                                    <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
                             <!-- BEGIN MODAL -->
@@ -69,7 +59,35 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-                    <div id='calendar'></div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-inbox">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path
+                                        d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                                    <path d="M4 13h3l3 3h4l3 -3h3" />
+                                </svg>
+                                Manage
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="table">
+                                    <thead>
+                                        <th>Semester</th>
+                                        <th>Name</th>
+                                        <th>Details</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Action</th>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- END PAGE BODY -->
@@ -103,35 +121,33 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
-    var calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-        initialView: "dayGridMonth",
-        headerToolbar: {
-            start: 'title',
-            center: '',
-            end: 'today dayGridMonth listWeek listDay prev,next'
-        },
-        buttonText: {
-            today: 'Today',
-            month: 'Month',
-            listWeek: 'Week',
-            listDay: 'Day'
-        },
-        selectable: true,
-        editable: true,
-        views: {
-            // Customize the timeGridWeek and timeGridDay views
-            timeGridWeek: {
-                buttonText: 'Week'
+    let table = $('#table').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": "<?= site_url('fetch-schedules') ?>",
+        "columns": [{
+                "data": "year"
             },
-            timeGridDay: {
-                buttonText: 'Day'
+            {
+                "data": "name"
             },
-        }
+            {
+                "data": "details"
+            },
+            {
+                "data": "date"
+            },
+            {
+                "data": "time"
+            },
+            {
+                "data": "action",
+                "orderable": true,
+                "searchable": true
+            }
+        ]
     });
-
-    calendar.render();
     </script>
 </body>
 

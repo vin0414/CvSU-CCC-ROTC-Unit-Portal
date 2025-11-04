@@ -6,6 +6,7 @@ use App\Models\studentModel;
 use App\Models\cadetModel;
 use App\Models\attendanceModel;
 use App\Models\qrcodeModel;
+use App\Models\scheduleModel;
 
 class Administrator extends BaseController
 {
@@ -182,11 +183,16 @@ class Administrator extends BaseController
         {
             $data['title'] = 'View Cadet';
             $studentModel = new studentModel();
-            $info = new cadetModel();
+            $infoModel = new cadetModel();
             $attachment = new \App\Models\attachmentModel();
             $student = $studentModel->where('token',$id)->first();
             $data['cadet'] = $student;
-            $data['info'] = $info->where('student_id',$student['student_id'])->first();
+            $info = $infoModel->where('student_id',$student['student_id'])->first();
+            if(empty($info))
+            {
+                return redirect()->to('/cadets')->with('fail', 'Cadet information not found!');
+            }
+            $data['info'] = $info;
             $data['attachment'] = $attachment->where('student_id',$student['student_id'])->first();
             return view('admin/cadets/view',$data);
         }
@@ -223,25 +229,19 @@ class Administrator extends BaseController
     {
         $studentModel = new studentModel();
         $searchTerm = $_GET['search']['value'] ?? '';
-        // Apply the search filter for the main query
         if ($searchTerm) {
             $studentModel->like('school_id', $searchTerm)
                         ->orLike('fullname',$searchTerm);  
         }
-        // Pagination: Get the 'start' and 'length' from the request (these are sent by DataTables)
-        $limit = $_GET['length'] ?? 10;  // Number of records per page, default is 10
-        $offset = $_GET['start'] ?? 0;   // Starting record for pagination, default is 0
-        // Clone the model for counting filtered records, while keeping the original for data fetching
+        $limit = $_GET['length'] ?? 10;
+        $offset = $_GET['start'] ?? 0; 
         $filteredStudentModel = clone $studentModel;
         if ($searchTerm) {
             $filteredStudentModel->like('school_id', $searchTerm)
                         ->orLike('fullname',$searchTerm);
         }
-        // Fetch filtered records based on limit and offset
         $students = $studentModel->where('is_enroll',0)->findAll($limit, $offset);  
-        // Count total records (without filter)
         $totalRecords = $studentModel->where('is_enroll',0)->countAllResults();
-        // Count filtered records (with filter)
         $filteredRecords = $filteredStudentModel->where('is_enroll',0)->countAllResults();
         $response = [
             "draw" => $_GET['draw'],
@@ -279,7 +279,6 @@ class Administrator extends BaseController
     public function enrolledCadet()
     {
         $searchTerm = $_GET['search']['value'] ?? '';
-        // Apply the search filter for the main query
         $builder = $this->db->table('students a');
         $builder->select('a.student_id,a.school_id,a.fullname,a.token,a.photo,b.course,b.year,b.section');
         $builder->join('cadets b','b.student_id=a.student_id','LEFT');
@@ -291,15 +290,11 @@ class Administrator extends BaseController
                     ->orLike('b.course', $searchTerm)
                     ->groupEnd();  
         }
-        // Pagination: Get the 'start' and 'length' from the request (these are sent by DataTables)
-        $limit = $_GET['length'] ?? 10;  // Number of records per page, default is 10
-        $offset = $_GET['start'] ?? 0;   // Starting record for pagination, default is 0
+        $limit = $_GET['length'] ?? 10;  
+        $offset = $_GET['start'] ?? 0;  
         $builder->limit($limit, $offset);
-        // Fetch filtered records based on limit and offset
         $students = $builder->get()->getResult();  
-        // Count total records (without filter)
         $totalRecords = count($students);
-        // Count filtered records (with filter)
         $filteredRecords = count($students);
         $response = [
             "draw" => $_GET['draw'],
@@ -359,6 +354,95 @@ class Administrator extends BaseController
             $data = ['title'=>$title];
             return view('admin/schedules/all-schedules',$data);
         }
+    }
+
+    public function manageSchedule()
+    {
+        if(!$this->hasPermission('schedule'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Manage Schedules';
+            $data = ['title'=>$title];
+            return view('admin/schedules/manage-schedules',$data);
+        }
+    }
+
+    public function fetchSchedule()
+    {
+        $scheduleModel = new scheduleModel();
+        $searchTerm = $_GET['search']['value'] ?? '';
+        if ($searchTerm) {
+            $scheduleModel->like('name', $searchTerm)
+                        ->orLike('school_year',$searchTerm);  
+        }
+        $limit = $_GET['length'] ?? 10; 
+        $offset = $_GET['start'] ?? 0; 
+        $filteredScheduleModel = clone $scheduleModel;
+        if ($searchTerm) {
+            $filteredScheduleModel->like('name', $searchTerm)
+                        ->orLike('school_year',$searchTerm);
+        }
+        $schedule = $scheduleModel->findAll($limit, $offset);  
+        $totalRecords = $scheduleModel->countAllResults();
+        $filteredRecords = $filteredScheduleModel->countAllResults();
+        $response = [
+            "draw" => $_GET['draw'],
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $filteredRecords,
+            'data' => [] 
+        ];
+        foreach ($schedule as $row) {
+            $response['data'][] = [
+                'year' => htmlspecialchars($row['school_year'], ENT_QUOTES),
+                'name' => htmlspecialchars($row['name'], ENT_QUOTES),
+                'details' => htmlspecialchars($row['details'], ENT_QUOTES),
+                'date' => htmlspecialchars($row['date'], ENT_QUOTES),
+                'time' => htmlspecialchars(date('h:i:s a',strtotime($row['time'])), ENT_QUOTES),
+                'action'=>'<a href="schedules/edit/'.$row['schedule_id'].'" class="btn btn-primary"><i class="ti ti-edit"></i>&nbsp;Edit</a>',
+            ];
+        }
+        return $this->response->setJSON($response);
+    }
+
+    public function createSchedule()
+    {
+        if(!$this->hasPermission('schedule'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Create Schedule';
+            $data = ['title'=>$title];
+            return view('admin/schedules/create-schedule',$data);
+        }
+    }
+
+    public function saveSchedule()
+    {
+
+    }
+
+    public function editSchedule($id)
+    {
+        if(!$this->hasPermission('schedule'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Edit Schedule';
+            $data = ['title'=>$title];
+            return view('admin/schedules/edit-schedule',$data);
+        }
+    }
+
+    public function updateSchedule()
+    {
+        
     }
 
     public function attendance()
@@ -470,6 +554,20 @@ class Administrator extends BaseController
             $title = 'Gradebook';
             $data = ['title'=>$title];
             return view('admin/grades/index',$data);
+        }
+    }
+
+    public function uploadGradeBook()
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Upload Gradebook';
+            $data = ['title'=>$title];
+            return view('admin/grades/upload',$data);
         }
     }
 

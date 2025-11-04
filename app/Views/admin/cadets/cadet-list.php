@@ -44,6 +44,11 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
+                    <?php if(!empty(session()->getFlashdata('fail'))) : ?>
+                    <div class="alert alert-important alert-danger alert-dismissible" role="alert">
+                        <?= session()->getFlashdata('fail'); ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
@@ -82,21 +87,6 @@
                                         &nbsp;Enrolled Cadets
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="#tabs-officer-8" class="nav-link" data-bs-toggle="tab">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-user-shield">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M6 21v-2a4 4 0 0 1 4 -4h2" />
-                                            <path
-                                                d="M22 16c0 4 -2.5 6 -3.5 6s-3.5 -2 -3.5 -6c1 0 2.5 -.5 3.5 -1.5c1 1 2.5 1.5 3.5 1.5z" />
-                                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                        </svg>
-                                        &nbsp;Cadet Officers
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -123,21 +113,6 @@
                                                 <th>Fullname</th>
                                                 <th>Course & Year</th>
                                                 <th>Section</th>
-                                                <th>Action</th>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-officer-8">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table3">
-                                            <thead>
-                                                <th>School ID</th>
-                                                <th>Fullname</th>
-                                                <th>Course & Year</th>
-                                                <th>Section</th>
-                                                <th>Position</th>
                                                 <th>Action</th>
                                             </thead>
                                             <tbody></tbody>
@@ -268,7 +243,6 @@
             }
         ]
     });
-    let table3 = $('#table3').DataTable();
     $(document).on('click', '.enroll', function() {
         Swal.fire({
             title: 'Are you sure?',

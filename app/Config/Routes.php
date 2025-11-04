@@ -50,6 +50,9 @@ $routes->get('registered','Administrator::registeredUser');
 $routes->get('enrolled','Administrator::enrolledCadet');
 $routes->post('edit-cadet','Administrator::modifyCadet');
 $routes->post('enroll-cadet','Administrator::enrollCadet');
+//schedules
+$routes->get('fetch-schedules','Administrator::fetchSchedule');
+$routes->post('save-schedule','Administrator::saveSchedule');
 //attendance
 $routes->post('save-attendance','Administrator::saveAttendance');
 //announcement
@@ -74,11 +77,13 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('schedules','Administrator::trainingSchedule');
     $routes->get('schedules/create','Administrator::createSchedule');
     $routes->get('schedules/edit/(:any)','Administrator::editSchedule/$1');
+    $routes->get('schedules/manage','Administrator::manageSchedule');
     //attendance
     $routes->get('attendance','Administrator::attendance');
     $routes->get('attendance/view/(:any)','Administrator::viewAttendance/$1');
     //grades
     $routes->get('evaluation','Administrator::gradingSystem');
+    $routes->get('evaluation/upload','Administrator::uploadGradeBook');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

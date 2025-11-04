@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class assignmentModel extends Model
+class scheduleModel extends Model
 {
-    protected $table            = 'assignments';
-    protected $primaryKey       = 'assignment_id';
+    protected $table            = 'schedules';
+    protected $primaryKey       = 'schedule_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['account_id','position','schedule_id'];
+    protected $allowedFields    = ['school_year','name','details','day','code','from_date','to_date','from_time','to_time'];
 
     // Dates
     protected $useTimestamps = true;
