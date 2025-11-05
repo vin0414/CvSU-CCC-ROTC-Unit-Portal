@@ -398,10 +398,14 @@ class Administrator extends BaseController
             $response['data'][] = [
                 'year' => htmlspecialchars($row['school_year'], ENT_QUOTES),
                 'name' => htmlspecialchars($row['name'], ENT_QUOTES),
-                'details' => htmlspecialchars($row['details'], ENT_QUOTES),
-                'date' => htmlspecialchars($row['date'], ENT_QUOTES),
-                'time' => htmlspecialchars(date('h:i:s a',strtotime($row['time'])), ENT_QUOTES),
-                'action'=>'<a href="schedules/edit/'.$row['schedule_id'].'" class="btn btn-primary"><i class="ti ti-edit"></i>&nbsp;Edit</a>',
+                'details' => htmlspecialchars(substr($row['details'],0,50).'...', ENT_QUOTES),
+                'date' => 'From: ' . date('F d, Y', strtotime($row['from_date'])) . 
+                           '<br>' . 
+                           'To: ' . date('F d,  Y', strtotime($row['to_date'])),
+                'time' => 'Start: ' . date('h:i:s a', strtotime($row['from_time'])) . 
+                           '<br>' . 
+                           'End: ' . date('h:i:s a', strtotime($row['to_time'])),
+                'action'=>'<a href="edit/'.$row['schedule_id'].'" class="btn btn-primary"><i class="ti ti-edit"></i>&nbsp;Edit</a>',
             ];
         }
         return $this->response->setJSON($response);
@@ -421,9 +425,40 @@ class Administrator extends BaseController
         }
     }
 
-    public function saveSchedule()
+    public function storeSchedule()
     {
-
+        $scheduleModel = new scheduleModel();
+        $validation = $this->validate([
+            'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
+            'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
+            'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
+            'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
+            'from_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select start date','valid_date'=>'Invalid date format']],
+            'from_time'=>['rules'=>'required','errors'=>['required'=>'Select start time']],
+            'to_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select end date','valid_date'=>'Invalid date format']],
+            'to_time'=>['rules'=>'required','errors'=>['required'=>'Select end time']],
+            'details'=>['rules'=>'required','errors'=>['required'=>'Details is required']],
+        ]);
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'school_year'=>$this->request->getPost('school_year'),
+                'name'=>$this->request->getPost('name'),
+                'details'=>$this->request->getPost('details'),
+                'day'=>$this->request->getPost('day'),
+                'code'=>$this->request->getPost('code'),
+                'from_date'=>$this->request->getPost('from_date'),
+                'to_date'=>$this->request->getPost('to_date'),
+                'from_time'=>$this->request->getPost('from_time'),
+                'to_time'=>$this->request->getPost('to_time')
+            ];
+            $scheduleModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully created schedule']);
+        }
     }
 
     public function editSchedule($id)

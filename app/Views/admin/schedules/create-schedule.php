@@ -39,11 +39,12 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('schedules')?>"
+                                <a href="<?=site_url('schedules/manage')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
                                 </a>
-                                <a href="<?=site_url('schedules')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
+                                <a href="<?=site_url('schedules/manage')?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
@@ -57,16 +58,32 @@
             <div class="page-body">
                 <div class="container-xl">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-header">
                             <div class="card-title"><i class="ti ti-plus"></i>&nbsp;Create</div>
+                        </div>
+                        <div class="card-body">
                             <form method="POST" class="row g-3" id="frmCreate">
                                 <?=csrf_field()?>
+                                <?php
+                                $startYear = date('Y');
+                                $numberOfSemesters = 5;
+
+                                $semesters = [];
+                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                    $from = $startYear + $i;
+                                    $to = $from + 1;
+                                    $semesters[] = "$from-$to";
+                                }
+                                ?>
                                 <div class="col-lg-12">
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">School Year</label>
                                             <select name="school_year" class="form-select">
                                                 <option value="">Choose</option>
+                                                <?php foreach ($semesters as $semester): ?>
+                                                <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                <?php endforeach; ?>
                                             </select>
                                             <div id="school_year-error" class="error-message text-danger text-sm"></div>
                                         </div>
@@ -119,7 +136,7 @@
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" id="btnSave">
                                         <i class="ti ti-device-floppy"></i>&nbsp;Save Entry
                                     </button>
                                 </div>
@@ -159,6 +176,48 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $('#frmCreate').on('submit', function(e) {
+        e.preventDefault();
+        $('.error-message').html('');
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
+        let data = $(this).serialize();
+        $.ajax({
+            url: "<?=site_url('schedules/store')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Entry'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: 'Schedule has been saved successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "<?=site_url('schedules/manage')?>";
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
+    </script>
 </body>
 
 </html>

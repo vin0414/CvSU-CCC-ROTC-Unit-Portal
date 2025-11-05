@@ -109,7 +109,7 @@
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <label class="form-label">System Role</label>
-                                                    <select name="role" class="form-select" required>
+                                                    <select name="role" class="form-select">
                                                         <option value="">Choose</option>
                                                         <?php foreach($role as $row): ?>
                                                         <option value="<?=$row['role_id']?>"><?=$row['role_name']?>
@@ -161,7 +161,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
-                                            <button type="submit" class="btn btn-success">
+                                            <button type="submit" class="btn btn-success" id="btnSave">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -219,12 +219,18 @@
     $('#frmAccount').on('submit', function(e) {
         e.preventDefault();
         $('.error-message').html('');
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
         let data = $(this).serialize();
         $.ajax({
             url: "<?=site_url('edit-account')?>",
             method: "POST",
             data: data,
             success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Changes'
+                );
                 if (response.success) {
                     Swal.fire({
                         title: 'Great!',

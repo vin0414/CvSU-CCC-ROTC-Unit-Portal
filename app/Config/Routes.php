@@ -52,7 +52,7 @@ $routes->post('edit-cadet','Administrator::modifyCadet');
 $routes->post('enroll-cadet','Administrator::enrollCadet');
 //schedules
 $routes->get('fetch-schedules','Administrator::fetchSchedule');
-$routes->post('save-schedule','Administrator::saveSchedule');
+$routes->post('schedules/store','Administrator::storeSchedule');
 //attendance
 $routes->post('save-attendance','Administrator::saveAttendance');
 //announcement

@@ -105,21 +105,43 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script>
+    <?php $eventData = array();?>
+    <?php 
+    $scheduleModel = new \App\Models\ScheduleModel();
+    $event = $scheduleModel->findAll();
+    foreach($event as $row)
+    {
+        $tempArray = array( 
+            "title" =>$row['name'],
+            "description" =>$row['details'],
+            "start" => $row['from_date']." ".$row['from_time'],
+            "end" => $row['to_date']." ".$row['to_time'],
+            "day" => ucfirst($row['day'])
+        );
+        array_push($eventData, $tempArray);
+    }
+    ?>
+
+    function getEventsByDay(dayName) {
+        return jsonData.filter(event => event.day === dayName);
+    }
+
+    const jsonData = <?php echo json_encode($eventData); ?>;
     var calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
         initialView: "dayGridMonth",
         headerToolbar: {
             start: 'title',
             center: '',
-            end: 'today dayGridMonth listWeek listDay prev,next'
+            end: 'today dayGridMonth listWeek prev,next'
         },
         buttonText: {
             today: 'Today',
             month: 'Month',
             listWeek: 'Week',
-            listDay: 'Day'
         },
         selectable: true,
         editable: true,
+        events: getEventsByDay("Saturday"),
         views: {
             // Customize the timeGridWeek and timeGridDay views
             timeGridWeek: {
@@ -130,7 +152,6 @@
             },
         }
     });
-
     calendar.render();
     </script>
 </body>

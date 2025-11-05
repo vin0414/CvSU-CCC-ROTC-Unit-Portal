@@ -80,7 +80,7 @@
                                     <div id="file-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" id="btnSave">
                                         <i class="ti ti-device-floppy"></i>&nbsp;Save and Post
                                     </button>
                                 </div>
@@ -129,6 +129,9 @@
     $('#frmCreate').on('submit', function(e) {
         e.preventDefault();
         $('.error-message').html('');
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
         var details = document.querySelector('.ql-editor').innerHTML;
         $('#frmCreate textarea[name="details"]').remove();
         $(this).append("<textarea name='details' style='display:none;'>" + details + "</textarea>");
@@ -141,6 +144,9 @@
             cache: false,
             processData: false,
             success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save and Post'
+                );
                 if (response.success) {
                     Swal.fire({
                         title: 'Great!',
