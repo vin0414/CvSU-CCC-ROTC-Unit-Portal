@@ -469,15 +469,53 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Edit Schedule';
-            $data = ['title'=>$title];
+            $data['title'] = 'Edit Schedule';
+            $scheduleModel = new scheduleModel();
+            $schedule = $scheduleModel->where('schedule_id',$id)->first();
+            if(empty($schedule))
+            {
+                return redirect()->to('/schedules/manage')->with('fail', 'Data not found! Please try again');
+            }
+            $data['schedule'] = $schedule;
             return view('admin/schedules/edit-schedule',$data);
         }
     }
 
     public function updateSchedule()
     {
-        
+        $scheduleModel = new scheduleModel();
+        $validation = $this->validate([
+            'id'=>['rules'=>'required|numeric','errors'=>['required'=>'Schedule ID is required','numeric'=>'Invalid']],
+            'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
+            'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
+            'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
+            'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
+            'from_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select start date','valid_date'=>'Invalid date format']],
+            'from_time'=>['rules'=>'required','errors'=>['required'=>'Select start time']],
+            'to_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select end date','valid_date'=>'Invalid date format']],
+            'to_time'=>['rules'=>'required','errors'=>['required'=>'Select end time']],
+            'details'=>['rules'=>'required','errors'=>['required'=>'Details is required']],
+        ]);
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'school_year'=>$this->request->getPost('school_year'),
+                'name'=>$this->request->getPost('name'),
+                'details'=>$this->request->getPost('details'),
+                'day'=>$this->request->getPost('day'),
+                'code'=>$this->request->getPost('code'),
+                'from_date'=>$this->request->getPost('from_date'),
+                'to_date'=>$this->request->getPost('to_date'),
+                'from_time'=>$this->request->getPost('from_time'),
+                'to_time'=>$this->request->getPost('to_time')
+            ];
+            $scheduleModel->update($this->request->getPost('id'),$data);
+            return $this->response->setJSON(['success'=>'Successfully applied changes']);
+        }
     }
 
     public function attendance()
@@ -530,7 +568,7 @@ class Administrator extends BaseController
             $qrcode = $qrcodeModel->where('token',$code)->first();
             if(empty($qrcode))
             {
-                return $this->response->setJSON(['errors'=>'Invalid QR Code. Please try again.']);
+                return $this->response->setJSON(['errors'=>'Records not found! Please try again.']);
             }
             else
             {
@@ -820,7 +858,12 @@ class Administrator extends BaseController
             $title = 'Edit Announcement';
             $data = ['title'=>$title];
             $announcementModel = new \App\Models\announcementModel();
-            $data['announcement'] = $announcementModel->where('announcement_id',$id)->first();
+            $announcement = $announcementModel->where('announcement_id',$id)->first();
+            if(empty($announcement))
+            {
+                return redirect()->to('/announcement')->with('fail', 'Data not found! Please try again');
+            }
+            $data['announcement'] = $announcement;
             return view('admin/announcement/edit',$data);
         }
     }

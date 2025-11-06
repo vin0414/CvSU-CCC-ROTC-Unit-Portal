@@ -75,7 +75,7 @@
                                     $semesters[] = "$from-$to";
                                 }
                                 ?>
-                                <input type="hidden" name="id" />
+                                <input type="hidden" name="id" value="<?=$schedule['schedule_id']?>" />
                                 <div class="col-lg-12">
                                     <div class="row g-3">
                                         <div class="col-lg-3">
@@ -83,7 +83,9 @@
                                             <select name="school_year" class="form-select">
                                                 <option value="">Choose</option>
                                                 <?php foreach ($semesters as $semester): ?>
-                                                <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                <option value="<?= $semester ?>"
+                                                    <?=!empty($schedule['school_year']==$semester) ? 'selected': ''?>>
+                                                    <?= $semester ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                             <div id="school_year-error" class="error-message text-danger text-sm"></div>
@@ -91,18 +93,19 @@
                                         <div class="col-lg-5">
                                             <label class="form-label">Name/Title</label>
                                             <input type="text" class="form-control" name="name"
-                                                placeholder="Enter Name or Title">
+                                                placeholder="Enter Name or Title" value="<?=$schedule['name']?>">
                                             <div id="name-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Code</label>
-                                            <input type="text" class="form-control" name="code"
-                                                placeholder="Enter here">
+                                            <input type="text" class="form-control" name="code" placeholder="Enter here"
+                                                value="<?=$schedule['code']?>">
                                             <div id="code-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Day of the Month</label>
-                                            <input type="text" class="form-control" name="day" placeholder="Enter here">
+                                            <input type="text" class="form-control" name="day" placeholder="Enter here"
+                                                value="<?=$schedule['day']?>">
                                             <div id="day-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                     </div>
@@ -111,29 +114,34 @@
                                     <div class="row g-3">
                                         <div class="col-lg-3">
                                             <label class="form-label">From</label>
-                                            <input type="date" class="form-control" name="from_date">
+                                            <input type="date" class="form-control" name="from_date"
+                                                value="<?=$schedule['from_date']?>">
                                             <div id="from_date-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Time</label>
-                                            <input type="time" class="form-control" name="from_time">
+                                            <input type="time" class="form-control" name="from_time"
+                                                value="<?=$schedule['from_time']?>">
                                             <div id="from_time-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">To</label>
-                                            <input type="date" class="form-control" name="to_date">
+                                            <input type="date" class="form-control" name="to_date"
+                                                value="<?=$schedule['to_date']?>">
                                             <div id="to_date-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-3">
                                             <label class="form-label">Time</label>
-                                            <input type="time" class="form-control" name="to_time">
+                                            <input type="time" class="form-control" name="to_time"
+                                                value="<?=$schedule['to_time']?>">
                                             <div id="to_time-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <label class="form-label">Details</label>
-                                    <textarea name="details" class="form-control" style="height:150px;"></textarea>
+                                    <textarea name="details" class="form-control"
+                                        style="height:150px;"><?=$schedule['details']?></textarea>
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
@@ -197,7 +205,7 @@
                 if (response.success) {
                     Swal.fire({
                         title: 'Great!',
-                        text: 'Schedule has been updated successfully!',
+                        text: 'Successfully applied changes!',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then((result) => {

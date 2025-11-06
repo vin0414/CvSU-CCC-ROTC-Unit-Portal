@@ -81,7 +81,7 @@
             <div class="page-body">
                 <div class="container-xl">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-header">
                             <div class="card-title">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -94,6 +94,8 @@
                                 </svg>
                                 My Profile
                             </div>
+                        </div>
+                        <div class="card-body">
                             <form method="POST" class="row g-2" id="frmProfile">
                                 <?=csrf_field()?>
                                 <input type="hidden" name="cadet_id" value="<?=$cadet['cadet_id'] ?? '' ?>" />
@@ -234,6 +236,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
+                                    <hr>
                                     <div class="card-title">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -325,6 +328,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
+                                    <hr>
                                     <div class="card-title">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

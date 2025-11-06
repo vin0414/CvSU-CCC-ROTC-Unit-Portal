@@ -60,6 +60,7 @@
                 <div class="container-xl">
                     <div class="card">
                         <div class="card-body">
+                            <div class="card-title">Manage Accounts</div>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped" id="tblaccount">
                                     <thead>

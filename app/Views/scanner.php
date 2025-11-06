@@ -219,13 +219,53 @@
             success: function(response) {
                 $('#modal-loading').modal('hide');
                 if (response.success) {
+                    let timerInterval;
                     Swal.fire({
                         title: "Great!",
-                        text: response.success.message,
-                        icon: "success"
+                        html: response.success.message,
+                        icon: "success",
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log("I was closed by the timer");
+                        }
                     });
                 } else {
-                    alert(response.errors);
+                    let timerInterval;
+                    Swal.fire({
+                        title: "Invalid QR Code!",
+                        html: response.errors,
+                        icon: "error",
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log("I was closed by the timer");
+                        }
+                    });
                 }
             }
         });

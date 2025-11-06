@@ -108,23 +108,33 @@
     <?php $eventData = array();?>
     <?php 
     $scheduleModel = new \App\Models\ScheduleModel();
-    $event = $scheduleModel->findAll();
-    foreach($event as $row)
-    {
-        $tempArray = array( 
-            "title" =>$row['name'],
-            "description" =>$row['details'],
-            "start" => $row['from_date']." ".$row['from_time'],
-            "end" => $row['to_date']." ".$row['to_time'],
-            "day" => ucfirst($row['day'])
-        );
-        array_push($eventData, $tempArray);
+    $schedules = $scheduleModel->where('day', 'Saturday')->findAll();
+    // Determine dynamic date range from the records
+    $minDate = $scheduleModel->selectMin('from_date')->first()['from_date'];
+    $maxDate = $scheduleModel->selectMax('to_date')->first()['to_date'];
+
+    $startDate = new DateTime($minDate);
+    $endDate = new DateTime($maxDate);
+    $eventData = [];
+
+    while ($startDate <= $endDate) {
+        if ($startDate->format('l') === 'Saturday') {
+            $dateStr = $startDate->format('Y-m-d');
+
+            foreach ($schedules as $row) {
+                $tempArray = [
+                    'title'       => $row['name'],
+                    'description' => $row['details'],
+                    'start'       => $dateStr . 'T' . $row['from_time'],
+                    'end'         => $dateStr . 'T' . $row['to_time'],
+                ];
+
+                array_push($eventData, $tempArray); // 👈 Your requested line
+            }
+        }
+        $startDate->modify('+1 day');
     }
     ?>
-
-    function getEventsByDay(dayName) {
-        return jsonData.filter(event => event.day === dayName);
-    }
 
     const jsonData = <?php echo json_encode($eventData); ?>;
     var calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
@@ -141,7 +151,7 @@
         },
         selectable: true,
         editable: true,
-        events: getEventsByDay("Saturday"),
+        events: jsonData,
         views: {
             // Customize the timeGridWeek and timeGridDay views
             timeGridWeek: {

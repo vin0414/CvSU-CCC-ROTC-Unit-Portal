@@ -389,7 +389,7 @@
                                         <path
                                             d="M3 17l9 5l9 -5v-3l-9 5l-9 -5v-3l9 5l9 -5v-3l-9 5l-9 -5l9 -5l5.418 3.01" />
                                     </svg>
-                                    Trainings
+                                    My Trainings
                                 </div>
                                 <div class="col-lg-12"></div>
                             </div>
@@ -445,8 +445,21 @@
                                 </div>
                             </div>
                             <div class="card">
-                                <div class="card-body">
-                                    <div id='calendar'></div>
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="ti ti-calendar"></i>
+                                        My Schedules
+                                    </div>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <?php if(empty($schedules)):?>
+                                    <div class="list-group-item">
+                                        <div class="text-center text-muted py-3">
+                                            No schedules posted
+                                        </div>
+                                    </div>
+                                    <?php else :?>
+                                    <?php endif;?>
                                 </div>
                             </div>
                         </div>
@@ -474,29 +487,6 @@
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>
-    <script>
-    var calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-        initialView: "dayGridMonth",
-        headerToolbar: {
-            start: 'title',
-            center: '',
-            end: 'prev,next'
-        },
-        selectable: true,
-        editable: true,
-        views: {
-            // Customize the timeGridWeek and timeGridDay views
-            timeGridWeek: {
-                buttonText: 'Week'
-            },
-            timeGridDay: {
-                buttonText: 'Day'
-            },
-        }
-    });
-
-    calendar.render();
-    </script>
 </body>
 
 </html>
