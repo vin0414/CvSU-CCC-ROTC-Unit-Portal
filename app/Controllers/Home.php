@@ -34,8 +34,22 @@ class Home extends BaseController
             'name'=>'required|is_unique[students.fullname]',
             'school_id'=>'required|is_unique[students.school_id]',
             'email'=>'required|valid_email|is_unique[students.email]',
-            'password'=>'required|min_length[8]|max_length[16]|regex_match[/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W]).+$/]',
-            'confirm_password'=>'required|matches[password]',
+            'password' => [
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
+                'errors' => [
+                    'required' => 'Password is required',
+                    'min_length' => 'Password must be at least 8 characters long',
+                    'max_length' => 'Password cannot exceed 20 characters',
+                    'regex_match' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                ]
+            ],
+            'confirm_password'=>[
+                'rules'=>'required|matches[password]',
+                'errors'=>[
+                    'required'=>'Re-type your password',
+                    'matches'=>'Password do not match'
+                ]
+            ],
             'agreement'=>'required'
         ]);
         if(!$validation)

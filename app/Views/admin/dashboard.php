@@ -87,7 +87,7 @@
                                                         width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="font-weight-medium"><?= $total ?></div>
                                                     <div class="text-secondary">Total Cadets</div>
                                                 </div>
                                             </div>
@@ -103,7 +103,7 @@
                                                         width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="font-weight-medium"><?= $enrolled ?></div>
                                                     <div class="text-secondary">Enrolled Cadets</div>
                                                 </div>
                                             </div>
@@ -118,7 +118,7 @@
                                                     <img src="<?=base_url('assets/images/team.png')?>" width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="font-weight-medium"><?= $staff ?></div>
                                                     <div class="text-secondary">Total Officers</div>
                                                 </div>
                                             </div>
@@ -133,7 +133,7 @@
                                                     <img src="<?=base_url('assets/images/book.png')?>" width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="font-weight-medium"><?= $training ?></div>
                                                     <div class="text-secondary">Total Training(s)</div>
                                                 </div>
                                             </div>

@@ -54,6 +54,9 @@ $routes->post('enroll-cadet','Administrator::enrollCadet');
 $routes->get('fetch-schedules','Administrator::fetchSchedule');
 $routes->post('schedules/store','Administrator::storeSchedule');
 $routes->post('schedules/update','Administrator::updateSchedule');
+$routes->get('assignment','Administrator::assignment');
+$routes->post('assignment/save','Administrator::saveAssignment');
+$routes->post('assignment/remove','Administrator::removeAssignment');
 //attendance
 $routes->post('save-attendance','Administrator::saveAttendance');
 //announcement

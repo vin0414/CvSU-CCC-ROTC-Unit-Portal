@@ -147,7 +147,7 @@
             <!--  END FOOTER  -->
         </div>
     </div>
-    <div class="modal" id="modal-loading" data-backdrop="static">
+    <div class="modal" id="modal-loading" data-bs-backdrop="static">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">

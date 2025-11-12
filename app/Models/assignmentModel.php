@@ -12,7 +12,7 @@ class assignmentModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['account_id','position','schedule_id'];
+    protected $allowedFields    = ['account_id','schedule_id'];
 
     // Dates
     protected $useTimestamps = true;

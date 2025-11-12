@@ -2,11 +2,13 @@
 
 namespace App\Controllers;
 use App\Libraries\Hash;
+use App\Models\accountModel;
 use App\Models\studentModel;
 use App\Models\cadetModel;
 use App\Models\attendanceModel;
 use App\Models\qrcodeModel;
 use App\Models\scheduleModel;
+use App\Models\assignmentModel;
 
 class Administrator extends BaseController
 {
@@ -158,8 +160,21 @@ class Administrator extends BaseController
         $query = $this->db->query($sql, [$currentDate]);
 
         $attendance = $query->getResultArray();
+        //count the total cadet
+        $studentModel = new studentModel();
+        $total = $studentModel->countAllResults();
+        //count the total enrolled cadet
+        $totalEnrolled = $studentModel->where('is_enroll',1)->countAllResults();
+        //total training
+        $scheduleModel = new scheduleModel();
+        $training = $scheduleModel->countAllResults();
+        //staff
+        $assignmentModel = new assignmentModel();
+        $staff = $assignmentModel->where('account_id<>',0)->countAllResults();
 
-        $data = ['title'=>$title,'announcement'=>$announcement,'attendance'=>$attendance];
+        $data = ['title'=>$title,'announcement'=>$announcement,
+                'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
+                'enrolled'=>$totalEnrolled,'training'=>$training];
         return view('admin/dashboard',$data);
     }
 
@@ -385,7 +400,10 @@ class Administrator extends BaseController
         else
         {
             $title = 'Manage Schedules';
-            $data = ['title'=>$title];
+            //accounts
+            $accountModel = new accountModel();
+            $account = $accountModel->where('status',1)->findAll();
+            $data = ['title'=>$title,'account'=>$account];
             return view('admin/schedules/manage-schedules',$data);
         }
     }
@@ -426,10 +444,119 @@ class Administrator extends BaseController
                            '<br>' . 
                            'End: ' . date('h:i:s a', strtotime($row['to_time'])),
                 'status'=>($row['status']==1) ? 'Active' : 'Archive',
-                'action'=>'<a href="edit/'.$row['schedule_id'].'" class="btn btn-primary"><i class="ti ti-edit"></i>&nbsp;Edit</a>',
+                'action'=>'<button type="button" class="btn dropdown-toggle"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                            role="button">
+                            <span>Action</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="edit/'.$row['schedule_id'].'" class="dropdown-item"><i class="ti ti-edit"></i>&nbsp;Edit Schedule</a>
+                            <button type="button" value="'.$row['schedule_id'].'" class="dropdown-item assign"><i class="ti ti-user-plus"></i>&nbsp;Assign</button>
+                        </div>
+                        '
             ];
         }
         return $this->response->setJSON($response);
+    }
+
+    public function assignment()
+    {
+        $assignmentModel = new assignmentModel();
+        $searchTerm = $_GET['search']['value'] ?? '';
+        $start = intval($_GET['start'] ?? 0);      // Offset
+        $length = intval($_GET['length'] ?? 10);   // Limit per page
+        $builder = $this->db->table('assignments a');
+        $builder->select('a.assignment_id,a.created_at,b.fullname,c.name,c.details');
+        $builder->join('accounts b','b.account_id=a.account_id','INNER');
+        $builder->join('schedules c','c.schedule_id=a.schedule_id','INNER');
+        $builder->groupBy('a.assignment_id');
+        if ($searchTerm) {
+            // Add a LIKE condition to filter based on school name or address or any other column you wish to search
+            $builder->groupStart()
+                    ->like('b.fullname', $searchTerm)
+                    ->orLike('c.name', $searchTerm)
+                    ->groupEnd();
+        }
+        $builder->limit($length, $start);
+        $assignment = $builder->get()->getResult();
+
+        // Total number of filtered records (with search filter applied)
+        $filteredRecords = count($assignment);
+
+        $totalRecords = $assignmentModel->countAllResults();
+        $response = [
+            "draw" => $_GET['draw'],
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $filteredRecords,
+            'data' => [] 
+        ];
+        foreach ($assignment as $row) {
+            $response['data'][] = [
+                'date' => date('M d, Y h:i:s a',strtotime($row->created_at)),
+                'name' => $row->name,
+                'details' => $row->details,
+                'fullname' => $row->fullname,
+                'action'=>'<button type="button" class="btn btn-danger remove" value="'.$row->assignment_id.'">
+                            <i class="ti ti-trash"></i>&nbsp;Remove
+                           </button>'
+            ];
+        }
+        // Return the response as JSON
+        return $this->response->setJSON($response);
+    }
+
+    public function removeAssignment()
+    {
+        $assignmentModel = new assignmentModel();
+        $val = $this->request->getPost('value');
+        if(!is_numeric($val))
+        {
+            return $this->response->setJSON(['errors'=>'Invalid Request']);
+        }
+        else
+        {
+            $data = ['account_id'=>0,'schedule_id'=>0];
+            $assignmentModel->update($val,$data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Removed the assigned task',
+                    'page'=>'Schedules',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success' => 'Account removed successfully!']);
+        }
+    }
+
+    public function saveAssignment()
+    {
+        $assignmentModel = new assignmentModel();
+        $validation = $this->validate([
+            'assignID'=>'required|numeric',
+            'account'=>'required|numeric'
+        ]);
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = ['account_id'=>$this->request->getPost('account'),
+                    'schedule_id'=>$this->request->getPost('assignID')];
+            $assignmentModel->save($data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Assigned officer with task # '.$this->request->getPost('assignID'),
+                    'page'=>'Schedules',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success' => 'Account assigned successfully!']);
+        }
     }
 
     public function createSchedule()
@@ -479,6 +606,15 @@ class Administrator extends BaseController
                 'status'=>1
             ];
             $scheduleModel->save($data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Create a new schedule for '.$this->request->getPost('code'),
+                    'page'=>'Schedules',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
             return $this->response->setJSON(['success'=>'Successfully created schedule']);
         }
     }
@@ -538,6 +674,15 @@ class Administrator extends BaseController
                 'status'=>$this->request->getPost('status')
             ];
             $scheduleModel->update($this->request->getPost('id'),$data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Modify schedule for '.$this->request->getPost('code'),
+                    'page'=>'Schedules',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
             return $this->response->setJSON(['success'=>'Successfully applied changes']);
         }
     }
@@ -941,7 +1086,7 @@ class Administrator extends BaseController
             $roleModel = new \App\Models\roleModel();
             $role = $roleModel->findAll();
             //account
-            $accountModel = new \App\Models\accountModel();
+            $accountModel = new accountModel();
             $account = $accountModel->where('account_id',$id)->first();
             $data = ['title'=>$title,'role'=>$role,'account'=>$account];
             return view('admin/maintenance/accounts/edit-account',$data);
@@ -1179,7 +1324,7 @@ class Administrator extends BaseController
 
     public function saveAccount()
     {
-        $accountModel = new \App\Models\accountModel();
+        $accountModel = new accountModel();
         $validation = $this->validate([
             'fullname' => [
                 'rules' => 'required|is_unique[accounts.fullname]',
@@ -1240,7 +1385,7 @@ class Administrator extends BaseController
 
     public function modifyAccount()
     {
-        $accountModel = new \App\Models\accountModel();
+        $accountModel = new accountModel();
         $validation = $this->validate([
             'id'=>[
                 'rules'=>'required|numeric',
