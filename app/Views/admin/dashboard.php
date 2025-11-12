@@ -40,7 +40,7 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title">My Dashboard</h2>
                         </div>
                         <!-- Page title actions -->
                     </div>
@@ -55,65 +55,107 @@
                         <?= session()->getFlashdata('fail'); ?>
                     </div>
                     <?php endif; ?>
-                    <div class="row g-3 mb-4">
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="card-status-bottom bg-success"></div>
-                                <div class="card-body">
-                                    <h5>REGISTERED</h5>
-                                    <h1>0</h1>
+                    <div class="mb-4">
+                        <div class="card bg-success text-primary-fg">
+                            <div class="card-stamp">
+                                <div class="card-stamp-icon bg-white text-primary">
+                                    <!-- Download SVG icon from http://tabler.io/icons/icon/star -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="icon icon-1">
+                                        <path
+                                            d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+                                    </svg>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="card-status-bottom bg-success"></div>
-                                <div class="card-body">
-                                    <h5>ENROLLED</h5>
-                                    <h1>0</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="card-status-bottom bg-success"></div>
-                                <div class="card-body">
-                                    <h5>TRAINING SCHEDULE</h5>
-                                    <h1>0</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="card">
-                                <div class="card-status-bottom bg-success"></div>
-                                <div class="card-body">
-                                    <h5>USERS</h5>
-                                    <h1>0</h1>
-                                </div>
+                            <div class="card-body">
+                                <label style="font-size: 30px;">Welcome back, Mr/Ms.
+                                    <?= session()->get('fullname') ?></label>
+                                <p>Have a good day at work</p>
                             </div>
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-lg-9">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="card-title">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar-popular">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                            <path
-                                                d="M9 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                            <path
-                                                d="M15 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
-                                            <path d="M4 20h14" />
-                                        </svg>
-                                        Enrolment Chart
+                            <div class="row g-3 mb-3">
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/student.png')?>"
+                                                        width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="text-secondary">Total Cadets</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div id="enrolmentChart" style="height:300px;"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/team.png')?>" width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="text-secondary">Total Officers</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/book.png')?>" width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="text-secondary">Total Training(s)</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-deck">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <i class="ti ti-calendar"></i>&nbsp;My Schedules
+                                            </div>
+                                        </div>
+                                        <div class="list-group list-group-flush">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <i class="ti ti-calendar-plus"></i>&nbsp;Attendance
+                                            </div>
+                                            <div class="card-actions">
+                                                <select class="form-select">
+                                                    <option>Today</option>
+                                                    <option>This Week</option>
+                                                    <option>This Month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="attendanceChart"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -210,33 +252,6 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
-    <script>
-    google.charts.setOnLoadCallback(Charts);
-
-    function Charts() {
-        var data = google.visualization.arrayToDataTable([
-            ["Date", "Total"],
-            <?php 
-                    foreach ($enrol as $row){
-                        echo "['".$row->created_at."',".$row->total."],";
-                    }
-                    ?>
-        ]);
-
-        var options = {
-            title: '',
-            legend: {
-                position: 'bottom'
-            },
-            backgroundColor: {
-                fill: 'transparent'
-            },
-        };
-        /* Instantiate and draw the chart.*/
-        var chart = new google.visualization.LineChart(document.getElementById('enrolmentChart'));
-        chart.draw(data, options);
-    }
-    </script>
 </body>
 
 </html>

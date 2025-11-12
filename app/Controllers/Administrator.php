@@ -14,7 +14,7 @@ class Administrator extends BaseController
     public function __construct()
     {
         $this->db = \Config\Database::connect();
-        helper(['url', 'form']);
+        helper(['url', 'form','text']);
     }
 
     public function auth()
@@ -139,7 +139,7 @@ class Administrator extends BaseController
         $builder->groupBy('created_at');
         $enrol = $builder->get()->getResult();
 
-        $data = ['title'=>$title,'announcement'=>$announcement,'enrol'=>$enrol];
+        $data = ['title'=>$title,'announcement'=>$announcement];
         return view('admin/dashboard',$data);
     }
 
