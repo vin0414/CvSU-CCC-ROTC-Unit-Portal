@@ -108,7 +108,7 @@
     <?php $eventData = array();?>
     <?php 
     $scheduleModel = new \App\Models\ScheduleModel();
-    $schedules = $scheduleModel->where('day', 'Saturday')->findAll();
+    $schedules = $scheduleModel->where('day', 'Saturday')->where('status',1)->findAll();
     // Determine dynamic date range from the records
     $minDate = $scheduleModel->selectMin('from_date')->first()['from_date'];
     $maxDate = $scheduleModel->selectMax('to_date')->first()['to_date'];

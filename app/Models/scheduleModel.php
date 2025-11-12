@@ -12,7 +12,7 @@ class scheduleModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['school_year','name','details','day','code','from_date','to_date','from_time','to_time'];
+    protected $allowedFields    = ['school_year','name','details','day','code','from_date','to_date','from_time','to_time','status'];
 
     // Dates
     protected $useTimestamps = true;

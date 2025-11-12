@@ -78,7 +78,7 @@
                     <div class="row g-3">
                         <div class="col-lg-9">
                             <div class="row g-3 mb-3">
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row align-items-center">
@@ -94,7 +94,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/student.png')?>"
+                                                        width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium">0</div>
+                                                    <div class="text-secondary">Enrolled Cadets</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row align-items-center">
@@ -109,7 +125,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row align-items-center">
@@ -132,6 +148,11 @@
                                             <div class="card-title">
                                                 <i class="ti ti-calendar"></i>&nbsp;My Schedules
                                             </div>
+                                            <div class="card-actions">
+                                                <a href="" class="btn btn-link">
+                                                    <i class="ti ti-search"></i>&nbsp;View All
+                                                </a>
+                                            </div>
                                         </div>
                                         <div class="list-group list-group-flush">
 
@@ -153,7 +174,7 @@
                                             </div>
                                         </div>
                                         <div class="card-body">
-                                            <div id="attendanceChart"></div>
+                                            <div id="attendanceChart" style="height: 300px;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -252,6 +273,33 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+    <script>
+    google.charts.setOnLoadCallback(attendanceCharts);
+
+    function attendanceCharts() {
+        const data = google.visualization.arrayToDataTable([
+            ['Status', 'Count'],
+            <?php foreach ($attendance as $row): ?>['<?= $row['status'] ?>', <?= $row['total'] ?>],
+            <?php endforeach; ?>
+        ]);
+
+        const options = {
+            pieHole: 0.4,
+            pieSliceText: 'percentage',
+            legend: {
+                position: 'bottom'
+            },
+            backgroundColor: {
+                fill: 'transparent'
+            },
+            colors: ['#4CAF50', '#FFC107', '#F44336']
+        };
+
+        const chart = new google.visualization.PieChart(document.getElementById('attendanceChart'));
+        chart.draw(data, options);
+
+    }
+    </script>
 </body>
 
 </html>

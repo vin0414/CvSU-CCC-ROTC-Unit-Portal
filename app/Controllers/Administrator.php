@@ -132,14 +132,34 @@ class Administrator extends BaseController
         //announcement
         $announcementModel = new \App\Models\announcementModel();
         $announcement = $announcementModel->orderBy('announcement_id','DESC')->limit(5)->findAll();
-        //enrolment chart
-        $builder = $this->db->table('students');
-        $builder->select('created_at,COUNT(student_id)total');
-        $builder->where('is_enroll',1);
-        $builder->groupBy('created_at');
-        $enrol = $builder->get()->getResult();
+        //attendance chart
+        $currentDate = date('Y-m-d'); // Get today's date
 
-        $data = ['title'=>$title,'announcement'=>$announcement];
+        $sql = "
+            SELECT status, COUNT(*) AS total
+            FROM (
+                SELECT 
+                    s.student_id,
+                    CASE 
+                        WHEN COUNT(a.attendance_id) = 0 THEN 'Absent'
+                        WHEN MAX(CASE WHEN a.remarks = 'IN' THEN a.time END) IS NOT NULL 
+                             AND MAX(CASE WHEN a.remarks = 'OUT' THEN a.time END) IS NOT NULL 
+                        THEN 'Present'
+                        ELSE 'Incomplete'
+                    END AS status
+                FROM students s
+                LEFT JOIN attendance a 
+                    ON s.student_id = a.student_id AND a.date = ?
+                GROUP BY s.student_id
+            ) AS sub
+            GROUP BY status
+        ";
+
+        $query = $this->db->query($sql, [$currentDate]);
+
+        $attendance = $query->getResultArray();
+
+        $data = ['title'=>$title,'announcement'=>$announcement,'attendance'=>$attendance];
         return view('admin/dashboard',$data);
     }
 
@@ -405,6 +425,7 @@ class Administrator extends BaseController
                 'time' => 'Start: ' . date('h:i:s a', strtotime($row['from_time'])) . 
                            '<br>' . 
                            'End: ' . date('h:i:s a', strtotime($row['to_time'])),
+                'status'=>($row['status']==1) ? 'Active' : 'Archive',
                 'action'=>'<a href="edit/'.$row['schedule_id'].'" class="btn btn-primary"><i class="ti ti-edit"></i>&nbsp;Edit</a>',
             ];
         }
@@ -454,7 +475,8 @@ class Administrator extends BaseController
                 'from_date'=>$this->request->getPost('from_date'),
                 'to_date'=>$this->request->getPost('to_date'),
                 'from_time'=>$this->request->getPost('from_time'),
-                'to_time'=>$this->request->getPost('to_time')
+                'to_time'=>$this->request->getPost('to_time'),
+                'status'=>1
             ];
             $scheduleModel->save($data);
             return $this->response->setJSON(['success'=>'Successfully created schedule']);
@@ -495,6 +517,7 @@ class Administrator extends BaseController
             'to_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select end date','valid_date'=>'Invalid date format']],
             'to_time'=>['rules'=>'required','errors'=>['required'=>'Select end time']],
             'details'=>['rules'=>'required','errors'=>['required'=>'Details is required']],
+            'status'=>['rules'=>'required','errors'=>['required'=>'Status is required']],
         ]);
         if(!$validation)
         {
@@ -511,7 +534,8 @@ class Administrator extends BaseController
                 'from_date'=>$this->request->getPost('from_date'),
                 'to_date'=>$this->request->getPost('to_date'),
                 'from_time'=>$this->request->getPost('from_time'),
-                'to_time'=>$this->request->getPost('to_time')
+                'to_time'=>$this->request->getPost('to_time'),
+                'status'=>$this->request->getPost('status')
             ];
             $scheduleModel->update($this->request->getPost('id'),$data);
             return $this->response->setJSON(['success'=>'Successfully applied changes']);

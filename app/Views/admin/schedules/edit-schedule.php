@@ -145,6 +145,15 @@
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="status">
+                                        <option value="">Choose</option>
+                                        <option value="1">Active</option>
+                                        <option value="0">Archive</option>
+                                    </select>
+                                    <div id="status-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-12">
                                     <button type="submit" class="btn btn-primary" id="btnSave">
                                         <i class="ti ti-device-floppy"></i>&nbsp;Save Changes
                                     </button>
