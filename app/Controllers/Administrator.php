@@ -434,7 +434,7 @@ class Administrator extends BaseController
         ];
         foreach ($schedule as $row) {
             $response['data'][] = [
-                'year' => htmlspecialchars($row['school_year'], ENT_QUOTES),
+                'year' => htmlspecialchars($row['semester']." | ".$row['school_year'],ENT_QUOTES),
                 'name' => htmlspecialchars($row['name'], ENT_QUOTES),
                 'details' => htmlspecialchars(substr($row['details'],0,50).'...', ENT_QUOTES),
                 'date' => 'From: ' . date('F d, Y', strtotime($row['from_date'])) . 
@@ -578,6 +578,7 @@ class Administrator extends BaseController
         $scheduleModel = new scheduleModel();
         $validation = $this->validate([
             'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
+            'semester'=>['rules'=>'required','errors'=>['required'=>'Semester is required']],
             'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
             'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
             'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
@@ -595,6 +596,7 @@ class Administrator extends BaseController
         {
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
+                'semester'=>$this->request->getPost('semester'),
                 'name'=>$this->request->getPost('name'),
                 'details'=>$this->request->getPost('details'),
                 'day'=>$this->request->getPost('day'),
@@ -645,6 +647,7 @@ class Administrator extends BaseController
         $validation = $this->validate([
             'id'=>['rules'=>'required|numeric','errors'=>['required'=>'Schedule ID is required','numeric'=>'Invalid']],
             'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
+            'semester'=>['rules'=>'required','errors'=>['required'=>'Semester is required']],
             'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
             'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
             'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
@@ -663,6 +666,7 @@ class Administrator extends BaseController
         {
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
+                'semester'=>$this->request->getPost('semester'),
                 'name'=>$this->request->getPost('name'),
                 'details'=>$this->request->getPost('details'),
                 'day'=>$this->request->getPost('day'),

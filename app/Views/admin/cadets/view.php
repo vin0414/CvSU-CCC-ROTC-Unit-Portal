@@ -14,12 +14,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
     <style>
     @import url("https://rsms.me/inter/inter.css");
-
-    h4 {
-        border: 0.5px solid lightgray;
-        padding: 10px;
-        border-radius: 10px;
-    }
     </style>
 </head>
 
@@ -119,13 +113,11 @@
                                             <div class="row g-3">
                                                 <div class="col-lg-8">
                                                     <label class="form-label"><small>Student Name</small></label>
-                                                    <h4>
-                                                        <?=$cadet['fullname']?>
-                                                    </h4>
+                                                    <p class="form-control"><?=$cadet['fullname']?></p>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <label class="form-label"><small>Email</small></label>
-                                                    <h4><?=$cadet['email']?></h4>
+                                                    <p class="form-control"><?=$cadet['email']?></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -366,6 +358,22 @@
                                         </svg>
                                         Training(s)
                                     </div>
+                                    <?php if($cadet['is_enroll']==1):?>
+                                    <div class="card-actions">
+                                        <button type="button" class="btn btn-primary add"
+                                            value="<?=$cadet['student_id']?>">
+                                            <i class="ti ti-plus"></i>&nbsp;Add
+                                        </button>
+                                    </div>
+                                    <?php endif;?>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <?php if(empty($trainings)): ?>
+                                    <div class="list-group-item">
+                                        No Training(s) added yet
+                                    </div>
+                                    <?php else: ?>
+                                    <?php endif;?>
                                 </div>
                             </div>
                         </div>
@@ -395,7 +403,7 @@
             <!--  END FOOTER  -->
         </div>
     </div>
-    <div class="modal" id="modal-loading" data-backdrop="static">
+    <div class="modal" id="modal-loading" data-bs-backdrop="static">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-body text-center">
@@ -408,6 +416,78 @@
             </div>
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="trainingModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Add Training</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="form">
+                        <?= csrf_field() ?>
+                        <?php
+                        $startYear = date('Y');
+                        $numberOfSemesters = 5;
+
+                        $semesters = [];
+                        for ($i = 0; $i < $numberOfSemesters; $i++) {
+                            $from = $startYear + $i;
+                            $to = $from + 1;
+                            $semesters[] = "$from-$to";
+                        }
+                        ?>
+                        <input type="hidden" name="cadet" id="cadet" />
+                        <div class="col-lg-12">
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">School Year</label>
+                                    <select name="year" class="form-select" id="year">
+                                        <option value="">Choose</option>
+                                        <?php foreach ($semesters as $semester): ?>
+                                        <option value="<?= $semester ?>"><?= $semester ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Semester</label>
+                                    <select name="semester" class="form-select" id="semester">
+                                        <option value="">Choose</option>
+                                        <option>1st</option>
+                                        <option>2nd</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Title & Description</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Day</th>
+                                    </thead>
+                                    <tbody id="result" style="height: 300px;overflow-y:auto;">
+                                        <tr>
+                                            <td colspan="5" class="text-center">No Training(s) selected</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-device-floppy"></i>&nbsp;Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -419,6 +499,68 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <script>
+    $(document).on('click', '.add', function() {
+        $('#trainingModal').modal('show');
+        $('#cadet').attr("value", $(this).val());
+    });
+    $('#semester').change(function() {
+        let value = $(this).val();
+        let year = $('#year').val();
+        $('#result').html("<tr><td colspan='5' class='text-center'>Loading...</td></tr>");
+        $.ajax({
+            url: "<?= site_url('trainings/fetch') ?>",
+            method: "GET",
+            data: {
+                year: year,
+                semester: value
+            },
+            success: function(response) {
+                if (response === "") {
+                    $('#result').html(
+                        "<tr><td colspan='5' class='text-center'>No Schedule(s) found</td></tr>"
+                    );
+                } else {
+                    $('#result').html(response);
+                }
+            }
+        });
+    });
+
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('#modal-loading').modal('show');
+        $('#trainingModal').modal('hide');
+        $.ajax({
+            url: "<?= site_url('trainings/save') ?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#modal-loading').modal('hide');
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully added",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    $('#trainingModal').modal('show');
+                    Swal.fire({
+                        title: "Error!",
+                        text: response.errors.cadet,
+                        icon: "warning"
+                    });
+                }
+            }
+        });
+    });
+
     $(document).on('click', '.enroll', function() {
         Swal.fire({
             title: 'Are you sure?',

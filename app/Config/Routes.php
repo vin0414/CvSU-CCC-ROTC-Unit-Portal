@@ -57,6 +57,9 @@ $routes->post('schedules/update','Administrator::updateSchedule');
 $routes->get('assignment','Administrator::assignment');
 $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
+//cadet trainings
+$routes->get('trainings/fetch','Enrolment::fetchTraining');
+$routes->post('trainings/save','Enrolment::saveTraining');
 //attendance
 $routes->post('save-attendance','Administrator::saveAttendance');
 //announcement

@@ -50,16 +50,6 @@ class Cadet extends BaseController
         return $this->response->setJSON($response);
     }
 
-    public function enrolled()
-    {
-
-    }
-
-    public function cadetOfficer()
-    {
-        
-    }
-
     public function qrCode()
     {
         $qrcodeModel = new \App\Models\qrcodeModel();

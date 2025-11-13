@@ -78,7 +78,7 @@
                                 <input type="hidden" name="id" value="<?=$schedule['schedule_id']?>" />
                                 <div class="col-lg-12">
                                     <div class="row g-3">
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">School Year</label>
                                             <select name="school_year" class="form-select">
                                                 <option value="">Choose</option>
@@ -90,7 +90,13 @@
                                             </select>
                                             <div id="school_year-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Semester</label>
+                                            <input type="text" class="form-control" name="semester"
+                                                placeholder="Enter here" value="<?=$schedule['semester']?>">
+                                            <div id="semester-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-4">
                                             <label class="form-label">Name/Title</label>
                                             <input type="text" class="form-control" name="name"
                                                 placeholder="Enter Name or Title" value="<?=$schedule['name']?>">
