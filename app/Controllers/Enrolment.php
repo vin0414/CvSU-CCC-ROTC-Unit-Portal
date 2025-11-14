@@ -15,22 +15,32 @@ class Enrolment extends BaseController
 
     public function fetchTraining()
     {
-        $model = new \App\Models\scheduleModel();
         $semester = $this->request->getGet('semester');
         $year = $this->request->getGet('year');
+        $cadet = $this->request->getGet('cadet');
         $output="";
-        $data = $model->where('school_year',$year)
-                ->where('semester',$semester)
-                ->where('status',1)
-                ->findAll();
+        $query = "SELECT a.* FROM schedules a
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM trainings b
+                    WHERE a.schedule_id = b.schedule_id AND b.student_id = :cadet:
+                )
+                AND a.school_year = :year:
+                AND a.semester = :semester:
+                AND a.status = 1";
+
+        $data = $this->db->query($query, [
+            'cadet' => $cadet,
+            'year' => $year,
+            'semester' => $semester
+        ])->getResult();
         foreach($data as $row)
         {
             $output.='<tr>
-                        <td><input type="checkbox" name="schedule[]" style="width:20px;height:20px;" value="'.$row['schedule_id'].'"/></td>
-                        <td>'.$row['name'].'<br/>'.$row['details'].'</td>
-                        <td>'.$row['from_date'].' - '.$row['to_date'].'</td>
-                        <td>'.$row['from_time'].' - '.$row['to_time'].'</td>
-                        <td>'.$row['day'].'</td>
+                        <td><input type="checkbox" name="schedule[]" style="width:20px;height:20px;" value="'.$row->schedule_id.'"/></td>
+                        <td>'.$row->name.'<br/>'.$row->details.'</td>
+                        <td>'.$row->from_date.' - '.$row->to_date.'</td>
+                        <td>'.$row->from_time.' - '.$row->to_time.'</td>
+                        <td>'.$row->day.'</td>
                      </tr>';
         }
         echo $output;
@@ -83,5 +93,10 @@ class Enrolment extends BaseController
                 return $this->response->setJSON(['success'=>'Successfully added']);
             }
         }
+    }
+
+    public function removeTraining()
+    {
+        
     }
 }

@@ -368,11 +368,31 @@
                                     <?php endif;?>
                                 </div>
                                 <div class="list-group list-group-flush">
-                                    <?php if(empty($trainings)): ?>
+                                    <?php if(empty($training)): ?>
                                     <div class="list-group-item">
                                         No Training(s) added yet
                                     </div>
                                     <?php else: ?>
+                                    <?php foreach($training as $row): ?>
+                                    <div class="list-group-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <a href="javascript:void(0);">
+                                                    <span class="avatar avatar-1"
+                                                        style="background-image: url(<?=base_url('assets/images/logo.png')?>">
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div class="col text-truncate">
+                                                <a href="javascript:void(0);"
+                                                    class="text-reset d-block"><?=$row->name?></a>
+                                                <div class="d-block text-secondary text-truncate mt-n1">
+                                                    <?=$row->details?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endforeach;?>
                                     <?php endif;?>
                                 </div>
                             </div>
@@ -460,7 +480,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="height: 300px;overflow-y:auto;">
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <th>#</th>
@@ -469,7 +489,7 @@
                                         <th>Time</th>
                                         <th>Day</th>
                                     </thead>
-                                    <tbody id="result" style="height: 300px;overflow-y:auto;">
+                                    <tbody id="result">
                                         <tr>
                                             <td colspan="5" class="text-center">No Training(s) selected</td>
                                         </tr>
@@ -506,13 +526,15 @@
     $('#semester').change(function() {
         let value = $(this).val();
         let year = $('#year').val();
+        let cadet = $('#cadet').val();
         $('#result').html("<tr><td colspan='5' class='text-center'>Loading...</td></tr>");
         $.ajax({
             url: "<?= site_url('trainings/fetch') ?>",
             method: "GET",
             data: {
                 year: year,
-                semester: value
+                semester: value,
+                cadet: cadet
             },
             success: function(response) {
                 if (response === "") {

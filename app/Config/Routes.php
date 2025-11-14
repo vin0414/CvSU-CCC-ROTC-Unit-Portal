@@ -35,6 +35,7 @@ $routes->group('',['filter'=>'AuthCheck'],function($routes)
     $routes->get('cadet/qr-code','Home::qrCode');
     $routes->get('cadet/upload','Home::upload');
     $routes->get('cadet/trainings','Home::studentTrainings');
+    $routes->get('cadet/trainings/view/(:any)','Home::viewTraining/$1');
     $routes->get('cadet/attendance','Home::studentAttendance');
     $routes->get('cadet/performance','Home::studentPerformance');
     $routes->get('cadet/account-security','Home::accountSecurity');
@@ -91,6 +92,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     //grades
     $routes->get('evaluation','Administrator::gradingSystem');
     $routes->get('evaluation/upload','Administrator::uploadGradeBook');
+    $routes->get('evaluation/view/(:any)','Administrator::viewGradeBook/$1');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

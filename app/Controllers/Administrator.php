@@ -114,7 +114,7 @@ class Administrator extends BaseController
     public function hasPermission($page)
     {
         $roleModel = new \App\Models\roleModel();
-        $accountModel = new \App\Models\accountModel();
+        $accountModel = new accountModel();
         $account = $accountModel->WHERE('account_id',session()->get('loggedAdmin'))->first();
         $role = $roleModel->WHERE('role_id',$account['role_id'])->first();
         if($role[$page] != 1)
@@ -171,8 +171,16 @@ class Administrator extends BaseController
         //staff
         $assignmentModel = new assignmentModel();
         $staff = $assignmentModel->where('account_id<>',0)->countAllResults();
+        //assignment
+        $assignment = $this->db->table('assignments a')
+                    ->select('b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
+                    ->join('schedules b','b.schedule_id=a.schedule_id','LEFT')
+                    ->where('a.account_id',session()->get('loggedAdmin'))
+                    ->groupBy('a.assignment_id')
+                    ->orderBy('a.assignment_id','DESC')->limit(5)
+                    ->get()->getResult();
 
-        $data = ['title'=>$title,'announcement'=>$announcement,
+        $data = ['title'=>$title,'announcement'=>$announcement,'assignment'=>$assignment,
                 'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
                 'enrolled'=>$totalEnrolled,'training'=>$training];
         return view('admin/dashboard',$data);
@@ -229,6 +237,13 @@ class Administrator extends BaseController
             }
             $data['info'] = $info;
             $data['attachment'] = $attachment->where('student_id',$student['student_id'])->first();
+            //all training
+            $data['training'] = $this->db->table('trainings a')
+                        ->select('b.name,b.details')
+                        ->join('schedules b','b.schedule_id=a.schedule_id','LEFT')
+                        ->where('a.student_id',$student['student_id'])
+                        ->where('a.status',1)
+                        ->groupBy('a.training_id')->get()->getResult();
             return view('admin/cadets/view',$data);
         }
     }
@@ -814,6 +829,32 @@ class Administrator extends BaseController
             $title = 'Upload Gradebook';
             $data = ['title'=>$title];
             return view('admin/grades/upload',$data);
+        }
+    }
+
+    public function viewGradeBook($id)
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Gradebook';
+            //schedule
+            $scheduleModel = new scheduleModel();
+            $schedule = $scheduleModel->where('schedule_id',$id)->first();
+            if(empty($schedule))
+            {
+                return redirect()->to('/dashboard')->with('fail', 'No Record(s) found! Please try again');
+            }
+            //get the assign staff
+            $model = new assignmentModel();
+            $assignment = $model->where('schedule_id',$id)->first();
+            $accountModel = new accountModel();
+            $account = $accountModel->where('account_id',$assignment['account_id'])->first();
+            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account];
+            return view('admin/grades/view',$data);
         }
     }
 

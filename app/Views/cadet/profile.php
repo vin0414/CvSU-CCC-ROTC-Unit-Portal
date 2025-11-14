@@ -133,8 +133,11 @@
                                             <label class="form-label">Gender</label>
                                             <select class="form-select" name="gender">
                                                 <option value="">Choose</option>
-                                                <option>Male</option>
-                                                <option>Female</option>
+                                                <option <?= ($cadet['gender']==="Male") ? 'selected' : '' ?>>Male
+                                                </option>
+                                                <option <?= ($cadet['gender']==="Female") ? 'selected' : '' ?>>
+                                                    Female
+                                                </option>
                                             </select>
                                             <div id="gender-error" class="error-message text-danger text-sm"></div>
                                         </div>

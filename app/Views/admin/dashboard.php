@@ -155,7 +155,36 @@
                                             </div>
                                         </div>
                                         <div class="list-group list-group-flush">
-
+                                            <?php if(empty($assignment)): ?>
+                                            <div class="list-group-item">
+                                                No Schedule(s) assign yet
+                                            </div>
+                                            <?php else: ?>
+                                            <?php foreach($assignment as $row): ?>
+                                            <div class="list-group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <a href="javascript:void(0);">
+                                                            <span class="avatar avatar-1"
+                                                                style="background-image: url(<?=base_url('assets/images/logo.png')?>)">
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col text-truncate">
+                                                        <a href="<?= site_url('evaluation/view/') ?><?= $row->schedule_id ?>"
+                                                            class="text-reset d-block"><?=$row->name?></a>
+                                                        <div class="d-block text-secondary text-truncate mt-n1">
+                                                            <small>
+                                                                <?= date('h:i:s a',strtotime($row->from_time)) ?> to
+                                                                <?= date('h:i:s a',strtotime($row->to_time)) ?>
+                                                                | <?= $row->day ?>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach;?>
+                                            <?php endif;?>
                                         </div>
                                     </div>
                                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Libraries\Hash;
+use App\Models\scheduleModel;
 use Config\Email;
 use \App\Models\cadetModel;
 use \App\Models\favoriteModel;
@@ -326,9 +327,16 @@ class Home extends BaseController
             //announcement
             $model = new \App\Models\announcementModel();
             $data['announcement'] = $model->orderBy('announcement_id','DESC')->limit(5)->findAll();
-            //favorites
-            $favorite = new favoriteModel();
-            $data['favorite'] = $favorite->where('student_id',session()->get('loggedUser'))->findAll();
+            //trainings
+            $data['training'] = $this->db->table('trainings a')
+                        ->select('a.*,b.name,b.from_date,b.to_date')
+                        ->join('schedules b','b.schedule_id=a.schedule_id','LEFT')
+                        ->where('a.student_id',session()->get('loggedUser'))
+                        ->groupBy('a.training_id')
+                        ->orderBy('a.training_id','DESC')
+                        ->limit(8)
+                        ->get()->getResult();
+            
             return view('cadet/dashboard', $data);
         }
     }
@@ -455,7 +463,30 @@ class Home extends BaseController
         {
             return redirect()->to(base_url('cadet/profile'));
         }
+        //trainings
+        $model = new \App\Models\cadetTrainingModel();
+        $data['page'] = (int) ($this->request->getGet('page') ?? 1);
+        $data['perPage'] = 8;
+        $data['total'] = $model->where('status', 1)
+                               ->where('student_id',session()->get('loggedUser'))
+                               ->countAllResults();
+        $data['training'] = $model->join('schedules','schedules.schedule_id=trainings.schedule_id','LEFT')
+                                  ->where('trainings.student_id',session()->get('loggedUser'))
+                                  ->orderBy('trainings.training_id', 'DESC')
+                                  ->paginate($data['perPage'], 'default', $data['page']);
+        $data['pager'] = $model->pager;
+        
         return view('cadet/trainings',$data);
+    }
+
+    public function viewTraining($id)
+    {
+        $data['title'] = "My Trainings";
+        $model = new \App\Models\cadetTrainingModel();
+        $training = $model->where('training_id',$id)->first();
+        $scheduleModel = new scheduleModel();
+        $data['schedule'] = $scheduleModel->where('schedule_id',$training['schedule_id'])->first();
+        return view('cadet/view-training',$data);
     }
 
     public function studentAttendance()

@@ -391,7 +391,35 @@
                                     </svg>
                                     My Trainings
                                 </div>
-                                <div class="col-lg-12"></div>
+                                <div class="col-lg-12">
+                                    <div class="row g-3">
+                                        <?php if(empty($training)):?>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                No Training(s) posted
+                                            </div>
+                                        </div>
+                                        <?php else:?>
+                                        <?php foreach($training as $row): ?>
+                                        <div class="col-lg-3">
+                                            <div class="card">
+                                                <div class="img-responsive card-img-top"
+                                                    style="background-image: url(<?=base_url('assets/images/background.jpg')?>)">
+                                                </div>
+                                                <div class="card-body">
+                                                    <a
+                                                        href="<?= site_url('cadet/trainings/view/') ?><?= $row->training_id ?>"><?= $row->name ?></a><br />
+                                                    <small>
+                                                        <?= date('M d, Y',strtotime($row->from_date)) ?> to
+                                                        <?= date('M d, Y',strtotime($row->to_date)) ?>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php endforeach;?>
+                                        <?php endif;?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-3">
@@ -441,24 +469,6 @@
                                         </div>
                                     </div>
                                     <?php endforeach;?>
-                                    <?php endif;?>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">
-                                        <i class="ti ti-calendar"></i>
-                                        My Schedules
-                                    </div>
-                                </div>
-                                <div class="list-group list-group-flush">
-                                    <?php if(empty($schedules)):?>
-                                    <div class="list-group-item">
-                                        <div class="text-center text-muted py-3">
-                                            No schedules posted
-                                        </div>
-                                    </div>
-                                    <?php else :?>
                                     <?php endif;?>
                                 </div>
                             </div>
