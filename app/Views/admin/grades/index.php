@@ -46,7 +46,7 @@
                 <div class="container-xl">
                     <div class="row g-3 mb-3">
                         <div class="col-lg-3">
-                            <div class="card">
+                            <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE STUDENTS</h5>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-lg-3">
-                            <div class="card">
+                            <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE SUBJECTS</h5>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="col-lg-3">
-                            <div class="card">
+                            <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE OFFICERS</h5>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <div class="col-lg-3">
-                            <div class="card">
+                            <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>CLOSED SUBJECTS</h5>
@@ -102,13 +102,48 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped" id="table">
                                     <thead>
+                                        <th>School Year</th>
+                                        <th>Code</th>
                                         <th>Subjects</th>
                                         <th>Total Cadets</th>
                                         <th>Assigned Officers</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody>
+                                        <?php foreach($schedules as $row): ?>
+                                        <tr>
+                                            <td><?= $row->school_year ?></td>
+                                            <td><?= $row->code ?></td>
+                                            <td><?= $row->name ?></td>
+                                            <td class="text-center"><?= $row->total ?? 0 ?></td>
+                                            <td><?= $row->fullname ?></td>
+                                            <td class="text-center">
+                                                <?= ($row->status) ? '<span class="badge bg-success text-white">OPEN</span>' : '<span class="badge bg-danger text-white">CLOSE</span>' ?>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn dropdown-toggle"
+                                                    data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                    role="button">
+                                                    <span>More</span>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
+                                                        class="dropdown-item">
+                                                        <i class="ti ti-search"></i>&nbsp;View Students
+                                                    </a>
+                                                    <a href="<?= site_url('gradebook/upload') ?>" class="dropdown-item">
+                                                        <i class="ti ti-upload"></i>&nbsp;Upload
+                                                    </a>
+                                                    <a href="<?= site_url('gradebook/summary/') ?><?= $row->code ?>"
+                                                        class="dropdown-item">
+                                                        <i class="ti ti-list"></i>&nbsp;Summary
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

@@ -83,7 +83,7 @@
                                                 <th>Cadet</th>
                                                 <th>Schedules</th>
                                                 <th>Attendance</th>
-                                                <th>Grading System</th>
+                                                <th>Gradebook</th>
                                                 <th>Announcement</th>
                                                 <th>Maintenance</th>
                                                 <th>Action</th>

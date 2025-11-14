@@ -90,15 +90,16 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('attendance','Administrator::attendance');
     $routes->get('attendance/view/(:any)','Administrator::viewAttendance/$1');
     //grades
-    $routes->get('evaluation','Administrator::gradingSystem');
-    $routes->get('evaluation/upload','Administrator::uploadGradeBook');
-    $routes->get('evaluation/view/(:any)','Administrator::viewGradeBook/$1');
+    $routes->get('gradebook','Administrator::gradingSystem');
+    $routes->get('gradebook/upload','Administrator::uploadGradeBook');
+    $routes->get('gradebook/view/(:any)','Administrator::viewGradeBook/$1');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');
     $routes->get('announcement/edit/(:any)','Administrator::editAnnouncement/$1');
     //reports
     $routes->get('reports','Administrator::report');
+    $routes->get('reports/create','Administrator::createReport');
     //maintenance
     $routes->get('maintenance/accounts','Administrator::accounts');
     $routes->get('maintenance/accounts/create','Administrator::createAccount');

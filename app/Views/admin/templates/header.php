@@ -159,21 +159,22 @@
                     <?php endif; ?>
                     <?php if($role['grading_system']==1): ?>
                     <li class="nav-item <?= ($title == 'Gradebook') ? 'active' : '' ?>">
-                        <a class="nav-link" href="<?=site_url('evaluation')?>">
+                        <a class="nav-link" href="<?=site_url('gradebook')?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-brand-codesandbox">
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-vocabulary">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M20 7.5v9l-4 2.25l-4 2.25l-4 -2.25l-4 -2.25v-9l4 -2.25l4 -2.25l4 2.25z" />
-                                <path d="M12 12l4 -2.25l4 -2.25" />
-                                <path d="M12 12l0 9" />
-                                <path d="M12 12l-4 -2.25l-4 -2.25" />
-                                <path d="M20 12l-4 2v4.75" />
-                                <path d="M4 12l4 2l0 4.75" />
-                                <path d="M8 5.25l4 2.25l4 -2.25" />
+                                <path
+                                    d="M10 19h-6a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1h6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-6a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2z" />
+                                <path d="M12 5v16" />
+                                <path d="M7 7h1" />
+                                <path d="M7 11h1" />
+                                <path d="M16 7h1" />
+                                <path d="M16 11h1" />
+                                <path d="M16 15h1" />
                             </svg>
-                            <span class="nav-link-title">&nbsp;Evaluation </span>
+                            <span class="nav-link-title">&nbsp;Gradebook </span>
                         </a>
                     </li>
                     <?php endif; ?>

@@ -1,3 +1,7 @@
+<?php 
+$roleModel = new \App\Models\roleModel();
+$role = $roleModel->where('role_id', session()->get('role'))->first();
+?>
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="light">
     <div class="container-fluid">
         <!-- BEGIN NAVBAR TOGGLER -->
@@ -99,6 +103,7 @@
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 text-uppercase text-xs font-weight-bolder opacity-6">Entries</h6>
                 </li>
+                <?php if($role['schedule']==1): ?>
                 <li class="nav-item <?= ($title == 'Create Schedule') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('schedules/create')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -118,6 +123,8 @@
                         <span class="nav-link-title"> Create Schedule </span>
                     </a>
                 </li>
+                <?php endif;?>
+                <?php if($role['maintenance']==1): ?>
                 <li class="nav-item <?= ($title == 'Create Account') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('maintenance/accounts/create')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -135,6 +142,7 @@
                         <span class="nav-link-title"> Create Account </span>
                     </a>
                 </li>
+                <?php endif;?>
                 <li class="nav-item <?= ($title == 'QR Scanner') ? 'active' : '' ?>">
                     <a class="nav-link" target="_blank" href="<?=site_url('scanner')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -153,7 +161,7 @@
                     </a>
                 </li>
                 <li class="nav-item <?= ($title == 'Upload') ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?=site_url('evaluation/upload')?>">
+                    <a class="nav-link" href="<?=site_url('gradebook/upload')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -168,8 +176,30 @@
                         <span class="nav-link-title"> Upload Grades</span>
                     </a>
                 </li>
+                <li class="nav-item <?= ($title == 'Reports') ? 'active' : '' ?>">
+                    <a class="nav-link" href="<?=site_url('reports/create')?>">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-report-search">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M8 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h5.697" />
+                                <path d="M18 12v-5a2 2 0 0 0 -2 -2h-2" />
+                                <path
+                                    d="M8 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                <path d="M8 11h4" />
+                                <path d="M8 15h3" />
+                                <path d="M16.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
+                                <path d="M18.5 19.5l2.5 2.5" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title"> Create Report</span>
+                    </a>
+                </li>
+                <?php if($role['maintenance']==1): ?>
                 <li class="nav-item mt-3">
-                    <h6 class="ps-4 text-uppercase text-xs font-weight-bolder opacity-6">System</h6>
+                    <h6 class="ps-4 text-uppercase text-xs font-weight-bolder opacity-6">System Setup</h6>
                 </li>
                 <li class="nav-item <?= ($title == 'Settings') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('maintenance/settings')?>">
@@ -188,6 +218,7 @@
                         <span class="nav-link-title"> Settings </span>
                     </a>
                 </li>
+                <?php endif;?>
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 text-uppercase text-xs font-weight-bolder opacity-6">Account Settings</h6>
                 </li>

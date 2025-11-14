@@ -813,7 +813,16 @@ class Administrator extends BaseController
         else
         {
             $title = 'Gradebook';
-            $data = ['title'=>$title];
+            //get all the schedules and total cadet
+            $schedules = $this->db->table('schedules a')
+                        ->select('a.schedule_id,a.code,a.school_year,a.name,a.status,c.fullname,d.total')
+                        ->join('assignments b','b.schedule_id=a.schedule_id','LEFT')
+                        ->join('accounts c','c.account_id=b.account_id','LEFT')
+                        ->join('(Select schedule_id,count(*)total from trainings group by schedule_id) d','d.schedule_id=a.schedule_id','LEFT')
+                        ->groupBy('a.schedule_id')
+                        ->get()->getResult();
+
+            $data = ['title'=>$title,'schedules'=>$schedules];
             return view('admin/grades/index',$data);
         }
     }
@@ -853,7 +862,15 @@ class Administrator extends BaseController
             $assignment = $model->where('schedule_id',$id)->first();
             $accountModel = new accountModel();
             $account = $accountModel->where('account_id',$assignment['account_id'])->first();
-            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account];
+            //students
+            $students = $this->db->table('trainings a')
+                        ->select('a.student_id,b.fullname,b.school_id,c.course,c.year,c.section')
+                        ->join('students b','b.student_id=a.student_id')
+                        ->join('cadets c','c.student_id=b.student_id','LEFT')
+                        ->where('a.schedule_id',$id)
+                        ->groupBy('a.training_id')
+                        ->get()->getResult();
+            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account,'students'=>$students];
             return view('admin/grades/view',$data);
         }
     }
@@ -1087,6 +1104,13 @@ class Administrator extends BaseController
         $title = 'Reports';
         $data = ['title'=>$title];
         return view('admin/reports/index',$data);
+    }
+
+    public function createReport()
+    {
+        $title = 'Reports';
+        $data = ['title'=>$title];
+        return view('admin/reports/create',$data);
     }
 
     public function accounts()

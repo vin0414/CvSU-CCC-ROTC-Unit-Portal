@@ -39,11 +39,11 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('evaluation')?>"
+                                <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
                                 </a>
-                                <a href="<?=site_url('evaluation')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
+                                <a href="<?=site_url('gradebook')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
@@ -100,7 +100,33 @@
                                                 <th>Year & Section</th>
                                                 <th>Action</th>
                                             </thead>
-                                            <tbody></tbody>
+                                            <tbody>
+                                                <?php foreach($students as $row): ?>
+                                                <tr>
+                                                    <td><?= $row->school_id ?></td>
+                                                    <td><?= $row->fullname ?></td>
+                                                    <td><?= $row->course ?></td>
+                                                    <td><?= $row->year ?> - <?= $row->section ?></td>
+                                                    <td>
+                                                        <button type="button" class="btn dropdown-toggle"
+                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                            role="button">
+                                                            <span>More</span>
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a href="<?= site_url('gradebook/grades/') ?><?= $row->school_id ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-search"></i>&nbsp;View Grades
+                                                            </a>
+                                                            <a href="<?= site_url('gradebook/summary/') ?><?= $row->school_id ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-list"></i>&nbsp;Summary
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach;?>
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
