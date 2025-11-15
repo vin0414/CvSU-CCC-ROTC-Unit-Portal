@@ -93,6 +93,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook','Administrator::gradingSystem');
     $routes->get('gradebook/upload','Administrator::uploadGradeBook');
     $routes->get('gradebook/view/(:any)','Administrator::viewGradeBook/$1');
+    $routes->get('gradebook/subject/create','Administrator::createSubject');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

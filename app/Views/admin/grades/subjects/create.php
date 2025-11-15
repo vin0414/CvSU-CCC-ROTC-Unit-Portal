@@ -34,14 +34,11 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$schedule['name'] ?></h2>
+                            <h2 class="page-title"><?=$title?> | Add Subject</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('gradebook/upload')?>" class="btn btn-default">
-                                    <i class="ti ti-upload"></i>&nbsp;Upload
-                                </a>
                                 <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
@@ -59,80 +56,71 @@
             <div class="page-body">
                 <div class="container-xl">
                     <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="ti ti-clipboard"></i>&nbsp;<?= $schedule['code'] ?> - <?= $schedule['name'] ?>
-                            </div>
-                        </div>
                         <div class="card-body">
-                            <div class="row g-2">
-                                <div class="col-lg-12">
-                                    <label class="form-label">Description</label>
-                                    <textarea class="form-control"><?= $schedule['details'] ?></textarea>
-                                </div>
+                            <div class="card-title">New Subject</div>
+                            <form method="POST" class="row g-3" id="form">
+                                <?= csrf_field() ?>
+                                <?php
+                                $startYear = date('Y');
+                                $numberOfSemesters = 5;
+
+                                $semesters = [];
+                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                    $from = $startYear + $i;
+                                    $to = $from + 1;
+                                    $semesters[] = "$from-$to";
+                                }
+                                ?>
                                 <div class="col-lg-12">
                                     <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Day of the Month</label>
-                                            <p class="form-control"><?= $schedule['day'] ?></p>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">School Year</label>
+                                            <select name="school_year" class="form-select">
+                                                <option value="">Choose</option>
+                                                <?php foreach ($semesters as $semester): ?>
+                                                <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div id="school_year-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-2">
-                                            <label class="form-label">From</label>
-                                            <p class="form-control">
-                                                <?= date('h:i:s a',strtotime($schedule['from_time'])) ?></p>
+                                            <label class="form-label">Semester</label>
+                                            <input type="text" class="form-control" name="semester"
+                                                placeholder="Enter here">
+                                            <div id="semester-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <label class="form-label">Subject Name</label>
+                                            <input type="text" class="form-control" name="subject"
+                                                placeholder="Enter here">
+                                            <div id="subject-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-2">
-                                            <label class="form-label">To</label>
-                                            <p class="form-control">
-                                                <?= date('h:i:s a',strtotime($schedule['to_time'])) ?></p>
-                                        </div>
-                                        <div class="col-lg-5">
-                                            <label class="form-label">Assigned Officer</label>
-                                            <p class="form-control"><?= $account['fullname'] ?></p>
+                                            <label class="form-label">Subject Code</label>
+                                            <input type="text" class="form-control" name="code"
+                                                placeholder="Enter here">
+                                            <div id="code-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table">
-                                            <thead>
-                                                <th>School ID</th>
-                                                <th>Fullname</th>
-                                                <th>Course</th>
-                                                <th>Year & Section</th>
-                                                <th>Action</th>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach($students as $row): ?>
-                                                <tr>
-                                                    <td><?= $row->school_id ?></td>
-                                                    <td><?= $row->fullname ?></td>
-                                                    <td><?= $row->course ?></td>
-                                                    <td><?= $row->year ?> - <?= $row->section ?></td>
-                                                    <td>
-                                                        <button type="button" class="btn dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                            role="button">
-                                                            <span>More</span>
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <a href="<?= site_url('gradebook/grades/') ?><?= $row->school_id ?>"
-                                                                class="dropdown-item">
-                                                                <i class="ti ti-search"></i>&nbsp;View Grades
-                                                            </a>
-                                                            <a href="<?= site_url('gradebook/summary/') ?><?= $row->school_id ?>"
-                                                                class="dropdown-item">
-                                                                <i class="ti ti-list"></i>&nbsp;Summary
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <?php endforeach;?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <label class="form-label">Suject Details</label>
+                                    <textarea name="details" class="form-control" style="height:120px;"></textarea>
+                                    <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
-                            </div>
+                                <div class="col-lg-12">
+                                    <label class="form-label">Coordinator/Account</label>
+                                    <select name="account" class="form-select">
+                                        <option value="">Choose</option>
+                                    </select>
+                                    <div id="account-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-primary" id="btnSave">
+                                        <i class="ti ti-device-floppy"></i>&nbsp;Save Entry
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -169,9 +157,6 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-    $('#table').DataTable();
-    </script>
 </body>
 
 </html>

@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-header">
                             <div class="card-title">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -99,12 +99,19 @@
                                 </svg>
                                 Upload Gradebook
                             </div>
+                            <div class="card-actions">
+                                <a href="<?= site_url('gradebook/subject/create') ?>" class="btn btn-success">
+                                    <i class="ti ti-plus"></i>&nbsp;Add Subject
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped" id="table">
                                     <thead>
                                         <th>School Year</th>
                                         <th>Code</th>
-                                        <th>Subjects</th>
+                                        <th>Task</th>
                                         <th>Total Cadets</th>
                                         <th>Assigned Officers</th>
                                         <th>Status</th>

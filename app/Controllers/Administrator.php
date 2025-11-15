@@ -875,6 +875,19 @@ class Administrator extends BaseController
         }
     }
 
+    public function createSubject()
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Gradebook";
+            return view('admin/grades/subjects/create',$data);
+        }   
+    }
+
     public function announcement()
     {
         if(!$this->hasPermission('announcement'))

@@ -133,9 +133,12 @@
                                             <label class="form-label">Gender</label>
                                             <select class="form-select" name="gender">
                                                 <option value="">Choose</option>
-                                                <option <?= ($cadet['gender']==="Male") ? 'selected' : '' ?>>Male
+                                                <option
+                                                    <?= (!empty($cadet['gender']) && $cadet['gender'] === "Male") ? 'selected' : '' ?>>
+                                                    Male
                                                 </option>
-                                                <option <?= ($cadet['gender']==="Female") ? 'selected' : '' ?>>
+                                                <option
+                                                    <?= (!empty($cadet['gender']) && $cadet['gender'] === "Female") ? 'selected' : '' ?>>
                                                     Female
                                                 </option>
                                             </select>
