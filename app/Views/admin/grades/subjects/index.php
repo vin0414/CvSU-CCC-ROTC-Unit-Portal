@@ -34,22 +34,22 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title"><?=$title?> | All Subjects</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('maintenance/accounts/create')?>"
-                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                <a href="<?= site_url('gradebook/subject/create') ?>" class="btn btn-default">
                                     <i class="ti ti-plus"></i>&nbsp;Add
                                 </a>
-                                <a href="<?=site_url('maintenance/accounts/create')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
-                                    <i class="ti ti-plus"></i>
+                                <a href="<?=site_url('gradebook')?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                    <i class="ti ti-arrow-left"></i>&nbsp;Back
+                                </a>
+                                <a href="<?=site_url('gradebook')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
+                                    <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
-                            <!-- BEGIN MODAL -->
-                            <!-- END MODAL -->
                         </div>
                     </div>
                 </div>
@@ -60,18 +60,42 @@
                 <div class="container-xl">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">Manage Accounts</div>
+                            <div class="card-title">All Subjects</div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped" id="tblaccount">
+                                <table class="table table-bordered table-striped" id="table">
                                     <thead>
-                                        <th>Account ID</th>
-                                        <th>Fullname</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
+                                        <th>Year</th>
+                                        <th>Semester</th>
+                                        <th>Subject Name</th>
+                                        <th>Code</th>
+                                        <th>Description</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody>
+                                        <?php foreach($subject as $row): ?>
+                                        <tr>
+                                            <td><?= $row['school_year'] ?></td>
+                                            <td><?= $row['semester'] ?></td>
+                                            <td><?= $row['subjectName'] ?></td>
+                                            <td><?= $row['code'] ?></td>
+                                            <td><?= $row['subjectDetails'] ?></td>
+                                            <td class="text-center">
+                                                <?= ($row['status']) ? '<span class="badge bg-success text-white">OPEN</span>' : '<span class="badge bg-danger text-white">CLOSE</span>' ?>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn dropdown-toggle"
+                                                    data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                    role="button">
+                                                    <span>More</span>
+                                                </button>
+                                                <div class="dropdown-menu">
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -111,57 +135,7 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    let account = $('#tblaccount').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": window.location.origin + "/fetch-account",
-            "type": "GET",
-            "dataSrc": function(json) {
-                // Handle the data if needed
-                return json.data;
-            },
-            "error": function(xhr, error, code) {
-                console.error("AJAX Error: " + error);
-                alert("Error occurred while loading data.");
-            }
-        },
-        "searching": true,
-        "columns": [{
-                "data": "employee_id"
-            },
-            {
-                "data": "fullname"
-            },
-            {
-                "data": "email"
-            },
-            {
-                "data": "role"
-            },
-            {
-                "data": "status",
-                render(data, type, row) {
-                    if (data == 1) {
-                        return '<span class="badge bg-success text-white">Active</span>';
-                    } else {
-                        return '<span class="badge bg-danger text-white">Inactive</span>';
-                    }
-                }
-            },
-            {
-                "data": "account_id",
-                render(data, type, row) {
-                    return `<a href="<?=site_url('maintenance/accounts/edit/')?>${row.account_id}" class="btn btn-primary">
-                                <i class="ti ti-edit"></i>&nbsp;Edit
-                             </a>
-                             <button type="button" class="btn btn-default reset" value="${row.account_id}"><i class="ti ti-refresh"></i>&nbsp;Reset</button>
-                             `;
-                }
-
-            }
-        ]
-    });
+    $('#table').DataTable();
     </script>
 </body>
 

@@ -104,14 +104,18 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <label class="form-label">Suject Details</label>
+                                    <label class="form-label">Subject Details</label>
                                     <textarea name="details" class="form-control" style="height:120px;"></textarea>
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <label class="form-label">Coordinator/Account</label>
+                                    <label class="form-label">Coordinator/Account ID</label>
                                     <select name="account" class="form-select">
                                         <option value="">Choose</option>
+                                        <?php foreach($account as $row): ?>
+                                        <option value="<?= $row['account_id'] ?>"><?= $row['employee_id'] ?> -
+                                            <?= $row['fullname'] ?></option>
+                                        <?php endforeach;?>
                                     </select>
                                     <div id="account-error" class="error-message text-danger text-sm"></div>
                                 </div>
@@ -157,6 +161,47 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        $('.error-message').html('');
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
+        let data = $(this).serialize();
+        $.ajax({
+            url: "<?= site_url('gradebook/subject/save') ?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Entry'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: 'Subject has been saved successfully!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "<?=site_url('gradebook')?>";
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
+    </script>
 </body>
 
 </html>

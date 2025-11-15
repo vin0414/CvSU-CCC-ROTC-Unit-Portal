@@ -108,7 +108,7 @@
                                         <table class="table table-bordered table-striped" id="table">
                                             <thead>
                                                 <th>Semester</th>
-                                                <th>Name</th>
+                                                <th>Task</th>
                                                 <th>Details</th>
                                                 <th>Date</th>
                                                 <th>Time</th>

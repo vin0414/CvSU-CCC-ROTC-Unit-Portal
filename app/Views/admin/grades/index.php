@@ -37,6 +37,30 @@
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
                         <!-- Page title actions -->
+                        <div class="col-auto ms-auto d-print-none">
+                            <div class="btn-list">
+                                <a href="<?= site_url('gradebook/subject') ?>" class="btn btn-default">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-inbox">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                                        <path d="M4 13h3l3 3h4l3 -3h3" />
+                                    </svg>
+                                    All Subjects
+                                </a>
+                                <a href="<?= site_url('gradebook/subject/create') ?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                    <i class="ti ti-plus"></i>&nbsp;Add
+                                </a>
+                                <a href="<?= site_url('gradebook/subject/create') ?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon">
+                                    <i class="ti ti-plus"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -44,13 +68,18 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
+                    <?php if(!empty(session()->getFlashdata('fail'))) : ?>
+                    <div class="alert alert-important alert-danger alert-dismissible" role="alert">
+                        <?= session()->getFlashdata('fail'); ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="row g-3 mb-3">
                         <div class="col-lg-3">
                             <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE STUDENTS</h5>
-                                    <h1 class="text-center">0</h1>
+                                    <h1 class="text-center"><?= $students ?></h1>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +88,7 @@
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE SUBJECTS</h5>
-                                    <h1 class="text-center">0</h1>
+                                    <h1 class="text-center"><?= $activeSubject ?></h1>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +97,7 @@
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>ACTIVE OFFICERS</h5>
-                                    <h1 class="text-center">0</h1>
+                                    <h1 class="text-center"><?= $account ?></h1>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +106,7 @@
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
                                     <h5>CLOSED SUBJECTS</h5>
-                                    <h1 class="text-center">0</h1>
+                                    <h1 class="text-center"><?= $inactiveSubject ?></h1>
                                 </div>
                             </div>
                         </div>
@@ -99,18 +128,13 @@
                                 </svg>
                                 Upload Gradebook
                             </div>
-                            <div class="card-actions">
-                                <a href="<?= site_url('gradebook/subject/create') ?>" class="btn btn-success">
-                                    <i class="ti ti-plus"></i>&nbsp;Add Subject
-                                </a>
-                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped" id="table">
                                     <thead>
                                         <th>School Year</th>
-                                        <th>Code</th>
+                                        <th>Subject</th>
                                         <th>Task</th>
                                         <th>Total Cadets</th>
                                         <th>Assigned Officers</th>
@@ -121,7 +145,7 @@
                                         <?php foreach($schedules as $row): ?>
                                         <tr>
                                             <td><?= $row->school_year ?></td>
-                                            <td><?= $row->code ?></td>
+                                            <td><?= $row->subjectName ?></td>
                                             <td><?= $row->name ?></td>
                                             <td class="text-center"><?= $row->total ?? 0 ?></td>
                                             <td><?= $row->fullname ?></td>
@@ -135,16 +159,17 @@
                                                     <span>More</span>
                                                 </button>
                                                 <div class="dropdown-menu">
+                                                    <a href="<?= site_url('gradebook/subject/edit/') ?><?= $row->subject_id ?>"
+                                                        class="dropdown-item">
+                                                        <i class="ti ti-edit"></i>&nbsp;Edit Subject
+                                                    </a>
                                                     <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
                                                         class="dropdown-item">
                                                         <i class="ti ti-search"></i>&nbsp;View Students
                                                     </a>
-                                                    <a href="<?= site_url('gradebook/upload') ?>" class="dropdown-item">
-                                                        <i class="ti ti-upload"></i>&nbsp;Upload
-                                                    </a>
-                                                    <a href="<?= site_url('gradebook/summary/') ?><?= $row->code ?>"
+                                                    <a href="<?= site_url('gradebook/grades/add') ?>"
                                                         class="dropdown-item">
-                                                        <i class="ti ti-list"></i>&nbsp;Summary
+                                                        <i class="ti ti-plus"></i>&nbsp;Add grades
                                                     </a>
                                                 </div>
                                             </td>

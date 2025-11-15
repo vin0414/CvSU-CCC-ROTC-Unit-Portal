@@ -100,7 +100,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <label class="form-label">Employee ID</label>
+                                                    <label class="form-label">Account ID</label>
                                                     <input type="text" class="form-control" name="employee_id"
                                                         placeholder="Enter Employee ID"
                                                         value="<?=$account['employee_id']?>" />

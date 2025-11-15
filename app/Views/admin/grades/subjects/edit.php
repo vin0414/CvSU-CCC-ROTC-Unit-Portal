@@ -34,21 +34,19 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title"><?=$title?> | Edit Subject</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('schedules/manage')?>"
+                                <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
                                 </a>
-                                <a href="<?=site_url('schedules/manage')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
+                                <a href="<?=site_url('gradebook')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
-                            <!-- BEGIN MODAL -->
                         </div>
                     </div>
                 </div>
@@ -58,12 +56,11 @@
             <div class="page-body">
                 <div class="container-xl">
                     <div class="card">
-                        <div class="card-header">
-                            <div class="card-title"><i class="ti ti-plus"></i>&nbsp;Create</div>
-                        </div>
                         <div class="card-body">
-                            <form method="POST" class="row g-3" id="frmCreate">
-                                <?=csrf_field()?>
+                            <div class="card-title">Edit Subject</div>
+                            <form method="POST" class="row g-3" id="form">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id" value="<?= $subject['subject_id'] ?>">
                                 <?php
                                 $startYear = date('Y');
                                 $numberOfSemesters = 5;
@@ -79,85 +76,58 @@
                                     <div class="row g-3">
                                         <div class="col-lg-2">
                                             <label class="form-label">School Year</label>
-                                            <select name="school_year" class="form-select" id="year">
+                                            <select name="school_year" class="form-select">
                                                 <option value="">Choose</option>
                                                 <?php foreach ($semesters as $semester): ?>
-                                                <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                <option value="<?= $semester ?>"
+                                                    <?= ($semester===$subject['school_year']) ? 'selected' : '' ?>>
+                                                    <?= $semester ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                             <div id="school_year-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Semester</label>
-                                            <select class="form-select" name="semester" id="semester">
-                                                <option value="">Choose</option>
-                                                <option>1st</option>
-                                                <option>2nd</option>
-                                            </select>
+                                            <input type="text" class="form-control" name="semester"
+                                                placeholder="Enter here" value="<?= $subject['semester'] ?>">
                                             <div id="semester-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-8">
-                                            <label class="form-label">Subject/Subject Code</label>
-                                            <select class="form-select" name="subject" id="subject">
-                                                <option value="">Choose</option>
-                                            </select>
+                                        <div class="col-lg-6">
+                                            <label class="form-label">Subject Name</label>
+                                            <input type="text" class="form-control" name="subject"
+                                                placeholder="Enter here" value="<?= $subject['subjectName'] ?>">
                                             <div id="subject-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="row g-3">
-                                        <div class="col-lg-8">
-                                            <label class="form-label">Name of Task</label>
-                                            <input type="text" class="form-control" name="name"
-                                                placeholder="Enter Name or Title">
-                                            <div id="name-error" class="error-message text-danger text-sm"></div>
-                                        </div>
                                         <div class="col-lg-2">
-                                            <label class="form-label">Code</label>
-                                            <input type="text" class="form-control" name="code"
-                                                placeholder="Enter here">
+                                            <label class="form-label">Subject Code</label>
+                                            <input type="text" class="form-control" name="code" placeholder="Enter here"
+                                                value="<?= $subject['code'] ?>">
                                             <div id="code-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Day of the Month</label>
-                                            <input type="text" class="form-control" name="day" placeholder="Enter here">
-                                            <div id="day-error" class="error-message text-danger text-sm"></div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">From</label>
-                                            <input type="date" class="form-control" name="from_date">
-                                            <div id="from_date-error" class="error-message text-danger text-sm"></div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Time</label>
-                                            <input type="time" class="form-control" name="from_time">
-                                            <div id="from_time-error" class="error-message text-danger text-sm"></div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">To</label>
-                                            <input type="date" class="form-control" name="to_date">
-                                            <div id="to_date-error" class="error-message text-danger text-sm"></div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Time</label>
-                                            <input type="time" class="form-control" name="to_time">
-                                            <div id="to_time-error" class="error-message text-danger text-sm"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <label class="form-label">Details</label>
-                                    <textarea name="details" class="form-control" style="height:150px;"></textarea>
+                                    <label class="form-label">Subject Details</label>
+                                    <textarea name="details" class="form-control"
+                                        style="height:120px;"><?= $subject['subjectDetails'] ?></textarea>
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
+                                    <label class="form-label">Coordinator/Account ID</label>
+                                    <select name="account" class="form-select">
+                                        <option value="">Choose</option>
+                                        <?php foreach($account as $row): ?>
+                                        <option value="<?= $row['account_id'] ?>"
+                                            <?= ($row['account_id']===$subject['account_id']) ? 'selected' : '' ?>>
+                                            <?= $row['employee_id'] ?> -
+                                            <?= $row['fullname'] ?></option>
+                                        <?php endforeach;?>
+                                    </select>
+                                    <div id="account-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-12">
                                     <button type="submit" class="btn btn-primary" id="btnSave">
-                                        <i class="ti ti-device-floppy"></i>&nbsp;Save Entry
+                                        <i class="ti ti-device-floppy"></i>&nbsp;Save Changes
                                     </button>
                                 </div>
                             </form>
@@ -198,31 +168,7 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#semester').change(function() {
-        let semester = $(this).val();
-        let year = $('#year').val();
-        $.ajax({
-            url: "<?= site_url('gradebook/subject/fetch') ?>",
-            method: "GET",
-            data: {
-                year: year,
-                semester: semester
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
-                const dropdown = $('#subject');
-                response.subject.forEach(function(item) {
-                    dropdown.append(
-                        `<option value="${item.subject_id}">${item.subjectName} - ${item.subjectDetails}</option>`
-                    );
-                });
-
-            }
-        });
-    });
-
-    $('#frmCreate').on('submit', function(e) {
+    $('#form').submit(function(e) {
         e.preventDefault();
         $('.error-message').html('');
         $('#btnSave').attr('disabled', true).html(
@@ -230,22 +176,22 @@
         );
         let data = $(this).serialize();
         $.ajax({
-            url: "<?=site_url('schedules/store')?>",
+            url: "<?= site_url('gradebook/subject/update') ?>",
             method: "POST",
             data: data,
             success: function(response) {
                 $('#btnSave').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Entry'
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Changes'
                 );
                 if (response.success) {
                     Swal.fire({
                         title: 'Great!',
-                        text: 'Schedule has been saved successfully!',
+                        text: 'Subject has been updated successfully!',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "<?=site_url('schedules/manage')?>";
+                            window.location.href = "<?=site_url('gradebook')?>";
                         }
                     });
                 } else {

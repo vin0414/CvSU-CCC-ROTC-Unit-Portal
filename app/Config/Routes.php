@@ -58,6 +58,8 @@ $routes->post('schedules/update','Administrator::updateSchedule');
 $routes->get('assignment','Administrator::assignment');
 $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
+$routes->post('gradebook/subject/save','Administrator::saveSubject');
+$routes->post('gradebook/subject/update','Administrator::updateSubject');
 //cadet trainings
 $routes->get('trainings/fetch','Enrolment::fetchTraining');
 $routes->post('trainings/save','Enrolment::saveTraining');
@@ -91,9 +93,12 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('attendance/view/(:any)','Administrator::viewAttendance/$1');
     //grades
     $routes->get('gradebook','Administrator::gradingSystem');
-    $routes->get('gradebook/upload','Administrator::uploadGradeBook');
+    $routes->get('gradebook/grades/add','Administrator::addGrades');
     $routes->get('gradebook/view/(:any)','Administrator::viewGradeBook/$1');
+    $routes->get('gradebook/subject','Administrator::allSubject');
     $routes->get('gradebook/subject/create','Administrator::createSubject');
+    $routes->get('gradebook/subject/edit/(:any)','Administrator::editSubject/$1');
+    $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

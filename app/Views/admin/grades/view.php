@@ -39,8 +39,8 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('gradebook/upload')?>" class="btn btn-default">
-                                    <i class="ti ti-upload"></i>&nbsp;Upload
+                                <a href="<?=site_url('gradebook/grades/add')?>" class="btn btn-default">
+                                    <i class="ti ti-plus"></i>&nbsp;Add Grades
                                 </a>
                                 <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
@@ -119,10 +119,6 @@
                                                             <a href="<?= site_url('gradebook/grades/') ?><?= $row->school_id ?>"
                                                                 class="dropdown-item">
                                                                 <i class="ti ti-search"></i>&nbsp;View Grades
-                                                            </a>
-                                                            <a href="<?= site_url('gradebook/summary/') ?><?= $row->school_id ?>"
-                                                                class="dropdown-item">
-                                                                <i class="ti ti-list"></i>&nbsp;Summary
                                                             </a>
                                                         </div>
                                                     </td>

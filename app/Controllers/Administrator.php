@@ -9,6 +9,9 @@ use App\Models\attendanceModel;
 use App\Models\qrcodeModel;
 use App\Models\scheduleModel;
 use App\Models\assignmentModel;
+use App\Models\subjectModel;
+
+use function PHPSTORM_META\map;
 
 class Administrator extends BaseController
 {
@@ -173,8 +176,9 @@ class Administrator extends BaseController
         $staff = $assignmentModel->where('account_id<>',0)->countAllResults();
         //assignment
         $assignment = $this->db->table('assignments a')
-                    ->select('b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
+                    ->select('c.subjectName,b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
                     ->join('schedules b','b.schedule_id=a.schedule_id','LEFT')
+                    ->join('subjects c','c.subject_id=b.subject_id','LEFT')
                     ->where('a.account_id',session()->get('loggedAdmin'))
                     ->groupBy('a.assignment_id')
                     ->orderBy('a.assignment_id','DESC')->limit(5)
@@ -588,12 +592,22 @@ class Administrator extends BaseController
         }
     }
 
+    public function fetchSubject()
+    {
+        $model = new subjectModel();
+        $year = $this->request->getGet('year');
+        $semester = $this->request->getGet('semester');
+        $subject = $model->where('school_year',$year)->where('semester',$semester)->findAll();
+        return $this->response->setJSON(['subject'=>$subject]);
+    }
+
     public function storeSchedule()
     {
         $scheduleModel = new scheduleModel();
         $validation = $this->validate([
             'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
             'semester'=>['rules'=>'required','errors'=>['required'=>'Semester is required']],
+            'subject'=>['rules'=>'required','errors'=>['required'=>'Subject is required']],
             'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
             'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
             'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
@@ -612,6 +626,7 @@ class Administrator extends BaseController
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
                 'semester'=>$this->request->getPost('semester'),
+                'subject_id'=>$this->request->getPost('subject'),
                 'name'=>$this->request->getPost('name'),
                 'details'=>$this->request->getPost('details'),
                 'day'=>$this->request->getPost('day'),
@@ -812,22 +827,32 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Gradebook';
+            $data['title'] = 'Gradebook';
             //get all the schedules and total cadet
-            $schedules = $this->db->table('schedules a')
-                        ->select('a.schedule_id,a.code,a.school_year,a.name,a.status,c.fullname,d.total')
+            $data['schedules'] = $this->db->table('schedules a')
+                        ->select('a.schedule_id,e.subjectName,e.subject_id,a.school_year,a.name,a.status,c.fullname,d.total')
                         ->join('assignments b','b.schedule_id=a.schedule_id','LEFT')
                         ->join('accounts c','c.account_id=b.account_id','LEFT')
                         ->join('(Select schedule_id,count(*)total from trainings group by schedule_id) d','d.schedule_id=a.schedule_id','LEFT')
+                        ->join('subjects e','e.subject_id=a.subject_id','LEFT')
                         ->groupBy('a.schedule_id')
                         ->get()->getResult();
-
-            $data = ['title'=>$title,'schedules'=>$schedules];
+            //total active subject
+            $subject = new subjectModel();
+            $data['activeSubject'] = $subject->where('status',1)->countAllResults();
+            //total inactive subject
+            $data['inactiveSubject'] = $subject->where('status <>',1)->countAllResults();
+            //total active students
+            $students = new studentModel();
+            $data['students'] = $students->where('status',1)->where('is_enroll',1)->countAllResults();
+            //total active staff
+            $account = new accountModel();
+            $data['account']=$account->where('status',1)->countAllResults();
             return view('admin/grades/index',$data);
         }
     }
 
-    public function uploadGradeBook()
+    public function addGrades()
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -835,9 +860,9 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Upload Gradebook';
+            $title = 'Gradebook';
             $data = ['title'=>$title];
-            return view('admin/grades/upload',$data);
+            return view('admin/grades/add-grades',$data);
         }
     }
 
@@ -875,6 +900,21 @@ class Administrator extends BaseController
         }
     }
 
+    public function allSubject()
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Gradebook";
+            $model = new subjectModel();
+            $data['subject'] = $model->findAll();
+            return view('admin/grades/subjects/index',$data);
+        }
+    }
+
     public function createSubject()
     {
         if(!$this->hasPermission('grading_system'))
@@ -884,8 +924,115 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Gradebook";
+            $accountModel = new accountModel();
+            $data['account'] = $accountModel->where('status',1)->findAll();
             return view('admin/grades/subjects/create',$data);
         }   
+    }
+
+    public function editSubject($id)
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $model = new subjectModel();
+            $subject = $model->where('subject_id',$id)->first();
+            if(empty($subject))
+            {
+                 return redirect()->to('/gradebook')->with('fail', 'No Record(s) found! Please try again');
+            }
+            $data['title']="Gradebook";
+            $data['subject'] = $subject;
+            $accountModel = new accountModel();
+            $data['account'] = $accountModel->where('status',1)->findAll();
+            return view('admin/grades/subjects/edit',$data);
+        }  
+    }
+
+    public function saveSubject()
+    {
+        $subjectModel = new subjectModel();
+        $validation = $this->validate([
+            'school_year'=>'required',
+            'semester'=>'required',
+            'code'=>'required',
+            'subject'=>'required',
+            'details'=>'required',
+            'account'=>'required|numeric'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'school_year'=>$this->request->getPost('school_year'),
+                'semester'=>$this->request->getPost('semester'),
+                'code'=>$this->request->getPost('code'),
+                'subjectName'=>$this->request->getPost('subject'),
+                'subjectDetails'=>$this->request->getPost('details'),
+                'account_id'=>$this->request->getPost('account'),
+                'status'=>1
+            ];
+            $subjectModel->save($data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Add new subject :  '.$this->request->getPost('subject'),
+                    'page'=>'Gradebook',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
+    }
+
+    public function updateSubject()
+    {
+        $subjectModel = new subjectModel();
+        $validation = $this->validate([
+            'school_year'=>'required',
+            'semester'=>'required',
+            'code'=>'required',
+            'subject'=>'required',
+            'details'=>'required',
+            'account'=>'required|numeric'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $id = $this->request->getPost('id');
+            $data = [
+                'school_year'=>$this->request->getPost('school_year'),
+                'semester'=>$this->request->getPost('semester'),
+                'code'=>$this->request->getPost('code'),
+                'subjectName'=>$this->request->getPost('subject'),
+                'subjectDetails'=>$this->request->getPost('details'),
+                'account_id'=>$this->request->getPost('account'),
+                'status'=>1
+            ];
+            $subjectModel->update($id,$data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'modify subject :  '.$this->request->getPost('subject'),
+                    'page'=>'Gradebook',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
     }
 
     public function announcement()

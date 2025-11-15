@@ -211,7 +211,8 @@
                                                     </div>
                                                     <div class="col text-truncate">
                                                         <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
-                                                            class="text-reset d-block"><?=$row->name?></a>
+                                                            class="text-reset d-block"><?=$row->subjectName?> |
+                                                            <?=$row->name?></a>
                                                         <div class="d-block text-secondary text-truncate mt-n1">
                                                             <small>
                                                                 <?= date('h:i:s a',strtotime($row->from_time)) ?> to

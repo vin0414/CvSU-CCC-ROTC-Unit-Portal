@@ -41,7 +41,7 @@
                     <form action="<?=base_url('checkAuth')?>" method="POST" autocomplete="off" novalidate>
                         <?=csrf_field();?>
                         <div class="mb-3">
-                            <label class="form-label">Employee ID</label>
+                            <label class="form-label">Account ID</label>
                             <input type="text" class="form-control" name="employee_id" placeholder="EMP-000001"
                                 value="<?=set_value('employee_id')?>" autocomplete="off" />
                             <div class="text-danger">
