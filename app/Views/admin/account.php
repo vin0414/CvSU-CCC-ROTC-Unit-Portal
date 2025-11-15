@@ -52,34 +52,36 @@
                                     <div class="row g-3">
                                         <div class="col-lg-12">
                                             <label class="form-label">Complete Name</label>
-                                            <input type="text" class="form-control" value="">
+                                            <input type="text" class="form-control" value="<?= $account['fullname'] ?>">
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="row g-3">
                                                 <div class="col-lg-6">
                                                     <label class="form-label">Email</label>
                                                     <input type="email" class="form-control"
-                                                        value="">
+                                                        value="<?= $account['email'] ?>">
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">Role</label>
-                                                    <input type="text" class="form-control"
-                                                        value="">
+                                                    <label class="form-label">Email Address</label>
+                                                    <input type="email" class="form-control"
+                                                        value="<?= $account['email'] ?>">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <label class="form-label">Token</label>
-                                            <input type="text" class="form-control" value="">
+                                            <input type="text" class="form-control" value="<?= $account['token'] ?>">
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="row g-3">
                                                 <div class="col-lg-6">
                                                     <label class="form-label">Account Created</label>
-                                                    <p></p>
+                                                    <p><?= date('F d, Y',strtotime($account['date_created'])) ?></p>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">Account Verified</label>
+                                                    <label class="form-label">Account Status</label>
+                                                    <p><?= ($account['status']) ? '<span class="badge bg-success text-white">Verified</span>' : '<span class="badge bg-warning text-white">Un-verified</span>' ?>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -92,24 +94,25 @@
                                 <div class="card-body">
                                     <div class="card-title">Account Security</div>
                                     <form method="POST" class="row g-3" id="frmPassword">
+                                        <?= csrf_field() ?>
                                         <div class="col-lg-12">
                                             <label class="form-label">Current Password</label>
-                                            <input type="password" class="form-control" id="current_password" name="current_password"
-                                                minlength="8" maxlength="16" />
-                                            <div id="current_password-error" class="error-message text-danger text-sm">
+                                            <input type="password" class="form-control" id="current_password"
+                                                name="current" minlength="8" maxlength="16" />
+                                            <div id="current-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <label class="form-label">New Password</label>
-                                            <input type="password" class="form-control" id="new_password" name="new_password"
-                                                minlength="8" maxlength="16" />
+                                            <input type="password" class="form-control" id="new_password"
+                                                name="new_password" minlength="8" maxlength="16" />
                                             <div id="new_password-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
                                         <div cs="col-lg-12">
                                             <label class="form-label">Confirm Password</label>
-                                            <input type="password" class="form-control" id="cpassword" name="confirm_password"
-                                                minlength="8" maxlength="16" />
+                                            <input type="password" class="form-control" id="cpassword"
+                                                name="confirm_password" minlength="8" maxlength="16" />
                                             <div id="confirm_password-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
@@ -160,7 +163,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script>
-        $('#showPassword').change(function() {
+    $('#showPassword').change(function() {
         var x = document.getElementById("current_password");
         if (x.type === "password") {
             x.type = "text";
@@ -181,6 +184,36 @@
         } else {
             xxx.type = "password";
         }
+    });
+
+    $('#frmPassword').on('submit', function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $.ajax({
+            url: "<?=site_url('account/password/change')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                if (response.success) {
+                    $('#frmPassword')[0].reset();
+                    Swal.fire({
+                        title: "Great!",
+                        text: "Successfully applied changes",
+                        icon: "success"
+                    });
+                } else {
+                    var errors = response.error;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
     });
     </script>
 </body>

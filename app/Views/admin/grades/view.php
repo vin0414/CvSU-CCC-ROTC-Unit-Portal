@@ -39,9 +39,6 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('gradebook/grades/add')?>" class="btn btn-default">
-                                    <i class="ti ti-plus"></i>&nbsp;Add Grades
-                                </a>
                                 <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back

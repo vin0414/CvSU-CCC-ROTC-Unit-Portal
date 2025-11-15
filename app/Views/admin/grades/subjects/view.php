@@ -34,19 +34,17 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?> | All Subjects</h2>
+                            <h2 class="page-title"><?= $subject['subjectName'] ?> | Grades</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?= site_url('gradebook/subject/create') ?>" class="btn btn-default">
-                                    <i class="ti ti-plus"></i>&nbsp;Add
-                                </a>
-                                <a href="<?=site_url('gradebook')?>"
+                                <a href="<?=site_url('gradebook/subject')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
                                 </a>
-                                <a href="<?=site_url('gradebook')?>" class="btn btn-success btn-6 d-sm-none btn-icon">
+                                <a href="<?=site_url('gradebook/subject')?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-arrow-left"></i>
                                 </a>
                             </div>
@@ -58,56 +56,7 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-title">All Subjects</div>
-                            <table class="table table-bordered table-striped" id="table">
-                                <thead>
-                                    <th>Year</th>
-                                    <th>Semester</th>
-                                    <th>Subject Name</th>
-                                    <th>Code</th>
-                                    <th>Description</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($subject as $row): ?>
-                                    <tr>
-                                        <td><?= $row['school_year'] ?></td>
-                                        <td><?= $row['semester'] ?></td>
-                                        <td><?= $row['subjectName'] ?></td>
-                                        <td><?= $row['code'] ?></td>
-                                        <td><?= $row['subjectDetails'] ?></td>
-                                        <td class="text-center">
-                                            <?= ($row['status']) ? '<span class="badge bg-success text-white">OPEN</span>' : '<span class="badge bg-danger text-white">CLOSE</span>' ?>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"
-                                                data-bs-auto-close="outside" role="button">
-                                                <span>More</span>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a href="<?= site_url('gradebook/subject/edit/') ?><?= $row['subject_id'] ?>"
-                                                    class="dropdown-item">
-                                                    <i class="ti ti-edit"></i>&nbsp;Edit Subject
-                                                </a>
-                                                <a href="<?= site_url('gradebook/subject/upload/') ?><?= $row['subject_id'] ?>"
-                                                    class="dropdown-item">
-                                                    <i class="ti ti-upload"></i>&nbsp;Upload Grades
-                                                </a>
-                                                <a href="<?= site_url('gradebook/subject/view/') ?><?= $row['subject_id'] ?>"
-                                                    class="dropdown-item">
-                                                    <i class="ti ti-search"></i>&nbsp;View Grades
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach;?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <!-- END PAGE BODY -->
@@ -142,9 +91,6 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-    $('#table').DataTable();
-    </script>
 </body>
 
 </html>

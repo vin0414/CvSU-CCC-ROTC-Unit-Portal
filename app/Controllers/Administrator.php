@@ -11,8 +11,6 @@ use App\Models\scheduleModel;
 use App\Models\assignmentModel;
 use App\Models\subjectModel;
 
-use function PHPSTORM_META\map;
-
 class Administrator extends BaseController
 {
     private $db;
@@ -55,7 +53,7 @@ class Administrator extends BaseController
         }
         else
         {
-            $accountModel = new \App\Models\accountModel();
+            $accountModel = new accountModel();
             $account = $accountModel->where('employee_id', $this->request->getPost('employee_id'))
                                     ->where('status', 1)
                                     ->first();
@@ -852,7 +850,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function addGrades()
+    public function addGrades($id)
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -860,8 +858,23 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Gradebook';
-            $data = ['title'=>$title];
+            $data['title'] = 'Gradebook';
+            $model = new scheduleModel();
+            $schedule = $model->where('schedule_id',$id)->first();
+            if(empty($schedule))
+            {
+                return redirect()->to('/gradebook')->with('fail', 'No Record(s) found! Please try again');
+            }
+            $data['schedule']=$schedule;
+            //load the students
+            $data['students'] = $this->db->table('trainings a')
+                        ->select('a.schedule_id,b.student_id,b.fullname,b.school_id,c.course,c.year,c.section,d.total')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->join('cadets c','c.student_id=a.student_id','LEFT')
+                        ->join('student_performance d','d.student_id=a.student_id AND a.schedule_id=d.schedule_id','LEFT')
+                        ->where('a.schedule_id',$id)
+                        ->groupBy('a.training_id')
+                        ->get()->getResult();
             return view('admin/grades/add-grades',$data);
         }
     }
@@ -890,7 +903,7 @@ class Administrator extends BaseController
             //students
             $students = $this->db->table('trainings a')
                         ->select('a.student_id,b.fullname,b.school_id,c.course,c.year,c.section')
-                        ->join('students b','b.student_id=a.student_id')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
                         ->join('cadets c','c.student_id=b.student_id','LEFT')
                         ->where('a.schedule_id',$id)
                         ->groupBy('a.training_id')
@@ -912,6 +925,26 @@ class Administrator extends BaseController
             $model = new subjectModel();
             $data['subject'] = $model->findAll();
             return view('admin/grades/subjects/index',$data);
+        }
+    }
+
+    public function viewSummary($id)
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $model = new subjectModel();
+            $subject = $model->where('subject_id',$id)->first();
+            if(empty($subject))
+            {
+                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
+            }
+            $data['title']="Gradebook";
+            $data['subject'] = $subject;
+            return view('admin/grades/subjects/view',$data);
         }
     }
 
@@ -942,7 +975,7 @@ class Administrator extends BaseController
             $subject = $model->where('subject_id',$id)->first();
             if(empty($subject))
             {
-                 return redirect()->to('/gradebook')->with('fail', 'No Record(s) found! Please try again');
+                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
             }
             $data['title']="Gradebook";
             $data['subject'] = $subject;
@@ -1519,8 +1552,9 @@ class Administrator extends BaseController
 
     public function myAccount()
     {
-        $title = 'My Account';
-        $data = ['title'=>$title];
+        $data['title'] = 'My Account';
+        $account = new accountModel();
+        $data['account'] = $account->where('account_id',session()->get('loggedAdmin'))->first();
         return view('admin/account',$data);
     }
 
@@ -1672,6 +1706,72 @@ class Administrator extends BaseController
                     ];      
             $logModel->save($data);
             return $this->response->setJSON(['success' => 'Account modified successfully!']);
+        }
+    }
+    
+
+    public function changePassword()
+    {
+        $accountModel = new accountModel();
+        $user = session()->get('loggedAdmin');
+        $validation = $this->validate([
+            'current' => [
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
+                'errors' => [
+                    'required' => 'Password is required',
+                    'min_length' => 'Password must be at least 8 characters long',
+                    'max_length' => 'Password cannot exceed 20 characters',
+                    'regex_match' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                ]
+            ],
+            'new_password' => [
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
+                'errors' => [
+                    'required' => 'New Password is required',
+                    'min_length' => 'Password must be at least 8 characters long',
+                    'max_length' => 'Password cannot exceed 20 characters',
+                    'regex_match' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                ]
+            ],
+            'confirm_password'=>[
+                'rules'=>'required|matches[new_password]',
+                'errors'=>[
+                    'required'=>'Re-type your password',
+                    'matches'=>'Password do not match'
+                ]
+            ],
+        ]);
+        if(!$validation)
+        {
+            return $this->response->SetJSON(['error' => $this->validator->getErrors()]);
+        }
+        else
+        {
+            $oldpassword = $this->request->getPost('current');
+            $newpassword = $this->request->getPost('new_password');
+
+            $account = $accountModel->WHERE('account_id',$user)->first();
+            $checkPassword = Hash::check($oldpassword,$account['password']);
+            if(!$checkPassword||empty($checkPassword))
+            {
+                $error = ['current'=>'Password mismatched. Please try again'];
+                return $this->response->SetJSON(['error' => $error]);
+            }
+            else
+            {
+                if(($oldpassword==$newpassword))
+                {
+                    $error = ['new_password'=>'The new password cannot be the same as the current password.'];
+                    return $this->response->SetJSON(['error' => $error]);
+                }
+                else
+                {
+                    $HashPassword = Hash::make($newpassword);
+                    $data = ['password'=>$HashPassword];
+                    $accountModel->update($user,$data);
+                    return $this->response->setJSON(['success' => 'Successfully submitted']);
+                }
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use Config\App;
 use \App\Models\cadetTrainingModel;
+use \App\Models\performanceModel;
 
 class Enrolment extends BaseController
 {   
@@ -98,5 +99,67 @@ class Enrolment extends BaseController
     public function removeTraining()
     {
         
+    }
+
+    public function saveGrades()
+    {
+        $performanceModel = new performanceModel();
+        $student = array_map('strip_tags', (array) $this->request->getPost('student'));
+        $total = array_map('strip_tags', (array) $this->request->getPost('total'));
+        $errors = [];
+        if (empty($total) || count(array_filter($total, 'strlen')) === 0) {
+            $errors['total'] = 'Please enter at least one score.';
+        }
+        if(!empty($errors))
+        {
+            return $this->response->setJSON(['errors'=>$errors]);
+        }
+        else
+        {
+            for ($i = 0; $i < count($student); $i++) {
+                $year = $this->request->getPost('year');
+                $semester = $this->request->getPost('semester');
+                $subject_id = $this->request->getPost('subject');
+                $schedule_id = $this->request->getPost('schedule');
+                $student_id = $student[$i];
+                $total_score = $total[$i];
+
+                // Check if record exists
+                $existing = $performanceModel->where([
+                    'year' => $year,
+                    'semester' => $semester,
+                    'subject_id' => $subject_id,
+                    'schedule_id' => $schedule_id,
+                    'student_id' => $student_id
+                ])->first();
+
+                $data = [
+                    'year' => $year,
+                    'semester' => $semester,
+                    'subject_id' => $subject_id,
+                    'schedule_id' => $schedule_id,
+                    'student_id' => $student_id,
+                    'total' => $total_score
+                ];
+
+                if ($existing) {
+                    // Update existing record
+                    $performanceModel->update($existing['performance_id'], $data);
+                } else {
+                    // Insert new record
+                    $performanceModel->insert($data);
+                }
+            }
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Add grades for task # '.$this->request->getPost('schedule'),
+                    'page'=>'Gradebook',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully submitted']);
+        }
     }
 }

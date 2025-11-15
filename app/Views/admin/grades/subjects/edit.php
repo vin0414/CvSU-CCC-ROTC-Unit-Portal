@@ -191,7 +191,7 @@
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "<?=site_url('gradebook')?>";
+                            window.location.href = "<?=site_url('gradebook/subject')?>";
                         }
                     });
                 } else {

@@ -60,6 +60,7 @@ $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
 $routes->post('gradebook/subject/save','Administrator::saveSubject');
 $routes->post('gradebook/subject/update','Administrator::updateSubject');
+$routes->post('gradebook/grades/save','Enrolment::saveGrades');
 //cadet trainings
 $routes->get('trainings/fetch','Enrolment::fetchTraining');
 $routes->post('trainings/save','Enrolment::saveTraining');
@@ -75,6 +76,8 @@ $routes->post('edit-account','Administrator::modifyAccount');
 $routes->get('fetch-permission','Administrator::fetchPermission');
 $routes->post('save-permission','Administrator::savePermission');
 $routes->post('edit-permission','Administrator::modifyPermission');
+//my account
+$routes->post('account/password/change','Administrator::changePassword');
 
 $routes->group('',['filter'=>'AdminCheck'],function($routes)
 {
@@ -93,12 +96,13 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('attendance/view/(:any)','Administrator::viewAttendance/$1');
     //grades
     $routes->get('gradebook','Administrator::gradingSystem');
-    $routes->get('gradebook/grades/add','Administrator::addGrades');
+    $routes->get('gradebook/grades/add/(:any)','Administrator::addGrades/$1');
     $routes->get('gradebook/view/(:any)','Administrator::viewGradeBook/$1');
     $routes->get('gradebook/subject','Administrator::allSubject');
     $routes->get('gradebook/subject/create','Administrator::createSubject');
     $routes->get('gradebook/subject/edit/(:any)','Administrator::editSubject/$1');
     $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
+    $routes->get('gradebook/subject/view/(:any)','Administrator::viewSummary/$1');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');
