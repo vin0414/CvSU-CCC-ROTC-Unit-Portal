@@ -1068,6 +1068,26 @@ class Administrator extends BaseController
         }
     }
 
+    public function uploadGrades($id)
+    {
+        if(!$this->hasPermission('grading_system'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $model = new subjectModel();
+            $subject = $model->where('subject_id',$id)->first();
+            if(empty($subject))
+            {
+                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
+            }
+            $data['subject'] = $subject;
+            $data['title'] = "Gradebook";
+            return view('admin/grades/subjects/upload',$data);
+        }
+    }
+
     public function announcement()
     {
         if(!$this->hasPermission('announcement'))

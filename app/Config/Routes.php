@@ -61,6 +61,8 @@ $routes->post('assignment/remove','Administrator::removeAssignment');
 $routes->post('gradebook/subject/save','Administrator::saveSubject');
 $routes->post('gradebook/subject/update','Administrator::updateSubject');
 $routes->post('gradebook/grades/save','Enrolment::saveGrades');
+//excel scanner
+$routes->post('file/upload','ExcelScanner::upload');
 //cadet trainings
 $routes->get('trainings/fetch','Enrolment::fetchTraining');
 $routes->post('trainings/save','Enrolment::saveTraining');
@@ -103,6 +105,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook/subject/edit/(:any)','Administrator::editSubject/$1');
     $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
     $routes->get('gradebook/subject/view/(:any)','Administrator::viewSummary/$1');
+    $routes->get('gradebook/subject/upload/(:any)','Administrator::uploadGrades/$1');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');
