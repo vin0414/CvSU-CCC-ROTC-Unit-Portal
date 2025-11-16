@@ -271,7 +271,7 @@ class Home extends BaseController
             $newPassword = generate_string($permitted_chars, 16);
             $hashedPassword = Hash::make($newPassword);
             $studentModel->update($student['student_id'], ['password' => $hashedPassword]); 
-            $fullname = $student['first_name'] . ' ' . $student['middle_name'] . ' ' . $student['surname'];
+            $fullname = $student['fullname'];
             // Send email with new password       
             $emailConfig = new Email();
             $fromEmail = $emailConfig->fromEmail;

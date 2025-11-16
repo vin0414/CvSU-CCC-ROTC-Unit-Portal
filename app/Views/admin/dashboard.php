@@ -180,12 +180,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row row-deck">
+                            <div class="row row-deck mb-3">
                                 <div class="col-lg-6">
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="card-title">
-                                                <i class="ti ti-calendar"></i>&nbsp;My Schedules
+                                                <i class="ti ti-calendar"></i>&nbsp;My Task
                                             </div>
                                             <div class="card-actions">
                                                 <a href="<?= site_url('gradebook') ?>" class="btn btn-link">
@@ -244,6 +244,70 @@
                                         </div>
                                         <div class="card-body">
                                             <div id="attendanceChart" style="height: 300px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/stocks.png')?>" width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="text-secondary">Total Stocks</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/borrowed.png')?>"
+                                                        width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="text-secondary">Borrowed Items</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/return.png')?>" width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="text-secondary">Returned Items</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img src="<?=base_url('assets/images/purchase.png')?>"
+                                                        width="50px" />
+                                                </div>
+                                                <div class="col">
+                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="text-secondary">Purchased Items</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

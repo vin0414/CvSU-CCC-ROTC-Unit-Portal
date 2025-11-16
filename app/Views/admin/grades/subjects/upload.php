@@ -63,9 +63,7 @@
                             </div>
                             <form method="POST" class="row g-3" id="form" enctype="multipart/form-data">
                                 <?= csrf_field() ?>
-                                <input type="hidden" name="id" value="<?= $subject['subject_id'] ?>">
-                                <input type="hidden" name="year" value="<?= $subject['school_year'] ?>">
-                                <input type="hidden" name="semester" value="<?= $subject['semester'] ?>">
+                                <input type="hidden" name="subject" value="<?= $subject['subject_id'] ?>">
                                 <div class="col-lg-12">
                                     <label class="form-label">Attach Excel File</label>
                                     <input type="file" name="file" class="form-control"

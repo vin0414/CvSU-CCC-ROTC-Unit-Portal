@@ -95,6 +95,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('schedules/manage','Administrator::manageSchedule');
     //attendance
     $routes->get('attendance','Administrator::attendance');
+    $routes->get('attendance/add','Administrator::addAttendance');
     $routes->get('attendance/view/(:any)','Administrator::viewAttendance/$1');
     //grades
     $routes->get('gradebook','Administrator::gradingSystem');
@@ -106,6 +107,11 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
     $routes->get('gradebook/subject/view/(:any)','Administrator::viewSummary/$1');
     $routes->get('gradebook/subject/upload/(:any)','Administrator::uploadGrades/$1');
+    //inventory
+    $routes->get('inventory','Administrator::inventory');
+    $routes->get('inventory/stock/add','Administrator::addInventory');
+    $routes->get('inventory/stock/export','Administrator::exportInventory');
+    $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

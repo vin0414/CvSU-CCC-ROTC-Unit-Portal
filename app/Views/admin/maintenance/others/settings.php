@@ -84,6 +84,7 @@
                                                 <th>Schedules</th>
                                                 <th>Attendance</th>
                                                 <th>Gradebook</th>
+                                                <th>Inventory</th>
                                                 <th>Announcement</th>
                                                 <th>Maintenance</th>
                                                 <th>Action</th>
@@ -183,6 +184,9 @@
             },
             {
                 "data": "grading_system"
+            },
+            {
+                "data": "inventory"
             },
             {
                 "data": "announcement"

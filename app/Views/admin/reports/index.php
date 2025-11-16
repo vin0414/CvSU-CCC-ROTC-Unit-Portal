@@ -37,6 +37,45 @@
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
                         <!-- Page title actions -->
+                        <div class="col-auto ms-auto d-print-none">
+                            <div class="btn-list">
+                                <a href="<?=site_url('reports/create')?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-report-search">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M8 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h5.697" />
+                                        <path d="M18 12v-5a2 2 0 0 0 -2 -2h-2" />
+                                        <path
+                                            d="M8 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                        <path d="M8 11h4" />
+                                        <path d="M8 15h3" />
+                                        <path d="M16.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
+                                        <path d="M18.5 19.5l2.5 2.5" />
+                                    </svg>
+                                    Create
+                                </a>
+                                <a href="<?=site_url('reports/create')?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-report-search">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M8 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h5.697" />
+                                        <path d="M18 12v-5a2 2 0 0 0 -2 -2h-2" />
+                                        <path
+                                            d="M8 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                        <path d="M8 11h4" />
+                                        <path d="M8 15h3" />
+                                        <path d="M16.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
+                                        <path d="M18.5 19.5l2.5 2.5" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -44,7 +83,28 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+                                <li class="nav-item">
+                                    <a href="#tabs-home-8" class="nav-link active" data-bs-toggle="tab">
+                                        <i class="ti ti-devices-cog"></i>&nbsp;Grades
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-clipboard-data"></i>&nbsp;Violations/Absences
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade active show" id="tabs-home-8"></div>
+                                <div class="tab-pane fade" id="tabs-activity-8"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- END PAGE BODY -->

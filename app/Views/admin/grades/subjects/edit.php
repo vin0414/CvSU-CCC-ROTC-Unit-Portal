@@ -113,17 +113,30 @@
                                     <div id="details-error" class="error-message text-danger text-sm"></div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <label class="form-label">Coordinator/Account ID</label>
-                                    <select name="account" class="form-select">
-                                        <option value="">Choose</option>
-                                        <?php foreach($account as $row): ?>
-                                        <option value="<?= $row['account_id'] ?>"
-                                            <?= ($row['account_id']===$subject['account_id']) ? 'selected' : '' ?>>
-                                            <?= $row['employee_id'] ?> -
-                                            <?= $row['fullname'] ?></option>
-                                        <?php endforeach;?>
-                                    </select>
-                                    <div id="account-error" class="error-message text-danger text-sm"></div>
+                                    <div class="row g-3">
+                                        <div class="col-lg-8">
+                                            <label class="form-label">Coordinator/Account ID</label>
+                                            <select name="account" class="form-select">
+                                                <option value="">Choose</option>
+                                                <?php foreach($account as $row): ?>
+                                                <option value="<?= $row['account_id'] ?>"
+                                                    <?= ($row['account_id']===$subject['account_id']) ? 'selected' : '' ?>>
+                                                    <?= $row['employee_id'] ?> -
+                                                    <?= $row['fullname'] ?></option>
+                                                <?php endforeach;?>
+                                            </select>
+                                            <div id="account-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-select">
+                                                <option value="">Choose</option>
+                                                <option value="1">OPEN</option>
+                                                <option value="0">CLOSE</option>
+                                            </select>
+                                            <div id="status-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <button type="submit" class="btn btn-primary" id="btnSave">

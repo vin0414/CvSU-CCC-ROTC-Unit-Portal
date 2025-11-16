@@ -12,8 +12,17 @@ class performanceModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['year','semester','subject_id','schedule_id','student_id','total'];
-
+    protected $allowedFields    = [
+                                    'subject_id','student_id',
+                                    'attendanceScore','attendanceValue','attendancePercentage',
+                                    'physicalScore','physicalValue','physicalPercentage',
+                                    'appearanceScore','appearanceValue','appearancePercentage',
+                                    'disciplineScore','disciplineValue','disciplinePercentage',
+                                    'qualitiesScore','qualitiesValue','qualitiesPercentage',
+                                    'leadershipScore','leadershipValue','leadershipPercentage',
+                                    'workScore','workValue','workPercentage',
+                                    'finalScore','finalGrade','remarks','status'
+                                  ];
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';

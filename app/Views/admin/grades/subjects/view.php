@@ -56,7 +56,84 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title">Student Grades</div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2">School ID</th>
+                                            <th rowspan="2">Fullname</th>
+                                            <th colspan="3" class="text-center">Attendance</th>
+                                            <th colspan="3" class="text-center">Physical</th>
+                                            <th colspan="3" class="text-center">Proper<br />Appearance</th>
+                                            <th colspan="3" class="text-center">Discipline</th>
+                                            <th colspan="3" class="text-center">Cadet<br /> Qualities</th>
+                                            <th colspan="3" class="text-center">Leadership</th>
+                                            <th colspan="3" class="text-center">Work/<br />Designation</th>
+                                            <th rowspan="2">Raw<br />Score</th>
+                                            <th rowspan="2">Final<br />Score</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                            <th>Total</th>
+                                            <th>Trans</th>
+                                            <th>%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($grades as $row):?>
+                                        <tr>
+                                            <td><?=$row->school_id ?></td>
+                                            <td><?=$row->fullname ?></td>
+                                            <td><?=$row->attendanceScore ?></td>
+                                            <td><?=$row->attendanceValue ?></td>
+                                            <td><?=$row->attendancePercentage ?></td>
+                                            <td><?=$row->physicalScore ?></td>
+                                            <td><?=$row->physicalValue ?></td>
+                                            <td><?=$row->physicalPercentage ?></td>
+                                            <td><?=$row->appearanceScore ?></td>
+                                            <td><?=$row->appearanceValue ?></td>
+                                            <td><?=$row->appearancePercentage ?></td>
+                                            <td><?=$row->disciplineScore ?></td>
+                                            <td><?=$row->disciplineValue ?></td>
+                                            <td><?=$row->disciplinePercentage ?></td>
+                                            <td><?=$row->qualitiesScore ?></td>
+                                            <td><?=$row->qualitiesValue ?></td>
+                                            <td><?=$row->qualitiesPercentage ?></td>
+                                            <td><?=$row->leadershipScore ?></td>
+                                            <td><?=$row->leadershipValue ?></td>
+                                            <td><?=$row->leadershipPercentage ?></td>
+                                            <td><?=$row->workScore ?></td>
+                                            <td><?=$row->workValue ?></td>
+                                            <td><?=$row->workPercentage ?></td>
+                                            <td><?= $row->finalScore ?></td>
+                                            <td><?= $row->finalGrade ?></td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- END PAGE BODY -->
@@ -91,6 +168,9 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $('#table').DataTable();
+    </script>
 </body>
 
 </html>

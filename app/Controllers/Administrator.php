@@ -153,6 +153,7 @@ class Administrator extends BaseController
                 FROM students s
                 LEFT JOIN attendance a 
                     ON s.student_id = a.student_id AND a.date = ?
+                    WHERE s.is_enroll=1
                 GROUP BY s.student_id
             ) AS sub
             GROUP BY status
@@ -798,6 +799,19 @@ class Administrator extends BaseController
         }
     }
 
+    public function addAttendance()
+    {
+        if(!$this->hasPermission('attendance'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title'] = "Attendance";
+            return view('admin/attendance/add-attendance',$data);
+        }
+    }
+
     public function viewAttendance()
     {
         $uri = $this->request->getUri();
@@ -944,6 +958,12 @@ class Administrator extends BaseController
             }
             $data['title']="Gradebook";
             $data['subject'] = $subject;
+            //grades
+            $data['grades'] = $this->db->table('student_performance a')
+                    ->select('a.*,b.school_id,b.fullname')
+                    ->join('students b','b.student_id=a.student_id','LEFT')
+                    ->where('a.subject_id',$id)
+                    ->groupBy('a.performance_id')->get()->getResult();
             return view('admin/grades/subjects/view',$data);
         }
     }
@@ -994,7 +1014,7 @@ class Administrator extends BaseController
             'code'=>'required',
             'subject'=>'required',
             'details'=>'required',
-            'account'=>'required|numeric'
+            'account'=>'required|numeric',
         ]);
 
         if(!$validation)
@@ -1035,7 +1055,8 @@ class Administrator extends BaseController
             'code'=>'required',
             'subject'=>'required',
             'details'=>'required',
-            'account'=>'required|numeric'
+            'account'=>'required|numeric',
+            'status'=>'required'
         ]);
 
         if(!$validation)
@@ -1052,7 +1073,7 @@ class Administrator extends BaseController
                 'subjectName'=>$this->request->getPost('subject'),
                 'subjectDetails'=>$this->request->getPost('details'),
                 'account_id'=>$this->request->getPost('account'),
-                'status'=>1
+                'status'=>$this->request->getPost('status')
             ];
             $subjectModel->update($id,$data);
             //logs  
@@ -1085,6 +1106,19 @@ class Administrator extends BaseController
             $data['subject'] = $subject;
             $data['title'] = "Gradebook";
             return view('admin/grades/subjects/upload',$data);
+        }
+    }
+
+    public function inventory()
+    {
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            return view('admin/inventory/index',$data);
         }
     }
 
@@ -1423,7 +1457,8 @@ class Administrator extends BaseController
                 'cadet' => ($row['cadet']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'schedule' => ($row['schedule']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'attendance' => ($row['attendance']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
-                'grading_system' => ($row['grading_system']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',       
+                'grading_system' => ($row['grading_system']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive', 
+                'inventory' => ($row['inventory']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',      
                 'announcement' => ($row['announcement']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'maintenance' => ($row['maintenance']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'action' => '<a class="btn btn-primary edit_permission" href="/maintenance/permission/edit/' . $row['role_id'] . '"><i class="ti ti-edit"></i> Edit </a>'
@@ -1440,7 +1475,8 @@ class Administrator extends BaseController
             'cadet'=>['rules'=>'required','errors'=>['required'=>'Cadet Module is required']],
             'schedule'=>['rules'=>'required','errors'=>['required'=>'Schedule Module is required']],
             'attendance'=>['rules'=>'required','errors'=>['required'=>'Attendance Module is required']],
-            'grade'=>['rules'=>'required','errors'=>['required'=>'Evaluation Module is required']],
+            'grade'=>['rules'=>'required','errors'=>['required'=>'Gradebook Module is required']],
+            'inventory'=>['rules'=>'required','errors'=>['required'=>'Inventory Module is required']],
             'announcement'=>['rules'=>'required','errors'=>['required'=>'Announcement Module is required']],
             'maintenance'=>['rules'=>'required','errors'=>['required'=>'Maintenance Module is required']],
         ]);
@@ -1458,6 +1494,7 @@ class Administrator extends BaseController
                     'schedule'=>$this->request->getPost('schedule'),
                     'attendance'=>$this->request->getPost('attendance'),
                     'grading_system'=>$this->request->getPost('grade'),
+                    'inventory'=>$this->request->getPost('inventory'),
                     'announcement'=>$this->request->getPost('announcement'),
                     'maintenance'=>$this->request->getPost('maintenance')
                 ];
@@ -1483,7 +1520,8 @@ class Administrator extends BaseController
             'cadet'=>['rules'=>'required','errors'=>['required'=>'Cadet Module is required']],
             'schedule'=>['rules'=>'required','errors'=>['required'=>'Schedule Module is required']],
             'attendance'=>['rules'=>'required','errors'=>['required'=>'Attendance Module is required']],
-            'grade'=>['rules'=>'required','errors'=>['required'=>'Evaluation Module is required']],
+            'grade'=>['rules'=>'required','errors'=>['required'=>'Gradebook Module is required']],
+            'inventory'=>['rules'=>'required','errors'=>['required'=>'Inventory Module is required']],
             'announcement'=>['rules'=>'required','errors'=>['required'=>'Announcement Module is required']],
             'maintenance'=>['rules'=>'required','errors'=>['required'=>'Maintenance Module is required']],
         ]);
@@ -1501,6 +1539,7 @@ class Administrator extends BaseController
                     'schedule'=>$this->request->getPost('schedule'),
                     'attendance'=>$this->request->getPost('attendance'),
                     'grading_system'=>$this->request->getPost('grade'),
+                    'inventory'=>$this->request->getPost('inventory'),
                     'announcement'=>$this->request->getPost('announcement'),
                     'maintenance'=>$this->request->getPost('maintenance')
                 ];
