@@ -17,8 +17,9 @@ class cadetModel extends Model
                                     'blood_type','gender','religion','contact_no','fb_account','email',
                                     'mother_sname','mother_fname','mother_mname','mother_contact','mother_work',
                                     'father_sname','father_fname','father_mname','father_contact','father_work',
-                                    'emergency_address','relationship','emergency_contact','emergency_email',
-                                    'token'];
+                                    'emergency_address','relationship',
+                                    'contact_firstname','contact_middlename','contact_lastname',
+                                    'emergency_number','token'];
 
     // Dates
     protected $useTimestamps = true;

@@ -96,12 +96,28 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form method="POST" class="row g-2" id="frmProfile">
+                            <form method="POST" class="row g-2" enctype="multipart/form-data" id="frmProfile">
                                 <?=csrf_field()?>
                                 <input type="hidden" name="cadet_id" value="<?=$cadet['cadet_id'] ?? '' ?>" />
                                 <div class="col-lg-12">
-                                    <label class="form-label">Complete Name</label>
-                                    <p class="form-control"><?=session()->get('fullname')?></p>
+                                    <div class="row g-3">
+                                        <div class="col-lg-3">
+                                            <label class="form-label">First name</label>
+                                            <p class="form-control"><?= $student['firstname'] ?></p>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">M.I.</label>
+                                            <p class="form-control"><?= $student['middlename'] ?></p>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Last name</label>
+                                            <p class="form-control"><?= $student['lastname'] ?></p>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="form-label">Student No</label>
+                                            <p class="form-control"><?= $student['school_id'] ?></p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="row g-2">
@@ -377,13 +393,22 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
-                                            <label class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" name="contact_email"
-                                                value="<?=$cadet['emergency_email'] ?? '' ?>">
-                                            <div id="contact_email-error" class="error-message text-danger text-sm">
+                                            <label class="form-label">Contact No</label>
+                                            <input type="phone" class="form-control" name="contact_number"
+                                                value="<?=$cadet['emergency_number'] ?? '' ?>">
+                                            <div id="contact_number-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <p>
+                                        <small>Upload supported documents. Accepted file types: zip, and
+                                            pdf(25MB limit).
+                                        </small>
+                                    </p>
+                                    <input type="file" name="file" class="form-control"
+                                        accept=".zip,application/zip,application/pdf" />
                                 </div>
                                 <div class="col-lg-12">
                                     <button type="submit" class="btn btn-primary" id="btnSave">

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/logo.jpg')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/logo.jpg')?>">
-    <title>Sign Up | CvSU-CCC - ROTC Unit Portal</title>
+    <title>Sign Up | CvSU CC ROTC Unit</title>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="<?=base_url('assets/css/tabler.min.css')?>" rel="stylesheet" />
     <!-- END GLOBAL MANDATORY STYLES -->
@@ -32,8 +32,8 @@
                     <div class="container-tight">
                         <div class="card card-md">
                             <div class="card-body">
-                                <h2 class="text-center mb-0">CvSU-CCC</h2>
-                                <h3 class="text-center mb-4">ROTC Unit Portal Registration</h3>
+                                <h2 class="text-center mb-0">CvSU CC ROTC UNIT</h2>
+                                <h3 class="text-center mb-4">Register here</h3>
                                 <?php if(!empty(session()->getFlashdata('fail'))) : ?>
                                 <div class="alert alert-danger" role="alert">
                                     <?= session()->getFlashdata('fail'); ?>
@@ -42,7 +42,7 @@
                                 <form action="<?=base_url('register')?>" method="POST" autocomplete="off" novalidate>
                                     <?=csrf_field()?>
                                     <div class="mb-3">
-                                        <label class="form-label">School ID</label>
+                                        <label class="form-label">Student No</label>
                                         <input type="text" name="school_id" class="form-control"
                                             placeholder="e.g. ABC-00001" value="<?=set_value('school_id')?>"
                                             autocomplete="off" required />
@@ -51,12 +51,34 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Name</label>
-                                        <input type="text" name="name" class="form-control"
-                                            placeholder="e.g. Juan Dela Cruz" value="<?=set_value('name')?>"
-                                            autocomplete="off" required />
-                                        <div class="text-danger">
-                                            <small><?=$validation->getError('name') ?></small>
+                                        <div class="row g-2">
+                                            <div class="col-lg-5">
+                                                <label class="form-label">Last Name</label>
+                                                <input type="text" name="lastname" class="form-control"
+                                                    placeholder="e.g. Dela Cruz" value="<?=set_value('lastname')?>"
+                                                    autocomplete="off" required />
+                                                <div class="text-danger">
+                                                    <small><?=$validation->getError('lastname') ?></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="form-label">M.I.</label>
+                                                <input type="text" name="middlename" class="form-control"
+                                                    placeholder="C" value="<?=set_value('middlename')?>"
+                                                    autocomplete="off" required />
+                                                <div class="text-danger">
+                                                    <small><?=$validation->getError('middlename') ?></small>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5">
+                                                <label class="form-label">First Name</label>
+                                                <input type="text" name="firstname" class="form-control"
+                                                    placeholder="e.g. Juan" value="<?=set_value('firstname')?>"
+                                                    autocomplete="off" required />
+                                                <div class="text-danger">
+                                                    <small><?=$validation->getError('firstname') ?></small>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="mb-3">

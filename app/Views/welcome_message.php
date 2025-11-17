@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
-    <title>Login | CvSU-CCC - ROTC Unit Portal</title>
+    <title>Login | CvSU CC ROTC Unit</title>
     <meta name="msapplication-TileColor" content="#066fd1" />
     <meta name="theme-color" content="#066fd1" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -53,7 +53,7 @@
                                     novalidate>
                                     <?=csrf_field()?>
                                     <div class="mb-3">
-                                        <label class="form-label">Student Number</label>
+                                        <label class="form-label">Student No</label>
                                         <input type="text" name="student_number" class="form-control"
                                             placeholder="ABC-0001" autocomplete="off" required />
                                         <div class="text-danger">

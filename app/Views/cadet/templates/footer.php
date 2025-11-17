@@ -243,7 +243,6 @@
 <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
 <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
 <!-- END GLOBAL MANDATORY SCRIPTS -->
-<script src="<?=base_url('assets/js/dropzone.js')?>" defer></script>
 <!-- BEGIN DEMO SCRIPTS -->
 <script src="<?=base_url('assets/js/demo.min.js')?>" defer></script>
 <!-- END DEMO SCRIPTS -->

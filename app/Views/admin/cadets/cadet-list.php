@@ -95,7 +95,7 @@
                                     <table class="table table-bordered table-striped" id="table1">
                                         <thead>
                                             <th>Image</th>
-                                            <th>School ID</th>
+                                            <th>Student ID</th>
                                             <th>Fullname</th>
                                             <th>Email</th>
                                             <th>Status</th>

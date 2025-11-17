@@ -283,21 +283,16 @@
                                                         </div>
                                                         <div class="col-lg-12">
                                                             <h3>Emergency Contact</h3>
-                                                            <label class="form-label">Address</label>
-                                                            <textarea class="form-control"><?=$info['emergency_address']?>
-                                                            </textarea>
-                                                        </div>
-                                                        <div class="col-lg-12">
                                                             <div class="row g-3">
-                                                                <div class="col-lg-4">
-                                                                    <label class="form-label">Relationship</label>
-                                                                    <input type="text" class="form-control"
-                                                                        value="<?=$info['relationship']?>">
-                                                                </div>
                                                                 <div class="col-lg-4">
                                                                     <label class="form-label">Contact Person</label>
                                                                     <input type="text" class="form-control"
                                                                         value="<?=$info['emergency_contact']?>">
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <label class="form-label">Relationship</label>
+                                                                    <input type="text" class="form-control"
+                                                                        value="<?=$info['relationship']?>">
                                                                 </div>
                                                                 <div class="col-lg-4">
                                                                     <label class="form-label">Email Address</label>
@@ -305,6 +300,11 @@
                                                                         value="<?=$info['emergency_email']?>">
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <label class="form-label">Address</label>
+                                                            <textarea class="form-control"><?=$info['emergency_address']?>
+                                                            </textarea>
                                                         </div>
                                                     </div>
                                                 </div>

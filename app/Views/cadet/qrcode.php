@@ -25,6 +25,26 @@ img {
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <?php if(empty($qrcode)): ?>
+                                <form method="POST" class="row g-2" id="frmQRCode">
+                                    <?=csrf_field()?>
+                                    <div class="col-lg-12">
+                                        <button type="submit" class="btn btn-default">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="icon icon-tabler icons-tabler-outline icon-tabler-automation">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path
+                                                    d="M13 20.693c-.905 .628 -2.36 .292 -2.675 -1.01a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.492 .362 1.716 2.219 .674 3.03" />
+                                                <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                <path d="M17 22l5 -3l-5 -3z" />
+                                            </svg>
+                                            Generate
+                                        </button>
+                                    </div>
+                                </form>
+                                <?php endif;?>
                                 <a href="javascript:history.back();"
                                     class="btn btn-primary btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
@@ -44,7 +64,7 @@ img {
                     <div class="row g-3">
                         <div class="col-lg-3"></div>
                         <div class="col-lg-6">
-                            <div class="card">
+                            <div class="card mb-2">
                                 <div class="card-header">
                                     <div class="card-title">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -70,48 +90,53 @@ img {
                                         </svg>
                                         QR Code
                                     </div>
+                                    <div class="card-actions">
+                                        <button type="button" class="btn btn-primary">
+                                            <i class="ti ti-download"></i>&nbsp;Download
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row g-2">
-                                        <div class="col-lg-8">
-                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x200&data=<?=$qrcode['token'] ?? 'N/A' ?>"
-                                                alt="QRCode" class="form-control" />
+                                    <div class="row g-3">
+                                        <div class="col-lg-4 text-center">
+                                            <div style="margin: 10px;">
+                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?=$qrcode['token'] ?? 'N/A' ?>"
+                                                    alt="QRCode" class="mb-2"
+                                                    style="border: 10px solid green;border-radius:10px 10px;" />
+                                                <p class="bg-success text-white"
+                                                    style="border-radius:10px 10px;font-size:20px;">SCAN ME</p>
+                                            </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="row g-1">
-                                                        <div class="col-lg-12">
-                                                            <img src="<?=site_url('assets/images/profile/')?><?=$student['photo']?>"
-                                                                alt="photo" class="form-control"
-                                                                style="height:150px;" />
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <label class="form-label">Control #</label>
+                                        <div class="col-lg-8">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row g-2">
+                                                        <div class="col-lg-6">
+                                                            <label class="form-label">CONTROL NO</label>
                                                             <p class="form-control">
-                                                                <?=$qrcode['control_number'] ?? 'N/A' ?></p>
+                                                                <?= !empty($qrcode['control_number']) ? $qrcode['control_number'] : 'N/A' ?>
+                                                            </p>
                                                         </div>
-                                                        <div class="col-lg-12">
-                                                            <label class="form-label">School ID</label>
-                                                            <p class="form-control">
-                                                                <?=$student['school_id'] ?? 'N/A' ?></p>
+                                                        <div class="col-lg-6">
+                                                            <label class="form-label">STUDENTS NO</label>
+                                                            <p class="form-control"><?= $student['school_id'] ?></p>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-lg-12">
+                                                    <label class="form-label">STUDENT NAME</label>
+                                                    <p class="form-control"><?= $student['fullname'] ?></p>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <label class="form-label">COURSE/YEAR/SECTION</label>
+                                                    <p class="form-control">
+                                                        <?= !empty($cadet['course']) ? $cadet['course'] : 'N/A' ?>
+                                                        /<?= !empty($cadet['year']) ? $cadet['year'] : 'N/A' ?>
+                                                        /<?= !empty($cadet['section']) ? $cadet['section'] : 'N/A' ?>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <?php if(empty($qrcode)): ?>
-                                        <div class="col-lg-12">
-                                            <form method="POST" class="row g-2" id="frmQRCode">
-                                                <?=csrf_field()?>
-                                                <div class="col-lg-12">
-                                                    <button type="submit" class="form-control btn btn-primary">
-                                                        Generate
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <?php endif;?>
                                     </div>
                                 </div>
                             </div>

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
-    <title>Reset Password | CvSU-CCC ROTC Unit Portal</title>
+    <title>Reset Password | CvSU CC ROTC Unit</title>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="<?=base_url('assets/css/tabler.min.css')?>" rel="stylesheet" />
     <!-- END GLOBAL MANDATORY STYLES -->

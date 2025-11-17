@@ -100,7 +100,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">School ID</label>
+                                                    <label class="form-label">Student ID</label>
                                                     <input type="text" class="form-control" name="school_id"
                                                         placeholder="Enter School ID"
                                                         value="<?=$student['school_id']?>" />

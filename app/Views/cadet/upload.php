@@ -1,4 +1,5 @@
 <?=view('cadet/templates/header') ?>
+<link href="<?=base_url('assets/css/dropzone.css')?>" rel="stylesheet" />
 
 <body>
     <div class="page">
@@ -108,6 +109,7 @@
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>
+    <script src="<?=base_url('assets/js/dropzone.js')?>" defer></script>
     <script>
     $(document).ready(function() {
         setTimeout(function() {

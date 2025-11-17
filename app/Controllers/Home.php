@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Libraries\Hash;
 use App\Models\scheduleModel;
+use App\Models\studentModel;
 use Config\Email;
 use \App\Models\cadetModel;
 use \App\Models\favoriteModel;
@@ -32,8 +33,16 @@ class Home extends BaseController
     public function register()
     {
         $validation = $this->validate([
-            'name'=>'required|is_unique[students.fullname]',
-            'school_id'=>'required|is_unique[students.school_id]',
+            'lastname'=>['rules'=>'required','errors'=>['required'=>'Lastname is required']],
+            'middlename'=>['rules'=>'required','errors'=>['required'=>'M.I. is required']],
+            'firstname'=>['rules'=>'required','errors'=>['required'=>'First name is required']],
+            'school_id'=>[
+                'rules'=>'required|is_unique[students.school_id]',
+                'errors'=>[
+                    'required'=>'Student Number is required',
+                    'is_unique'=>'Student Number already exist. Please try again'
+                ]
+            ],
             'email'=>'required|valid_email|is_unique[students.email]',
             'password' => [
                 'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
@@ -67,11 +76,13 @@ class Home extends BaseController
             }
             $token_code = generateRandomString();
             //save
-            $userModel = new \App\Models\studentModel();
+            $userModel = new studentModel();
             $data = [
                     'school_id'=>$this->request->getPost('school_id'), 
                     'password'=>$hash_password,
-                    'fullname'=>$this->request->getPost('name'),
+                    'lastname'=>$this->request->getPost('lastname'),
+                    'middlename'=>$this->request->getPost('middlename'),
+                    'firstname'=>$this->request->getPost('firstname'),
                     'email'=>$this->request->getPost('email'),
                     'status'=>0,
                     'is_enroll'=>0,
@@ -79,6 +90,7 @@ class Home extends BaseController
                     'token'=>$token_code,
                     ];
             $userModel->save($data);
+            $fullname = $this->request->getPost('firstname')." ".$this->request->getPost('middlename')." ".$this->request->getPost('lastname');
             //send email activation link
             $emailConfig = new Email();
             $fromEmail = $emailConfig->fromEmail;
@@ -93,7 +105,7 @@ class Home extends BaseController
             <img src='cid:". $cid ."' width='100'/>
             <table style='padding:20px;background-color:#ffffff;' border='0'><tbody>
             <tr><td><center><h1>Account Activation</h1></center></td></tr>
-            <tr><td><center>Hi, ".$this->request->getPost('name')."</center></td></tr>
+            <tr><td><center>Hi, ".$fullname."</center></td></tr>
             <tr><td><p><center>Please click the link below to activate your account.</center></p></td><tr>
             <tr><td><center><b>".anchor('activate/'.$token_code,'Activate Account')."</b></center></td></tr>
             <tr><td><p><center>If you did not sign-up in CVSU-CCC ROTC PORTAL,<br/> please ignore this message or contact us @ cvsu-ccc-rotc-portal@gmail.com</center></p></td></tr>
@@ -115,7 +127,7 @@ class Home extends BaseController
 
     public function resend($id)
     {
-        $userModel = new \App\Models\studentModel();
+        $userModel = new studentModel();
         $user = $userModel->WHERE('token',$id)->first();
         //send email activation link
         $emailConfig = new Email();
@@ -131,7 +143,7 @@ class Home extends BaseController
         <img src='cid:". $cid ."' width='100'/>
         <table style='padding:20px;background-color:#ffffff;' border='0'><tbody>
         <tr><td><center><h1>Account Activation</h1></center></td></tr>
-        <tr><td><center>Hi, ".$user['fullname']."</center></td></tr>
+        <tr><td><center>Hi, ".$user['firstname']." ".$user['middlename'].' '.$user['lastname']."</center></td></tr>
         <tr><td><p><center>Please click the link below to activate your account.</center></p></td><tr>
         <tr><td><center><b>".anchor('activate/'.$id,'Activate Account')."</b></center></td></tr>
         <tr><td><p><center>If you did not sign-up in CVSU-CCC ROTCL PORTAL Website,<br/> please ignore this message or contact us @ cvsu-ccc-rotc-portalb@gmail.com</center></p></td></tr>
@@ -146,12 +158,13 @@ class Home extends BaseController
 
     public function activateAccount($id)
     {
-        $userModel = new \App\Models\studentModel();
+        $userModel = new studentModel();
         $student = $userModel->WHERE('token',$id)->first();
         $values = ['status'=>1];
+        $fullname = $student['firstname']." ".$student['middlename']." ".$student['lastname'];
         $userModel->update($student['student_id'],$values);
         session()->set('loggedUser', $student['student_id']);
-        session()->set('fullname',$student['fullname']);
+        session()->set('fullname',$fullname);
         session()->set('student_number',$student['school_id']);
         return $this->response->redirect(site_url('cadet/dashboard'));
     }
@@ -163,7 +176,7 @@ class Home extends BaseController
 
     public function validateUser()
     {
-        $studentModel = new \App\Models\studentModel();
+        $studentModel = new studentModel();
         $validation = $this->validate([
             'student_number' => [
                 'rules' => 'required|is_not_unique[students.school_id]',
@@ -200,8 +213,9 @@ class Home extends BaseController
             {
                 if(Hash::check($password, $student['password']))
                 {
+                    $fullname = $student['firstname']." ".$student['middlename']." ".$student['lastname'];
                     session()->set('loggedUser', $student['student_id']);
-                    session()->set('fullname',$student['fullname']);
+                    session()->set('fullname',$fullname);
                     session()->set('student_number',$student['school_id']);
                     return redirect()->to(base_url('cadet/dashboard'));
                 }
@@ -255,23 +269,35 @@ class Home extends BaseController
         else
         {
             $email = $this->request->getPost('email');
-            $studentModel = new \App\Models\StudentModel();
+            $studentModel = new studentModel();
             $student = $studentModel->where('email', $email)->first();
-            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?!@#$%^&*()_+';
-                function generate_string($input, $strength = 16) {
-                    $input_length = strlen($input);
-                    $random_string = '';
-                    for($i = 0; $i < $strength; $i++) {
-                        $random_character = $input[random_int(0, $input_length - 1)];
-                        $random_string .= $random_character;
-                    }
-                    return $random_string;
+            function generatePassword($length = 16) 
+            {
+                $lower = 'abcdefghijklmnopqrstuvwxyz';
+                $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                $digits = '0123456789';
+                $special = '!@?&';
+                $all = $lower . $digits . $special;
+
+                // Ensure at least one uppercase letter
+                $password = $upper[random_int(0, strlen($upper) - 1)];
+
+                // Fill the rest
+                for ($i = 1; $i < $length; $i++) {
+                    $password .= $all[random_int(0, strlen($all) - 1)];
                 }
 
-            $newPassword = generate_string($permitted_chars, 16);
+                // Shuffle to randomize position of the uppercase letter
+                $chars = str_split($password);
+                shuffle($chars);
+                return implode('', $chars);
+
+            }
+
+            $newPassword = generatePassword();
             $hashedPassword = Hash::make($newPassword);
             $studentModel->update($student['student_id'], ['password' => $hashedPassword]); 
-            $fullname = $student['fullname'];
+            $fullname = $student['firstname']." ".$student['middlename']." ".$student['lastname'];
             // Send email with new password       
             $emailConfig = new Email();
             $fromEmail = $emailConfig->fromEmail;
@@ -346,6 +372,8 @@ class Home extends BaseController
         $data['title'] = "Cadet Profile";
         $cadetModel = new cadetModel();
         $data['cadet'] = $cadetModel->where('student_id',session()->get('loggedUser'))->first();
+        $studentModel = new studentModel();
+        $data['student'] = $studentModel->where('student_id',session()->get('loggedUser'))->first();
         return view('cadet/profile',$data);
     }
 
@@ -353,10 +381,12 @@ class Home extends BaseController
     {
         $data['title'] = "My QR Code";
         //check if cadets is empty
-        $studentModel = new \App\Models\studentModel();
+        $studentModel = new studentModel();
         $qrcodeModel = new qrcodeModel();
+        $cadetModel = new cadetModel();
         $qrcode = $qrcodeModel->where('student_id',session()->get('loggedUser'))->first();
         $student = $studentModel->where('student_id',session()->get('loggedUser'))->first();
+        $cadet = $cadetModel->where('student_id',session()->get('loggedUser'))->first();
         if(empty($student))
         {
             return redirect()->to(base_url('cadet/profile'));
@@ -364,6 +394,7 @@ class Home extends BaseController
 
         $data['student']=$student;
         $data['qrcode'] = $qrcode;
+        $data['cadet'] = $cadet;
         return view('cadet/qrcode',$data);
     }
 
