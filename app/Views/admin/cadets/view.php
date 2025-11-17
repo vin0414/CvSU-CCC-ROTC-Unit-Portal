@@ -113,7 +113,9 @@
                                             <div class="row g-3">
                                                 <div class="col-lg-8">
                                                     <label class="form-label"><small>Student Name</small></label>
-                                                    <p class="form-control"><?=$cadet['fullname']?></p>
+                                                    <p class="form-control">
+                                                        <?=$cadet['firstname']?>&nbsp;<?=$cadet['middlename']?>&nbsp;<?=$cadet['lastname']?>
+                                                    </p>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <label class="form-label"><small>Email</small></label>
@@ -287,7 +289,7 @@
                                                                 <div class="col-lg-4">
                                                                     <label class="form-label">Contact Person</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="<?=$info['emergency_contact']?>">
+                                                                        value="<?=$info['contact_firstname']?>&nbsp;<?=$info['contact_middlename']?>&nbsp;<?=$info['contact_lastname']?>">
                                                                 </div>
                                                                 <div class="col-lg-4">
                                                                     <label class="form-label">Relationship</label>
@@ -295,9 +297,9 @@
                                                                         value="<?=$info['relationship']?>">
                                                                 </div>
                                                                 <div class="col-lg-4">
-                                                                    <label class="form-label">Email Address</label>
+                                                                    <label class="form-label">Contact No</label>
                                                                     <input type="text" class="form-control"
-                                                                        value="<?=$info['emergency_email']?>">
+                                                                        value="<?=$info['emergency_number']?>">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -332,8 +334,9 @@
                                         <?php if(!empty($attachment)): ?>
                                         <div class="list-group-item">
                                             <?=$attachment['file']?>
-                                            <a href="<?=base_url('Upload/')?><?=$attachment['file']?>"
-                                                class="btn btn-primary btn-sm" style="padding:5px;float:right;">
+                                            <a href="<?=base_url('assets/files/')?><?=$attachment['file']?>"
+                                                class="btn btn-primary btn-sm" style="padding:5px;float:right;"
+                                                target="_blank">
                                                 <i class="ti ti-download"></i>
                                             </a>
                                         </div>

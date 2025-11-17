@@ -25,6 +25,9 @@ img {
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <button type="button" class="btn btn-default" onclick="downloadAsImage()">
+                                    <i class="ti ti-download"></i>
+                                </button>
                                 <?php if(empty($qrcode)): ?>
                                 <form method="POST" class="row g-2" id="frmQRCode">
                                     <?=csrf_field()?>
@@ -90,19 +93,14 @@ img {
                                         </svg>
                                         QR Code
                                     </div>
-                                    <div class="card-actions">
-                                        <button type="button" class="btn btn-primary">
-                                            <i class="ti ti-download"></i>&nbsp;Download
-                                        </button>
-                                    </div>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body" id="capture">
                                     <div class="row g-3">
                                         <div class="col-lg-4 text-center">
                                             <div style="margin: 10px;">
-                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?=$qrcode['token'] ?? 'N/A' ?>"
+                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x200&data=<?=$qrcode['token'] ?? 'N/A' ?>"
                                                     alt="QRCode" class="mb-2"
-                                                    style="border: 10px solid green;border-radius:10px 10px;" />
+                                                    style="border: 10px solid green;border-radius:10px 10px;width:100%;" />
                                                 <p class="bg-success text-white"
                                                     style="border-radius:10px 10px;font-size:20px;">SCAN ME</p>
                                             </div>
@@ -125,14 +123,16 @@ img {
                                                 </div>
                                                 <div class="col-lg-12">
                                                     <label class="form-label">STUDENT NAME</label>
-                                                    <p class="form-control"><?= $student['fullname'] ?></p>
+                                                    <p class="form-control">
+                                                        <?= $student['firstname'] ?>&nbsp;<?= $student['middlename'] ?>&nbsp;<?= $student['lastname'] ?>
+                                                    </p>
                                                 </div>
                                                 <div class="col-lg-12">
                                                     <label class="form-label">COURSE/YEAR/SECTION</label>
                                                     <p class="form-control">
                                                         <?= !empty($cadet['course']) ? $cadet['course'] : 'N/A' ?>
-                                                        /<?= !empty($cadet['year']) ? $cadet['year'] : 'N/A' ?>
-                                                        /<?= !empty($cadet['section']) ? $cadet['section'] : 'N/A' ?>
+                                                        |<?= !empty($cadet['year']) ? $cadet['year'] : 'N/A' ?>
+                                                        |<?= !empty($cadet['section']) ? $cadet['section'] : 'N/A' ?>
                                                     </p>
                                                 </div>
                                             </div>
@@ -179,7 +179,18 @@ img {
     </div>
     <?=view('cadet/templates/footer') ?>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
+    function downloadAsImage() {
+        const element = document.getElementById("capture");
+
+        html2canvas(element).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "screenshot.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
     $('#frmQRCode').on('submit', function(e) {
         e.preventDefault();
         let data = $(this).serialize();

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 use App\Libraries\Hash;
+use App\Models\attachmentModel;
+use App\Models\performanceModel;
 use App\Models\scheduleModel;
 use App\Models\studentModel;
 use Config\Email;
@@ -572,6 +574,9 @@ class Home extends BaseController
         {
             return redirect()->to(base_url('cadet/profile'));
         }
+        //performance
+        $performanceModel = new performanceModel();
+        $data['grades'] = $performanceModel->where('student_id',session()->get('loggedUser'))->first();
         return view('cadet/performance',$data);
     }
 
@@ -585,6 +590,7 @@ class Home extends BaseController
     public function saveProfile()
     {
         $cadetModel = new cadetModel();
+        $attachmentModel = new attachmentModel();
         $validation = $this->validate([
             'birth_date'=>['rules'=>'required','errors'=>['required'=>'Birth Date is required']],
             'height'=>['rules'=>'required','errors'=>['required'=>'Height is required']],
@@ -616,8 +622,18 @@ class Home extends BaseController
             'f_occupation'=>['rules'=>'required','errors'=>['required'=>"Enter your father's occupation"]],
             'address'=>['rules'=>'required','errors'=>['required'=>"Address is required"]],
             'relationship'=>['rules'=>'required','errors'=>['required'=>"Relationship is required"]],
-            'contact_person'=>['rules'=>'required','errors'=>['required'=>"Contact Person is required"]],
-            'contact_email'=>['rules'=>'required|valid_email','errors'=>['required'=>"Contact email is required",'valid_email'=>'Enter valid email address']],
+            'contact_firstname'=>['rules'=>'required','errors'=>['required'=>"First Name is required"]],
+            'contact_middlename'=>['rules'=>'required','errors'=>['required'=>"Middle Name is required"]],
+            'contact_lastname'=>['rules'=>'required','errors'=>['required'=>"Last Name is required"]],
+            'contact_number'=>['rules'=>'required|numeric','errors'=>['required'=>"Contact Number is required",'numeric'=>'Enter valid contact number']],
+            'file'=>[
+                'rules' => 'uploaded[file]|mime_in[file,application/zip,application/x-zip-compressed,application/pdf]|max_size[file,25600]',
+                'errors' => [
+                    'uploaded' => 'You must choose a file to upload.',
+                    'mime_in' => 'The file must be either a PDF document.',
+                    'max_size' => 'The file size must not exceed 25MB.',
+                ]
+            ]
         ]);
 
         if(!$validation)
@@ -665,8 +681,10 @@ class Home extends BaseController
                 'father_work'=>$this->request->getPost('f_occupation'),
                 'emergency_address'=>$this->request->getPost('address'),
                 'relationship'=>$this->request->getPost('relationship'),
-                'emergency_contact'=>$this->request->getPost('contact_person'),
-                'emergency_email'=>$this->request->getPost('contact_email'),
+                'contact_firstname'=>$this->request->getPost('contact_firstname'),
+                'contact_middlename'=>$this->request->getPost('contact_middlename'),
+                'contact_lastname'=>$this->request->getPost('contact_lastname'),
+                'emergency_number'=>$this->request->getPost('contact_number'),
                 'token'=>$token
             ];
             if(empty($this->request->getPost('cadet_id')))
@@ -676,6 +694,32 @@ class Home extends BaseController
             else
             {
                 $cadetModel->update($this->request->getPost('cadet_id'),$data);
+            }
+            //upload file
+            $file = $this->request->getFile('file');
+            if ($file && $file->isValid() && !$file->hasMoved()) 
+            {
+                $extension = $file->getExtension();
+                $originalname = pathinfo($file->getClientName(), PATHINFO_FILENAME);
+                $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $originalname);
+                $newName = date('YmdHis') . '_' . $safeName . '.' . $extension;
+                //create folder
+                $folderName = "assets/files";
+                if (!is_dir($folderName)) {
+                    mkdir($folderName, 0755, true);
+                }
+                $file->move($folderName.'/',$newName);
+                $attachment = $attachmentModel->WHERE('student_id',session()->get('loggedUser'))->first();
+                $data = ['student_id'=>session()->get('loggedUser'),'file'=>$newName];
+                if(empty($attachment))
+                {
+                    $attachmentModel->save($data);
+                }
+                else
+                {
+                    
+                    $attachmentModel->update($attachment['attachment_id'],$data);
+                }
             }
             return $this->response->setJSON(['success'=>"Success"]);
         }

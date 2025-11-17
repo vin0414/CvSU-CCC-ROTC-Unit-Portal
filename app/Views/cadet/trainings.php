@@ -259,8 +259,8 @@
                                     <a
                                         href="<?= site_url('cadet/trainings/view/') ?><?= $row['training_id'] ?>"><?= $row['name'] ?></a><br />
                                     <small>
-                                        <?= date('M d, Y',strtotime($row['from_date'])) ?> to
-                                        <?= date('M d, Y',strtotime($row['to_date'])) ?>
+                                        <?= date('h:i:s a',strtotime($row['from_time'])) ?> to
+                                        <?= date('h:i:s a',strtotime($row['to_time'])) ?>
                                         | <?= $row['day'] ?>
                                     </small>
                                 </div>

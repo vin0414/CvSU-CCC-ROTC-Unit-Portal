@@ -85,6 +85,7 @@
                                                 <th>Attendance</th>
                                                 <th>Gradebook</th>
                                                 <th>Inventory</th>
+                                                <th>Reports</th>
                                                 <th>Announcement</th>
                                                 <th>Maintenance</th>
                                                 <th>Action</th>
@@ -187,6 +188,9 @@
             },
             {
                 "data": "inventory"
+            },
+            {
+                "data": "report"
             },
             {
                 "data": "announcement"

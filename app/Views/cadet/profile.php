@@ -18,6 +18,9 @@
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <button type="button" class="btn btn-default" id="btnDownload">
+                                    <i class="ti ti-download"></i>
+                                </button>
                                 <a href="<?=site_url('cadet/qr-code')?>" class="btn btn-default">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -40,7 +43,7 @@
                                         <path d="M17 17l3 0" />
                                         <path d="M20 17l0 3" />
                                     </svg>
-                                    Generate QR Code
+                                    QR Code
                                 </a>
                                 <a href="<?=site_url('cadet/upload')?>"
                                     class="btn btn-primary btn-5 d-none d-sm-inline-block">
@@ -162,8 +165,24 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Religion</label>
-                                            <input type="text" class="form-control" name="religion"
-                                                value="<?=$cadet['religion'] ?? '' ?>">
+                                            <select class="form-select" name="religion">
+                                                <option value="">Choose</option>
+                                                <option
+                                                    <?= (!empty($cadet['religion']) && $cadet['religion'] === "Catholic") ? 'selected' : '' ?>>
+                                                    Catholic</option>
+                                                <option
+                                                    <?= (!empty($cadet['religion']) && $cadet['religion'] === "Christians") ? 'selected' : '' ?>>
+                                                    Christians</option>
+                                                <option
+                                                    <?= (!empty($cadet['religion']) && $cadet['religion'] === "Protestante") ? 'selected' : '' ?>>
+                                                    Protestante</option>
+                                                <option
+                                                    <?= (!empty($cadet['religion']) && $cadet['religion'] === "Iglesia Ni Kristo") ? 'selected' : '' ?>>
+                                                    Iglesia Ni Kristo</option>
+                                                <option
+                                                    <?= (!empty($cadet['religion']) && $cadet['religion'] === "Others") ? 'selected' : '' ?>>
+                                                    Others</option>
+                                            </select>
                                             <div id="religion-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                     </div>
@@ -373,12 +392,34 @@
                                 <div class="col-lg-12 mb-3">
                                     <div class="row g-2">
                                         <div class="col-lg-4">
+                                            <label class="form-label">First Name</label>
+                                            <input type="text" class="form-control" name="contact_firstname"
+                                                value="<?=$cadet['contact_firstname'] ?? '' ?>">
+                                            <div id="contact_firstname-error" class="error-message text-danger text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Middle Name</label>
+                                            <input type="text" class="form-control" name="contact_middlename"
+                                                value="<?=$cadet['contact_middlename'] ?? '' ?>">
+                                            <div id="contact_middlename-error"
+                                                class="error-message text-danger text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" name="contact_lastname"
+                                                value="<?=$cadet['contact_lastname'] ?? '' ?>">
+                                            <div id="contact_lastname-error" class="error-message text-danger text-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
                                             <label class="form-label">Complete Address</label>
                                             <input type="text" class="form-control" name="address"
                                                 value="<?=$cadet['emergency_address'] ?? '' ?>">
                                             <div id="address-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
                                             <label class="form-label">Relationship</label>
                                             <input type="text" class="form-control" name="relationship"
                                                 value="<?=$cadet['relationship'] ?? '' ?>">
@@ -386,16 +427,10 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
-                                            <label class="form-label">Contact Person</label>
-                                            <input type="text" class="form-control" name="contact_person"
-                                                value="<?=$cadet['emergency_contact'] ?? '' ?>">
-                                            <div id="contact_person-error" class="error-message text-danger text-sm">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
                                             <label class="form-label">Contact No</label>
-                                            <input type="phone" class="form-control" name="contact_number"
-                                                value="<?=$cadet['emergency_number'] ?? '' ?>">
+                                            <input type="text" class="form-control" name="contact_number"
+                                                value="<?=$cadet['emergency_number'] ?? '' ?>" minlength="11"
+                                                maxlength="11">
                                             <div id="contact_number-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
@@ -409,6 +444,8 @@
                                     </p>
                                     <input type="file" name="file" class="form-control"
                                         accept=".zip,application/zip,application/pdf" />
+                                    <div id="file-error" class="error-message text-danger text-sm">
+                                    </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <button type="submit" class="btn btn-primary" id="btnSave">
@@ -474,7 +511,10 @@
         $.ajax({
             url: "<?=site_url('save-profile')?>",
             method: "POST",
-            data: data,
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
             success: function(response) {
                 $('#modal-loading').modal('hide');
                 if (response.success) {

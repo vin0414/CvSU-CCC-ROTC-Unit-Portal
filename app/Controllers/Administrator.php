@@ -284,14 +284,18 @@ class Administrator extends BaseController
         $searchTerm = $_GET['search']['value'] ?? '';
         if ($searchTerm) {
             $studentModel->like('school_id', $searchTerm)
-                        ->orLike('fullname',$searchTerm);  
+                        ->orLike('lastname',$searchTerm)  
+                        ->orLike('middlename',$searchTerm)  
+                        ->orLike('firstname',$searchTerm);
         }
         $limit = $_GET['length'] ?? 10;
         $offset = $_GET['start'] ?? 0; 
         $filteredStudentModel = clone $studentModel;
         if ($searchTerm) {
             $filteredStudentModel->like('school_id', $searchTerm)
-                        ->orLike('fullname',$searchTerm);
+                        ->orLike('lastname',$searchTerm)  
+                        ->orLike('middlename',$searchTerm)  
+                        ->orLike('firstname',$searchTerm);
         }
         $students = $studentModel->where('is_enroll',0)->findAll($limit, $offset);  
         $totalRecords = $studentModel->where('is_enroll',0)->countAllResults();
@@ -306,7 +310,7 @@ class Administrator extends BaseController
             $response['data'][] = [
                 'image'=>'<img src="assets/images/profile/'.$row['photo'].'" width="30px;"/>',
                 'id' => htmlspecialchars($row['school_id'], ENT_QUOTES),
-                'fullname' => htmlspecialchars($row['fullname'], ENT_QUOTES),
+                'fullname' => htmlspecialchars($row['firstname']." ".$row['middlename']." ".$row['lastname'] , ENT_QUOTES),
                 'email' => htmlspecialchars($row['email'], ENT_QUOTES),
                 'status' => ($row['status']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'action'=>'<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button">
@@ -333,12 +337,13 @@ class Administrator extends BaseController
     {
         $searchTerm = $_GET['search']['value'] ?? '';
         $builder = $this->db->table('students a');
-        $builder->select('a.student_id,a.school_id,a.fullname,a.token,a.photo,b.course,b.year,b.section');
+        $builder->select('a.student_id,a.school_id,a.firstname,a.middlename,a.lastname,a.token,a.photo,b.course,b.year,b.section');
         $builder->join('cadets b','b.student_id=a.student_id','LEFT');
         $builder->where('a.is_enroll',1)->groupBy('a.student_id');
         if ($searchTerm) {
             $builder->groupStart()
-                    ->like('a.fullname', $searchTerm)
+                    ->like('a.firstname', $searchTerm)
+                    ->orLike('a.lastname', $searchTerm)
                     ->orLike('a.school_id', $searchTerm)
                     ->orLike('b.course', $searchTerm)
                     ->groupEnd();  
@@ -359,7 +364,7 @@ class Administrator extends BaseController
             $response['data'][] = [
                 'image'=>'<img src="assets/images/profile/'.$row->photo.'" width="30px;"/>',
                 'id' => htmlspecialchars($row->school_id, ENT_QUOTES),
-                'fullname' => htmlspecialchars($row->fullname, ENT_QUOTES),
+                'fullname' => htmlspecialchars($row->firstname." ".$row->middlename." ".$row->lastname, ENT_QUOTES),
                 'course' => htmlspecialchars($row->course, ENT_QUOTES).'-'.htmlspecialchars($row->year, ENT_QUOTES),
                 'section' => htmlspecialchars($row->section, ENT_QUOTES),
                 'action'=>'<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button">
@@ -1458,7 +1463,8 @@ class Administrator extends BaseController
                 'schedule' => ($row['schedule']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'attendance' => ($row['attendance']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'grading_system' => ($row['grading_system']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive', 
-                'inventory' => ($row['inventory']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',      
+                'inventory' => ($row['inventory']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive', 
+                'report' => ($row['report']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',     
                 'announcement' => ($row['announcement']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'maintenance' => ($row['maintenance']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
                 'action' => '<a class="btn btn-primary edit_permission" href="/maintenance/permission/edit/' . $row['role_id'] . '"><i class="ti ti-edit"></i> Edit </a>'
@@ -1477,6 +1483,7 @@ class Administrator extends BaseController
             'attendance'=>['rules'=>'required','errors'=>['required'=>'Attendance Module is required']],
             'grade'=>['rules'=>'required','errors'=>['required'=>'Gradebook Module is required']],
             'inventory'=>['rules'=>'required','errors'=>['required'=>'Inventory Module is required']],
+            'report'=>['rules'=>'required','errors'=>['required'=>'Report Module is required']],
             'announcement'=>['rules'=>'required','errors'=>['required'=>'Announcement Module is required']],
             'maintenance'=>['rules'=>'required','errors'=>['required'=>'Maintenance Module is required']],
         ]);
@@ -1495,6 +1502,7 @@ class Administrator extends BaseController
                     'attendance'=>$this->request->getPost('attendance'),
                     'grading_system'=>$this->request->getPost('grade'),
                     'inventory'=>$this->request->getPost('inventory'),
+                    'report'=>$this->request->getPost('report'),
                     'announcement'=>$this->request->getPost('announcement'),
                     'maintenance'=>$this->request->getPost('maintenance')
                 ];
@@ -1522,6 +1530,7 @@ class Administrator extends BaseController
             'attendance'=>['rules'=>'required','errors'=>['required'=>'Attendance Module is required']],
             'grade'=>['rules'=>'required','errors'=>['required'=>'Gradebook Module is required']],
             'inventory'=>['rules'=>'required','errors'=>['required'=>'Inventory Module is required']],
+            'report'=>['rules'=>'required','errors'=>['required'=>'Reports Module is required']],
             'announcement'=>['rules'=>'required','errors'=>['required'=>'Announcement Module is required']],
             'maintenance'=>['rules'=>'required','errors'=>['required'=>'Maintenance Module is required']],
         ]);
@@ -1540,6 +1549,7 @@ class Administrator extends BaseController
                     'attendance'=>$this->request->getPost('attendance'),
                     'grading_system'=>$this->request->getPost('grade'),
                     'inventory'=>$this->request->getPost('inventory'),
+                    'report'=>$this->request->getPost('report'),
                     'announcement'=>$this->request->getPost('announcement'),
                     'maintenance'=>$this->request->getPost('maintenance')
                 ];

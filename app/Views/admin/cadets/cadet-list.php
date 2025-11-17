@@ -87,6 +87,24 @@
                                         &nbsp;Enrolled Cadets
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-list-8" class="nav-link" data-bs-toggle="tab">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-checkup-list">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                                            <path
+                                                d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                            <path d="M9 14h.01" />
+                                            <path d="M9 17h.01" />
+                                            <path d="M12 16l1 1l3 -3" />
+                                        </svg>
+                                        &nbsp;Master List
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -117,6 +135,45 @@
                                             </thead>
                                             <tbody></tbody>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-list-8">
+                                    <div class="row g-3">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <form method="GET" class="row g-3" id="form">
+                                                        <div class="col-lg-3">
+                                                            <label class="form-label">School Year</label>
+                                                            <select name="year" class="form-select">
+                                                                <option value="">Choose</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <label class="form-label">Semester</label>
+                                                            <select name="semester" class="form-select">
+                                                                <option value="">Choose</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <label class="form-label">Name of Class</label>
+                                                            <select name="className" class="form-select">
+                                                                <option value="">Choose</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-3">
+                                                            <label class="form-label">&nbsp;</label>
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="ti ti-settings"></i>&nbsp;Generate
+                                                            </button>
+                                                            <button type="button" class="btn btn-default">
+                                                                <i class="ti ti-download"></i>&nbsp;Download
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

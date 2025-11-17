@@ -265,6 +265,45 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
+                                                    <label class="form-label">Reports Module</label>
+                                                    <div class="form-selectgroup-boxes row mb-3">
+                                                        <div class="col-lg-6">
+                                                            <label class="form-selectgroup-item">
+                                                                <input type="radio" name="report" value="1"
+                                                                    class="form-selectgroup-input" />
+                                                                <span
+                                                                    class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                    <span class="me-3">
+                                                                        <span class="form-selectgroup-check"></span>
+                                                                    </span>
+                                                                    <span class="form-selectgroup-label-content">
+                                                                        <span
+                                                                            class="form-selectgroup-title strong mb-1">Yes</span>
+                                                                    </span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <label class="form-selectgroup-item">
+                                                                <input type="radio" name="report" value="0"
+                                                                    class="form-selectgroup-input" />
+                                                                <span
+                                                                    class="form-selectgroup-label d-flex align-items-center p-3">
+                                                                    <span class="me-3">
+                                                                        <span class="form-selectgroup-check"></span>
+                                                                    </span>
+                                                                    <span class="form-selectgroup-label-content">
+                                                                        <span
+                                                                            class="form-selectgroup-title strong mb-1">No</span>
+                                                                    </span>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="report-error" class="error-message text-danger text-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
                                                     <label class="form-label">Announcement Module</label>
                                                     <div class="form-selectgroup-boxes row mb-3">
                                                         <div class="col-lg-6">

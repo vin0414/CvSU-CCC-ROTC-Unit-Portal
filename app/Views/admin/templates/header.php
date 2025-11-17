@@ -178,6 +178,7 @@
                         </a>
                     </li>
                     <?php endif; ?>
+                    <?php if($role['report']==1): ?>
                     <li class="nav-item <?= ($title == 'Reports') ? 'active' : '' ?>">
                         <a class="nav-link" href="<?=site_url('reports')?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -197,6 +198,7 @@
                             <span class="nav-link-title">&nbsp;Reports </span>
                         </a>
                     </li>
+                    <?php endif;?>
                     <?php if($role['announcement']==1): ?>
                     <li class="nav-item <?= ($title == 'Announcement') ? 'active' : '' ?>">
                         <a class="nav-link" href="<?=site_url('announcement')?>">

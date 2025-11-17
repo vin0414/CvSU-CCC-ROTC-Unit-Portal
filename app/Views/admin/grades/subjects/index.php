@@ -92,6 +92,10 @@
                                                     class="dropdown-item">
                                                     <i class="ti ti-edit"></i>&nbsp;Edit Subject
                                                 </a>
+                                                <button type="button" class="dropdown-item add"
+                                                    value="<?= $row['subject_id'] ?>">
+                                                    <i class="ti ti-plus"></i>&nbsp;Create Classes
+                                                </button>
                                                 <a href="<?= site_url('gradebook/subject/upload/') ?><?= $row['subject_id'] ?>"
                                                     class="dropdown-item">
                                                     <i class="ti ti-upload"></i>&nbsp;Upload Grades
