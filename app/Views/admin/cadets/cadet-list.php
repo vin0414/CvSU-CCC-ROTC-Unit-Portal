@@ -140,38 +140,68 @@
                                 <div class="tab-pane fade" id="tabs-list-8">
                                     <div class="row g-3">
                                         <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <form method="GET" class="row g-3" id="form">
-                                                        <div class="col-lg-3">
-                                                            <label class="form-label">School Year</label>
-                                                            <select name="year" class="form-select">
-                                                                <option value="">Choose</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <label class="form-label">Semester</label>
-                                                            <select name="semester" class="form-select">
-                                                                <option value="">Choose</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-lg-4">
-                                                            <label class="form-label">Name of Class</label>
-                                                            <select name="className" class="form-select">
-                                                                <option value="">Choose</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-lg-3">
-                                                            <label class="form-label">&nbsp;</label>
-                                                            <button type="submit" class="btn btn-success">
-                                                                <i class="ti ti-settings"></i>&nbsp;Generate
-                                                            </button>
-                                                            <button type="button" class="btn btn-default">
-                                                                <i class="ti ti-download"></i>&nbsp;Download
-                                                            </button>
-                                                        </div>
-                                                    </form>
+                                            <form method="GET" class="row g-3" id="form">
+                                                <?php
+                                                $startYear = date('Y');
+                                                $numberOfSemesters = 5;
+
+                                                $semesters = [];
+                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                    $from = $startYear + $i;
+                                                    $to = $from + 1;
+                                                    $semesters[] = "$from-$to";
+                                                }
+                                                ?>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">School Year</label>
+                                                    <select name="year" class="form-select" id="year">
+                                                        <option value="">Choose</option>
+                                                        <?php foreach ($semesters as $semester): ?>
+                                                        <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">Semester</label>
+                                                    <select name="semester" class="form-select" id="semester">
+                                                        <option value="">Choose</option>
+                                                        <option>1st</option>
+                                                        <option>2nd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <label class="form-label">Name of Class</label>
+                                                    <select name="className" class="form-select" id="className">
+                                                        <option value="">Choose</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="ti ti-settings"></i>&nbsp;Generate
+                                                    </button>
+                                                    <button type="button" class="btn btn-default">
+                                                        <i class="ti ti-download"></i>&nbsp;Download
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped" id="table">
+                                                    <thead>
+                                                        <th>Student No</th>
+                                                        <th>Fullname</th>
+                                                        <th>Course</th>
+                                                        <th>Year</th>
+                                                        <th>Section</th>
+                                                    </thead>
+                                                    <tbody id="output">
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">No Data(s) Found</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -228,6 +258,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <script>
+    $('#semester').change(function() {
+        let semester = $(this).val();
+        let year = $('#year').val();
+        $.ajax({
+            url: "<?= site_url('gradebook/class/list') ?>",
+            method: "GET",
+            data: {
+                year: year,
+                semester: semester
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                const dropdown = $('#className');
+                response.class.forEach(function(item) {
+                    dropdown.append(
+                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                    );
+                });
+
+            }
+        });
+    });
     let table1 = $('#table1').DataTable({
         "processing": true,
         "serverSide": true,
@@ -329,6 +382,25 @@
                         }
                     }
                 });
+            }
+        });
+    });
+
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('#output').html('<tr><td colspan="5" class="text-center">Loading...</td></tr>');
+        $.ajax({
+            url: "<?= site_url('gradebook/attendance/list') ?>",
+            method: "GET",
+            data: data,
+            success: function(response) {
+                if (response === "") {
+                    $('#output').html(
+                        '<tr><td colspan="5" class="text-center">No Data(s) found</td></tr>');
+                } else {
+                    $('#output').html(response);
+                }
             }
         });
     });

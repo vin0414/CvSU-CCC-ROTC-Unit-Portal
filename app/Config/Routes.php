@@ -60,7 +60,22 @@ $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
 $routes->post('gradebook/subject/save','Administrator::saveSubject');
 $routes->post('gradebook/subject/update','Administrator::updateSubject');
-$routes->post('gradebook/grades/save','Enrolment::saveGrades');
+$routes->post('gradebook/grades/save',to: 'Enrolment::saveGrades');
+$routes->post('gradebook/class/save','Enrolment::saveClass');
+$routes->get('gradebook/class/fetch','Enrolment::fetchClass');
+$routes->get('gradebook/subject/class/fetch','Enrolment::fetchSubjectClass');
+$routes->get('gradebook/class/list','Enrolment::fetchList');
+$routes->get('gradebook/attendance/list','Enrolment::listAttendance');
+//inventory
+$routes->post('inventory/category/add','Inventory::addCategory');
+$routes->get('inventory/category/fetch','Inventory::fetchCategory');
+$routes->post('inventory/item/save','Inventory::saveItem');
+$routes->post('inventory/item/edit','Inventory::editItem');
+$routes->post('inventory/item/damage','Inventory::damageItem');
+$routes->post('inventory/item/restore','Inventory::restoreItem');
+$routes->post('inventory/item/borrow','Inventory::borrowItem');
+$routes->post('inventory/item/return','Inventory::returnItem');
+$routes->post('inventory/item/release','Inventory::releaseItem');
 //excel scanner
 $routes->post('file/upload','ExcelScanner::upload');
 //cadet trainings
@@ -107,11 +122,11 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
     $routes->get('gradebook/subject/view/(:any)','Administrator::viewSummary/$1');
     $routes->get('gradebook/subject/upload/(:any)','Administrator::uploadGrades/$1');
-    //inventory
+    //inventory 
     $routes->get('inventory','Administrator::inventory');
     $routes->get('inventory/stock/add','Administrator::addInventory');
     $routes->get('inventory/stock/export','Administrator::exportInventory');
-    $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory');
+    $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory/$1');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

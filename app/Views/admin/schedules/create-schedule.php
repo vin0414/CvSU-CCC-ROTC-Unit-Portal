@@ -96,12 +96,19 @@
                                             </select>
                                             <div id="semester-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-8">
+                                        <div class="col-lg-6">
                                             <label class="form-label">Subject/Subject Code</label>
                                             <select class="form-select" name="subject" id="subject">
                                                 <option value="">Choose</option>
                                             </select>
                                             <div id="subject-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="form-label">Name of Class</label>
+                                            <select class="form-select" name="className" id="className">
+                                                <option value="">Choose</option>
+                                            </select>
+                                            <div id="className-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -215,6 +222,32 @@
                 response.subject.forEach(function(item) {
                     dropdown.append(
                         `<option value="${item.subject_id}">${item.subjectName} - ${item.subjectDetails}</option>`
+                    );
+                });
+
+            }
+        });
+    });
+
+    $('#subject').change(function() {
+        let semester = $('#semester').val();
+        let year = $('#year').val();
+        let subject = $(this).val();
+        $.ajax({
+            url: "<?= site_url('gradebook/subject/class/fetch') ?>",
+            method: "GET",
+            data: {
+                year: year,
+                semester: semester,
+                subject: subject
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                const dropdown = $('#className');
+                response.class.forEach(function(item) {
+                    dropdown.append(
+                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
                     );
                 });
 

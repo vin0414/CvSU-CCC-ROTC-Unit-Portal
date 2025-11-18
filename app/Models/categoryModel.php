@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class cadetTrainingModel extends Model
+class categoryModel extends Model
 {
-    protected $table            = 'trainings';
-    protected $primaryKey       = 'training_id';
+    protected $table            = 'categories';
+    protected $primaryKey       = 'category_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['student_id','schedule_id','class_id','status','remarks'];
+    protected $allowedFields    = ['categoryName','account_id'];
 
     // Dates
     protected $useTimestamps = true;

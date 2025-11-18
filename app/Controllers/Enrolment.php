@@ -4,6 +4,8 @@ namespace App\Controllers;
 use Config\App;
 use \App\Models\cadetTrainingModel;
 use \App\Models\performanceModel;
+use \App\Models\classModel;
+use \App\Models\scheduleModel;
 
 class Enrolment extends BaseController
 {   
@@ -50,6 +52,7 @@ class Enrolment extends BaseController
     public function saveTraining()
     {
         $trainingModel = new cadetTrainingModel();
+        $model = new scheduleModel();
         $validation = $this->validate([
             'cadet'=>'required|numeric',
         ]);
@@ -74,9 +77,12 @@ class Enrolment extends BaseController
             {
                 for($i=0;$i<count($schedule);$i++)
                 {
+                    //get the class ID
+                    $classID = $model->where('schedule_id',$schedule[$i])->first();
                     $data = [
                         'student_id'=>$this->request->getPost('cadet'),
                         'schedule_id'=>$schedule[$i],
+                        'class_id'=>$classID['class_id'],
                         'status'=>1,
                         'remarks'=>'N/A'
                     ];
@@ -161,5 +167,111 @@ class Enrolment extends BaseController
             $logModel->save($data);
             return $this->response->setJSON(['success'=>'Successfully submitted']);
         }
+    }
+
+    public function saveClass()
+    {
+        $classModel = new classModel();
+        $validation = $this->validate([
+            'year'=>'required',
+            'semester'=>'required',
+            'subject'=>'required|numeric',
+            'className'=>['rules'=>'required','errors'=>[
+                'required'=>'Name of class is required'
+            ]],
+            'section'=>['rules'=>'required','errors'=>[
+                'required'=>'Section is required'
+            ]],
+        ]);
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                    'school_year'=>$this->request->getPost('year'),
+                    'semester'=>$this->request->getPost('semester'),
+                    'subject_id'=>$this->request->getPost('subject'),
+                    'className'=>$this->request->getPost('className'),
+                    'section'=>$this->request->getPost('section'),
+                    'status'=>1
+                ];
+            $classModel->save($data);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Add new class',
+                    'page'=>'Gradebook',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
+    }
+
+    public function fetchClass()
+    {
+        $val = $this->request->getGet('value');
+        $output="";
+        $classModel = new classModel();
+        $class = $classModel->where('subject_id',$val)->findAll();
+        foreach($class as $row)
+        {
+            $output.='<tr>
+                        <td>'.$row['school_year'].'</td>
+                        <td>'.$row['semester'].'</td>
+                        <td>'.$row['className'].'</td>
+                        <td>'.$row['section'].'</td>
+                     </tr>';
+        }
+        echo $output;
+    }
+
+    public function fetchSubjectClass()
+    {
+        $model = new classModel();
+        $semester = $this->request->getGet('semester');
+        $year = $this->request->getGet('year');
+        $subject = $this->request->getGet('subject');
+        $class = $model->where('school_year',$year)
+                        ->where('semester',$semester)
+                        ->where('subject_id',$subject)
+                        ->findAll();
+        return $this->response->setJSON(['class'=>$class]);
+    }
+
+    public function fetchList()
+    {
+        $model = new classModel();
+        $semester = $this->request->getGet('semester');
+        $year = $this->request->getGet('year');
+        $class = $model->where('school_year',$year)
+                        ->where('semester',$semester)
+                        ->findAll();
+        return $this->response->setJSON(['class'=>$class]);
+    }
+
+    public function listAttendance()
+    {
+        $className = $this->request->getGet('className');
+        $output="";
+        $result = $this->db->table('trainings a')
+                    ->select('b.course,b.year,b.section,c.firstname,c.middlename,c.lastname,c.school_id')
+                    ->join('cadets b','b.student_id=a.student_id','LEFT')
+                    ->join('students c','c.student_id=a.student_id','LEFT')
+                    ->where('a.class_id',$className)->groupBy('a.student_id')->get()->getResult();
+        foreach($result as $row)
+        {
+            $output.='<tr>
+                        <td>'.$row->school_id.'</td>
+                        <td>'.$row->firstname.' '.$row->middlename.' '.$row->lastname.'</td>
+                        <td>'.$row->course.'</td>
+                        <td>'.$row->year.'</td>
+                        <td>'.$row->section.'</td>
+                     </tr>';
+        }
+        echo $output;
     }
 }

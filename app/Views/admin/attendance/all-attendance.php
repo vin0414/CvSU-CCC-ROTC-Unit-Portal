@@ -69,6 +69,11 @@
                                         <i class="ti ti-clipboard-data"></i>&nbsp;Summary
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-list-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-clipboard-check"></i>&nbsp;Master List
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -90,7 +95,8 @@
                                                     <td><?=date('F d, Y',strtotime($row->date))?></td>
                                                     <td><?=date('h:i:s a',strtotime($row->time))?></td>
                                                     <td><?=$row->school_id?></td>
-                                                    <td><?=$row->fullname?></td>
+                                                    <td><?=$row->firstname?>&nbsp;<?=$row->middlename?>&nbsp;<?=$row->lastname?>
+                                                    </td>
                                                     <td><?=$row->remarks?></td>
                                                     <td><?=$row->token?></td>
                                                 </tr>
@@ -115,7 +121,8 @@
                                                 <tr>
                                                     <td><?=date('F d, Y',strtotime($row->date))?></td>
                                                     <td><?=$row->school_id?></td>
-                                                    <td><?=$row->fullname?></td>
+                                                    <td><?=$row->firstname?>&nbsp;<?=$row->middlename?>&nbsp;<?=$row->lastname?>
+                                                    </td>
                                                     <td><?=date('h:i',strtotime($row->hours))?></td>
                                                     <td><?=$row->token?></td>
                                                     <td>
@@ -139,6 +146,57 @@
                                                 <?php endforeach;?>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-list-8">
+                                    <div class="row g-3">
+                                        <div class="col-lg-12">
+                                            <form method="GET" class="row g-3" id="form">
+                                                <?php
+                                                $startYear = date('Y');
+                                                $numberOfSemesters = 5;
+
+                                                $semesters = [];
+                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                    $from = $startYear + $i;
+                                                    $to = $from + 1;
+                                                    $semesters[] = "$from-$to";
+                                                }
+                                                ?>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">School Year</label>
+                                                    <select name="year" class="form-select" id="year">
+                                                        <option value="">Choose</option>
+                                                        <?php foreach ($semesters as $semester): ?>
+                                                        <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">Semester</label>
+                                                    <select name="semester" class="form-select" id="semester">
+                                                        <option value="">Choose</option>
+                                                        <option>1st</option>
+                                                        <option>2nd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <label class="form-label">Name of Class</label>
+                                                    <select name="className" class="form-select" id="className">
+                                                        <option value="">Choose</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="ti ti-settings"></i>&nbsp;Generate
+                                                    </button>
+                                                    <button type="button" class="btn btn-default">
+                                                        <i class="ti ti-download"></i>&nbsp;Download
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -180,6 +238,29 @@
     <script>
     $('#table1').DataTable();
     $('#table2').DataTable();
+    $('#semester').change(function() {
+        let semester = $(this).val();
+        let year = $('#year').val();
+        $.ajax({
+            url: "<?= site_url('gradebook/class/list') ?>",
+            method: "GET",
+            data: {
+                year: year,
+                semester: semester
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                const dropdown = $('#className');
+                response.class.forEach(function(item) {
+                    dropdown.append(
+                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                    );
+                });
+
+            }
+        });
+    });
     </script>
 </body>
 

@@ -612,6 +612,7 @@ class Administrator extends BaseController
             'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
             'semester'=>['rules'=>'required','errors'=>['required'=>'Semester is required']],
             'subject'=>['rules'=>'required','errors'=>['required'=>'Subject is required']],
+            'className'=>['rules'=>'required','errors'=>['required'=>'Name of Class is required']],
             'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
             'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
             'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
@@ -631,6 +632,7 @@ class Administrator extends BaseController
                 'school_year'=>$this->request->getPost('school_year'),
                 'semester'=>$this->request->getPost('semester'),
                 'subject_id'=>$this->request->getPost('subject'),
+                'class_id'=>$this->request->getPost('className'),
                 'name'=>$this->request->getPost('name'),
                 'details'=>$this->request->getPost('details'),
                 'day'=>$this->request->getPost('day'),
@@ -735,14 +737,14 @@ class Administrator extends BaseController
         {
             $data['title']="Attendance";
             $attendance = $this->db->table('attendance a')
-                          ->select('a.*,b.fullname,b.school_id')
+                          ->select('a.*,b.firstname,b.middlename,b.lastname,b.school_id')
                           ->join('students b','b.student_id=a.student_id','LEFT')
                           ->groupBy('a.attendance_id')
                           ->get()->getResult();
             $data['attendance']=$attendance;
             //summary
             $summary = $this->db->table('attendance a')
-                       ->select('a.date,b.fullname,b.school_id,
+                       ->select('a.date,b.firstname,b.middlename,b.lastname,b.school_id,
                         SEC_TO_TIME(TIME_TO_SEC(TIMEDIFF(
                                 MAX(CASE WHEN a.remarks = "Out" THEN a.time END),
                                 MIN(CASE WHEN a.remarks = "In" THEN a.time END)
@@ -1123,8 +1125,61 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Inventory";
+            //load all the items
+            $inventoryModel = new \App\Models\inventoryModel();
+            $data['inventory'] = $inventoryModel->join('categories','categories.category_id=inventory.category_id','LEFT')
+                                                ->findAll();
+            //damaged Items
+            $data['damage'] = $this->db->table('damaged_item a')
+                                ->select('a.*,b.item')
+                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
+                                ->groupBy('a.damaged_id')->get()->getResult();
             return view('admin/inventory/index',$data);
         }
+    }
+
+    public function addInventory()
+    {
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            //category
+            $model = new \App\Models\categoryModel();
+            $data['category'] = $model->findAll();
+            return view('admin/inventory/add',$data);
+        }
+    }
+
+    public function editInventory($id)
+    {
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            $categoryModel = new \App\Models\categoryModel();
+            $data['category'] = $categoryModel->findAll();
+            //item
+            $model = new \App\Models\inventoryModel();
+            $item = $model->where('inventory_id',$id)->first();
+            if(empty($item))
+            {
+                return redirect()->to('/inventory')->with('fail', 'Item(s) not found! Please try again');
+            }
+            $data['item']=$item;
+            return view('admin/inventory/edit',$data);
+        }
+    }
+
+    public function exportInventory()
+    {
+
     }
 
     public function announcement()

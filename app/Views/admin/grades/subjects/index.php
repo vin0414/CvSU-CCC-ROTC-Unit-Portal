@@ -94,7 +94,11 @@
                                                 </a>
                                                 <button type="button" class="dropdown-item add"
                                                     value="<?= $row['subject_id'] ?>">
-                                                    <i class="ti ti-plus"></i>&nbsp;Create Classes
+                                                    <i class="ti ti-plus"></i>&nbsp;Create Class
+                                                </button>
+                                                <button type="button" class="dropdown-item list"
+                                                    value="<?= $row['subject_id'] ?>">
+                                                    <i class="ti ti-list"></i>&nbsp;All Classes
                                                 </button>
                                                 <a href="<?= site_url('gradebook/subject/upload/') ?><?= $row['subject_id'] ?>"
                                                     class="dropdown-item">
@@ -137,6 +141,99 @@
             <!--  END FOOTER  -->
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="addModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Add Class</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="form">
+                        <?= csrf_field() ?>
+                        <?php
+                        $startYear = date('Y');
+                        $numberOfSemesters = 5;
+
+                        $semesters = [];
+                        for ($i = 0; $i < $numberOfSemesters; $i++) {
+                            $from = $startYear + $i;
+                            $to = $from + 1;
+                            $semesters[] = "$from-$to";
+                        }
+                        ?>
+                        <input type="hidden" name="subject" id="subject" />
+                        <div class="col-lg-12">
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">School Year</label>
+                                    <select name="year" class="form-select" id="year">
+                                        <option value="">Choose</option>
+                                        <?php foreach ($semesters as $semester): ?>
+                                        <option value="<?= $semester ?>"><?= $semester ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div id="year-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Semester</label>
+                                    <select name="semester" class="form-select" id="semester">
+                                        <option value="">Choose</option>
+                                        <option>1st</option>
+                                        <option>2nd</option>
+                                    </select>
+                                    <div id="semester-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row g-3">
+                                <div class="col-lg-8">
+                                    <label class="form-label">Class Name</label>
+                                    <input type="text" class="form-control" name="className" />
+                                    <div id="className-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label class="form-label">Section</label>
+                                    <input type="text" class="form-control" name="section" />
+                                    <div id="section-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary" id="btnSave">
+                                <i class="ti ti-device-floppy"></i>&nbsp;Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="viewModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">View Classes</div>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Name of Class</th>
+                                <th>Section</th>
+                            </thead>
+                            <tbody id="output"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -148,6 +245,65 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     $('#table').DataTable();
+    $(document).on('click', '.add', function() {
+        $('#addModal').modal('show');
+        $('#subject').attr("value", $(this).val());
+    });
+    $(document).on('click', '.list', function() {
+        $.ajax({
+            url: "<?= site_url('gradebook/class/fetch') ?>",
+            method: "GET",
+            data: {
+                value: $(this).val()
+            },
+            success: function(response) {
+                $('#viewModal').modal('show');
+                $('#output').html(response);
+            }
+        });
+    });
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        $('.error-message').html('');
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
+        let data = $(this).serialize();
+        $.ajax({
+            url: "<?=site_url('gradebook/class/save')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully saved",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                            $('#form')[0].reset();
+                            $('#addModal').modal('hide');
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
     </script>
 </body>
 

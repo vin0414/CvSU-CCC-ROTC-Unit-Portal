@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
-    <title>Login | CvSU-CCC ROTC Unit Portal</title>
+    <title>Login | CvSU CC ROTC Unit</title>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="<?=base_url('assets/css/tabler.min.css')?>" rel="stylesheet" />
     <!-- END GLOBAL MANDATORY STYLES -->
@@ -31,7 +31,7 @@
             <center><img src="<?=base_url('assets/images/logo.png')?>" alt="logo" width="100px" class="mb-4" /></center>
             <div class="card card-md">
                 <div class="card-body">
-                    <h2 class="h2 text-center">CvSU-CCC ROTC Unit Portal</h2>
+                    <h2 class="h2 text-center">CvSU CC ROTC Unit</h2>
                     <p class="text-center"><small>Login to your account</small></p>
                     <?php if(!empty(session()->getFlashdata('fail'))) : ?>
                     <div class="alert alert-important alert-danger alert-dismissible" role="alert">
