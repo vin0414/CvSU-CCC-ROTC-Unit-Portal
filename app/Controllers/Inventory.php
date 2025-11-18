@@ -6,6 +6,8 @@ use \App\Models\categoryModel;
 use \App\Models\inventoryModel;
 use \App\Models\damageModel;
 use \App\Models\borrowModel;
+use \App\Models\returnModel;
+use \App\Models\purchaseModel;
 
 class Inventory extends BaseController
 {   
@@ -230,6 +232,132 @@ class Inventory extends BaseController
 
     public function borrowItem()
     {
-        
+        $model = new inventoryModel();
+        $borrowModel = new borrowModel();
+        $validation = $this->validate([
+            'qty'=>'required|numeric',
+            'borrower'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
+            'date_return'=>['rules'=>'required','errors'=>['required'=>'Enter the return date of the item']]
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'inventory_id'=>$this->request->getPost('borrowID'),
+                'qty'=>$this->request->getPost('qty'),
+                'borrower'=>$this->request->getPost('borrower'),
+                'date_expected'=>$this->request->getPost('date_return'),
+                'status'=>0
+            ];
+            $borrowModel->save($data);
+            //deduct the items
+            $inventory = $model->where('inventory_id',$this->request->getPost('borrowID'))->first();
+            $oldQty = $inventory['quantity'];
+            $newQty = $oldQty-$this->request->getPost('qty');
+            $records = ['quantity'=>$newQty];
+            $model->update($this->request->getPost('borrowID'),$records);
+            //logs  
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Borrowed item  total of :'.$this->request->getPost('qty'),
+                    'page'=>'Inventory',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
+    }
+
+    public function returnItem()
+    {
+        $model = new inventoryModel();
+        $borrowModel = new borrowModel();
+        $returnModel = new returnModel();
+        $validation = $this->validate([
+            'return_qty'=>['rules'=>'required|numeric','errors'=>['required'=>'Quantity is required','numeric'=>'Enter valid value']],
+            'return_by'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
+            'status'=>'required'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            //save the data
+            $data = [
+                'inventory_id'=>$this->request->getPost('returnID'),
+                'qty'=>$this->request->getPost('return_qty'),
+                'borrower'=>$this->request->getPost('return_by'),
+                'status'=>$this->request->getPost('status')
+            ];
+            $returnModel->save($data);
+            //update the borrow status
+            $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
+                                  ->first();
+            $record = ['status'=>1];
+            $borrowModel->update($borrow['borrow_id'],$record);
+            //return the stocks
+            $inventory = $model->where('inventory_id',$this->request->getPost('returnID'))->first();
+            $oldQty = $inventory['quantity'];
+            $newQty = $oldQty+$this->request->getPost('return_qty');
+            $newData = ['quantity'=>$newQty];
+            $model->update($inventory['inventory_id'],$newData);
+            //logs 
+            date_default_timezone_set('Asia/Manila');
+            $logModel = new \App\Models\logModel();
+            $data = ['account_id'=>session()->get('loggedAdmin'),
+                    'activities'=>'Return items  total of :'.$this->request->getPost('return_qty'),
+                    'page'=>'Inventory',
+                    'datetime'=>date('Y-m-d h:i:s a')
+                    ];      
+            $logModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
+    }
+
+    public function releaseItem()
+    {
+        $purchase = new purchaseModel();
+        $model = new inventoryModel();
+        $item = array_map(fn($q) => (int) strip_tags($q), (array) $this->request->getPost('item')); 
+        $qty = array_map(fn($q) => (int) strip_tags($q), (array) $this->request->getPost('qty'));
+        $status = $this->request->getPost('status');
+        for($i = 0; $i < count($item); $i++)
+        {
+            if(!empty($qty[$i]))
+            {
+                $invent = $model->where('inventory_id',$item[$i])->first();
+                $total = (int) $qty[$i] * (int) $invent['price'];
+                $data = [
+                    'inventory_id'=>$item[$i],
+                    'qty'=>$qty[$i],
+                    'price'=>(int) $invent['price'],
+                    'total'=>$total,
+                    'status'=>$status
+                ];
+                $purchase->save($data);
+                //deduct the quantity of inventory
+                $newQty = $invent['quantity']-$qty[$i];
+                $record = ['quantity'=>$newQty];
+                $model->update($invent['inventory_id'],$record);
+            }
+        }
+        //logs  
+        date_default_timezone_set('Asia/Manila');
+        $logModel = new \App\Models\logModel();
+        $data = ['account_id'=>session()->get('loggedAdmin'),
+                'activities'=>'Released Items',
+                'page'=>'Inventory',
+                'datetime'=>date('Y-m-d h:i:s a')
+                ];      
+        $logModel->save($data);
+        return $this->response->setJSON(['success'=>'Successfully saved']);
     }
 }

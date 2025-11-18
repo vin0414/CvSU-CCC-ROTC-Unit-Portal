@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class studentModel extends Model
+class returnModel extends Model
 {
-    protected $table            = 'students';
-    protected $primaryKey       = 'student_id';
+    protected $table            = 'return_item';
+    protected $primaryKey       = 'return_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['school_year','school_id','password','lastname','middlename','firstname','email','status','is_enroll','photo','token'];
+    protected $allowedFields    = ['inventory_id','qty','borrower','status'];
 
     // Dates
     protected $useTimestamps = true;

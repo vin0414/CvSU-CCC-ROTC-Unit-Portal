@@ -136,6 +136,28 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="#tabs-purchase-8" class="nav-link" data-bs-toggle="tab">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-cash-register">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M21 15h-2.5c-.398 0 -.779 .158 -1.061 .439c-.281 .281 -.439 .663 -.439 1.061c0 .398 .158 .779 .439 1.061c.281 .281 .663 .439 1.061 .439h1c.398 0 .779 .158 1.061 .439c.281 .281 .439 .663 .439 1.061c0 .398 -.158 .779 -.439 1.061c-.281 .281 -.663 .439 -1.061 .439h-2.5" />
+                                            <path d="M19 21v1m0 -8v1" />
+                                            <path
+                                                d="M13 21h-7c-.53 0 -1.039 -.211 -1.414 -.586c-.375 -.375 -.586 -.884 -.586 -1.414v-10c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h2m12 3.12v-1.12c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2" />
+                                            <path
+                                                d="M16 10v-6c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-4c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414v6m8 0h-8m8 0h1m-9 0h-1" />
+                                            <path d="M8 14v.01" />
+                                            <path d="M8 17v.01" />
+                                            <path d="M12 13.99v.01" />
+                                            <path d="M12 17v.01" />
+                                        </svg>
+                                        &nbsp;Purchase Items
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="#tabs-setup-8" class="nav-link" data-bs-toggle="tab">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -249,7 +271,25 @@
                                             <th>Expected Date</th>
                                             <th>Action</th>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <?php foreach($borrow as $row): ?>
+                                            <tr>
+                                                <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
+                                                <td><?= $row->item ?></td>
+                                                <td><?= $row->qty ?></td>
+                                                <td><?= $row->borrower ?></td>
+                                                <td><?= date('M d, Y',strtotime($row->date_expected)) ?></td>
+                                                <td>
+                                                    <?php if($row->status==0): ?>
+                                                    <button type="button" class="btn btn-primary return"
+                                                        value="<?= $row->inventory_id ?>">
+                                                        <i class="ti ti-package-import"></i>&nbsp;Return
+                                                    </button>
+                                                    <?php endif;?>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach;?>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-return-8">
@@ -261,7 +301,39 @@
                                             <th>Borrower</th>
                                             <th>Status</th>
                                         </thead>
-                                        <tbody></tbody>
+                                        <tbody>
+                                            <?php foreach($return as $row): ?>
+                                            <tr>
+                                                <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
+                                                <td><?= $row->item ?></td>
+                                                <td><?= $row->qty ?></td>
+                                                <td><?= $row->borrower ?></td>
+                                                <td><?= $row->status ?></td>
+                                            </tr>
+                                            <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-purchase-8">
+                                    <table class="table table-bordered table-striped" id="tblpurchase">
+                                        <thead>
+                                            <th>Date</th>
+                                            <th>Item(s)</th>
+                                            <th>Qty</th>
+                                            <th>Unit Price</th>
+                                            <th>Total Price</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach($purchase as $row): ?>
+                                            <tr>
+                                                <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
+                                                <td><?= $row->item ?></td>
+                                                <td><?= $row->qty ?></td>
+                                                <td><?= number_format($row->price,2) ?></td>
+                                                <td><?= number_format($row->total,2) ?></td>
+                                            </tr>
+                                            <?php endforeach;?>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-setup-8">
@@ -399,6 +471,47 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="returnModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Return Item</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="frmReturn">
+                        <?= csrf_field() ?>
+                        <input type="hidden" id="returnID" name="returnID" />
+                        <div class="col-lg-12">
+                            <label class="form-label">No of Items</label>
+                            <input type="number" class="form-control" name="return_qty" min="1">
+                            <div id="return_qty-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="return_by">
+                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Item Status</label>
+                            <select class="form-select" name="status">
+                                <option value="">Choose</option>
+                                <option>Good Condition</option>
+                                <option>Damaged</option>
+                                <option>Partially Damaged</option>
+                            </select>
+                            <div id="status-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="form-control btn btn-primary" id="btnReturn">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -413,6 +526,7 @@
     $('#tbldamaged').DataTable();
     $('#tblborrowed').DataTable();
     $('#tblreturned').DataTable();
+    $('#tblpurchase').DataTable();
 
     $(document).on('click', '.borrow', function() {
         $('#borrowModal').modal('show');
@@ -422,6 +536,12 @@
     $(document).on('click', '.damage', function() {
         $('#damageModal').modal('show');
         $('#damageID').attr("value", $(this).val());
+    });
+
+
+    $(document).on('click', '.return', function() {
+        $('#returnModal').modal('show');
+        $('#returnID').attr("value", $(this).val());
     });
 
     let category = $('#tblcategory').DataTable({
@@ -565,6 +685,88 @@
                         }
                     }
                 });
+            }
+        });
+    });
+
+    $('#frmBorrow').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $('#btnSend').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
+        );
+        $.ajax({
+            url: "<?=site_url('inventory/item/borrow')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSend').attr('disabled', false).html('Submit');
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully submitted",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                            $('#frmDamage').modal('hide');
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
+
+    $('#frmReturn').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $('#btnReturn').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
+        );
+        $.ajax({
+            url: "<?=site_url('inventory/item/return')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnReturn').attr('disabled', false).html('Submit');
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully submitted",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                            $('#frmReturn').modal('hide');
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
             }
         });
     });

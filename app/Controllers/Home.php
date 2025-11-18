@@ -38,6 +38,7 @@ class Home extends BaseController
             'lastname'=>['rules'=>'required','errors'=>['required'=>'Lastname is required']],
             'middlename'=>['rules'=>'required','errors'=>['required'=>'M.I. is required']],
             'firstname'=>['rules'=>'required','errors'=>['required'=>'First name is required']],
+            'year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
             'school_id'=>[
                 'rules'=>'required|is_unique[students.school_id]',
                 'errors'=>[
@@ -80,6 +81,7 @@ class Home extends BaseController
             //save
             $userModel = new studentModel();
             $data = [
+                    'school_year'=>$this->request->getPost('year'), 
                     'school_id'=>$this->request->getPost('school_id'), 
                     'password'=>$hash_password,
                     'lastname'=>$this->request->getPost('lastname'),

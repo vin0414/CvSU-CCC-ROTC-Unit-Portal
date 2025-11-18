@@ -3,6 +3,10 @@
 namespace App\Controllers;
 use App\Libraries\Hash;
 use App\Models\accountModel;
+use App\Models\borrowModel;
+use App\Models\inventoryModel;
+use App\Models\purchaseModel;
+use App\Models\returnModel;
 use App\Models\studentModel;
 use App\Models\cadetModel;
 use App\Models\attendanceModel;
@@ -182,10 +186,20 @@ class Administrator extends BaseController
                     ->groupBy('a.assignment_id')
                     ->orderBy('a.assignment_id','DESC')->limit(5)
                     ->get()->getResult();
+        $model = new inventoryModel();
+        $stocks = $model->countAllResults();
+        $borrowModel = new borrowModel();
+        $borrow = $borrowModel->countAllResults();
+        $returnModel = new returnModel();
+        $return = $returnModel->countAllResults();
+        $purchaseModel = new purchaseModel();
+        $purchase = $purchaseModel->countAllResults();
 
         $data = ['title'=>$title,'announcement'=>$announcement,'assignment'=>$assignment,
                 'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
-                'enrolled'=>$totalEnrolled,'training'=>$training];
+                'enrolled'=>$totalEnrolled,'training'=>$training,
+                'stocks'=>$stocks,'borrow'=>$borrow,'return'=>$return,'purchase'=>$purchase
+            ];
         return view('admin/dashboard',$data);
     }
 
@@ -923,7 +937,7 @@ class Administrator extends BaseController
             $account = $accountModel->where('account_id',$assignment['account_id'])->first();
             //students
             $students = $this->db->table('trainings a')
-                        ->select('a.student_id,b.fullname,b.school_id,c.course,c.year,c.section')
+                        ->select('a.student_id,b.firstname,b.middlename,b.lastname,b.school_id,c.course,c.year,c.section')
                         ->join('students b','b.student_id=a.student_id','LEFT')
                         ->join('cadets c','c.student_id=b.student_id','LEFT')
                         ->where('a.schedule_id',$id)
@@ -967,7 +981,7 @@ class Administrator extends BaseController
             $data['subject'] = $subject;
             //grades
             $data['grades'] = $this->db->table('student_performance a')
-                    ->select('a.*,b.school_id,b.fullname')
+                    ->select('a.*,b.school_id,b.firstname,b.lastname,b.middlename')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->where('a.subject_id',$id)
                     ->groupBy('a.performance_id')->get()->getResult();
@@ -1126,7 +1140,7 @@ class Administrator extends BaseController
         {
             $data['title']="Inventory";
             //load all the items
-            $inventoryModel = new \App\Models\inventoryModel();
+            $inventoryModel = new inventoryModel();
             $data['inventory'] = $inventoryModel->join('categories','categories.category_id=inventory.category_id','LEFT')
                                                 ->findAll();
             //damaged Items
@@ -1134,6 +1148,21 @@ class Administrator extends BaseController
                                 ->select('a.*,b.item')
                                 ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
                                 ->groupBy('a.damaged_id')->get()->getResult();
+            //damaged Items
+            $data['borrow'] = $this->db->table('borrow_item a')
+                                ->select('a.*,b.item')
+                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
+                                ->groupBy('a.borrow_id')->get()->getResult();
+            //return Items
+            $data['return'] = $this->db->table('return_item a')
+                                ->select('a.*,b.item')
+                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
+                                ->groupBy('a.return_id')->get()->getResult();
+            //purchase Items
+            $data['purchase'] = $this->db->table('purchase a')
+                                ->select('a.*,b.item')
+                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
+                                ->groupBy('a.purchase_id')->get()->getResult();
             return view('admin/inventory/index',$data);
         }
     }
@@ -1166,7 +1195,7 @@ class Administrator extends BaseController
             $categoryModel = new \App\Models\categoryModel();
             $data['category'] = $categoryModel->findAll();
             //item
-            $model = new \App\Models\inventoryModel();
+            $model = new inventoryModel();
             $item = $model->where('inventory_id',$id)->first();
             if(empty($item))
             {
@@ -1179,7 +1208,17 @@ class Administrator extends BaseController
 
     public function exportInventory()
     {
-
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            $model = new inventoryModel();
+            $data['item'] = $model->findAll();
+            return view('admin/inventory/release',$data);
+        }
     }
 
     public function announcement()
@@ -1408,16 +1447,33 @@ class Administrator extends BaseController
 
     public function report()
     {
-        $title = 'Reports';
-        $data = ['title'=>$title];
-        return view('admin/reports/index',$data);
+        if(!$this->hasPermission('report'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Reports';
+            $data = ['title'=>$title];
+            return view('admin/reports/index',$data);
+        }
     }
 
     public function createReport()
     {
-        $title = 'Reports';
-        $data = ['title'=>$title];
-        return view('admin/reports/create',$data);
+        if(!$this->hasPermission('report'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Reports';
+            //student
+            $studentModel = new studentModel();
+            $student = $studentModel->where('status',1)->findAll();
+            $data = ['title'=>$title,'student'=>$student];
+            return view('admin/reports/create',$data);
+        }
     }
 
     public function accounts()

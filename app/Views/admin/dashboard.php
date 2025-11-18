@@ -257,7 +257,7 @@
                                                     <img src="<?=base_url('assets/images/stocks.png')?>" width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="font-weight-medium"><?= $stocks ?></div>
                                                     <div class="text-secondary">Total Stocks</div>
                                                 </div>
                                             </div>
@@ -273,7 +273,7 @@
                                                         width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="font-weight-medium"><?= $borrow ?></div>
                                                     <div class="text-secondary">Borrowed Items</div>
                                                 </div>
                                             </div>
@@ -288,7 +288,7 @@
                                                     <img src="<?=base_url('assets/images/return.png')?>" width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="font-weight-medium"><?= $return ?></div>
                                                     <div class="text-secondary">Returned Items</div>
                                                 </div>
                                             </div>
@@ -304,7 +304,7 @@
                                                         width="50px" />
                                                 </div>
                                                 <div class="col">
-                                                    <div class="font-weight-medium"><?= $total ?></div>
+                                                    <div class="font-weight-medium"><?= $purchase ?></div>
                                                     <div class="text-secondary">Purchased Items</div>
                                                 </div>
                                             </div>

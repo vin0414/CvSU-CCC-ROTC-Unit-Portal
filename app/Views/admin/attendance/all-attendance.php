@@ -36,19 +36,6 @@
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
-                        <!-- Page title actions -->
-                        <div class="col-auto ms-auto d-print-none">
-                            <div class="btn-list">
-                                <a href="<?=site_url('attendance/add')?>"
-                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
-                                    <i class="ti ti-plus"></i>&nbsp;Add
-                                </a>
-                                <a href="<?=site_url('attendance/add')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
-                                    <i class="ti ti-plus"></i>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

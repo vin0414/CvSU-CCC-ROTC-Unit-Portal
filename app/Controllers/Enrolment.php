@@ -274,4 +274,32 @@ class Enrolment extends BaseController
         }
         echo $output;
     }
+
+    public function fetchGrades()
+    {
+       $className = $this->request->getGet('className'); 
+       $output="";
+        $result = $this->db->table('trainings a')
+                    ->select('b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status')
+                    ->join('students b','b.student_id=a.student_id','LEFT')
+                    ->join('student_performance c','c.student_id=a.student_id','LEFT')
+                    ->where('a.class_id',$className)->groupBy('a.student_id')->get()->getResult();
+        foreach($result as $row)
+        {
+            $output.='<tr>
+                        <td>'.$row->firstname.' '.$row->middlename.' '.$row->lastname.'</td>
+                        <td><input type="number" class="form-control" name="score[]" value="'.$row->finalScore.'"/></td>
+                        <td><input type="number" class="form-control" name="grade[]" value="'.$row->finalGrade.'"/></td>
+                        <td><input type="text" class="form-control" name="remarks[]" value="'.$row->remarks.'"/></td>
+                        <td>
+                            <select class="form-select" name="status[]">
+                                <option value="">Choose</option>
+                                <option value="1">Final</option>
+                                <option value="0">Draft</option>
+                            </select>
+                        </td>
+                     </tr>';
+        }
+        echo $output;
+    }
 }

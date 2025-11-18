@@ -42,6 +42,14 @@
                                 <form action="<?=base_url('register')?>" method="POST" autocomplete="off" novalidate>
                                     <?=csrf_field()?>
                                     <div class="mb-3">
+                                        <label class="form-label">School Year</label>
+                                        <input type="text" name="year" class="form-control" placeholder="e.g. 2025-2026"
+                                            value="<?=set_value('year')?>" autocomplete="off" required />
+                                        <div class="text-danger">
+                                            <small><?=$validation->getError('year') ?></small>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
                                         <label class="form-label">Student No</label>
                                         <input type="text" name="school_id" class="form-control"
                                             placeholder="e.g. ABC-00001" value="<?=set_value('school_id')?>"

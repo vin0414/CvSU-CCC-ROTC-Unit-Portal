@@ -93,14 +93,78 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
-                                        <i class="ti ti-clipboard-data"></i>&nbsp;Violations/Absences
+                                        <i class="ti ti-clipboard-data"></i>&nbsp;Violations
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade active show" id="tabs-home-8"></div>
+                                <div class="tab-pane fade active show" id="tabs-home-8">
+                                    <div class="row g-3">
+                                        <div class="col-lg-12">
+                                            <form method="GET" class="row g-3" id="form">
+                                                <?php
+                                                $startYear = date('Y');
+                                                $numberOfSemesters = 5;
+
+                                                $semesters = [];
+                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                    $from = $startYear + $i;
+                                                    $to = $from + 1;
+                                                    $semesters[] = "$from-$to";
+                                                }
+                                                ?>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">School Year</label>
+                                                    <select name="year" class="form-select" id="year">
+                                                        <option value="">Choose</option>
+                                                        <?php foreach ($semesters as $semester): ?>
+                                                        <option value="<?= $semester ?>"><?= $semester ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">Semester</label>
+                                                    <select name="semester" class="form-select" id="semester">
+                                                        <option value="">Choose</option>
+                                                        <option>1st</option>
+                                                        <option>2nd</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <label class="form-label">Name of Class</label>
+                                                    <select name="className" class="form-select" id="className">
+                                                        <option value="">Choose</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="ti ti-settings"></i>&nbsp;Generate
+                                                    </button>
+                                                    <button type="button" class="btn btn-default">
+                                                        <i class="ti ti-download"></i>&nbsp;Download
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped">
+                                                    <thead>
+                                                        <th>Student Name</th>
+                                                        <th>Raw Score</th>
+                                                        <th>Final Grade</th>
+                                                        <th>Remarks</th>
+                                                        <th>Status</th>
+                                                    </thead>
+                                                    <tbody id="result"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="tab-pane fade" id="tabs-activity-8"></div>
                             </div>
                         </div>
@@ -139,6 +203,50 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $('#semester').change(function() {
+        let semester = $(this).val();
+        let year = $('#year').val();
+        $.ajax({
+            url: "<?= site_url('gradebook/class/list') ?>",
+            method: "GET",
+            data: {
+                year: year,
+                semester: semester
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                const dropdown = $('#className');
+                response.class.forEach(function(item) {
+                    dropdown.append(
+                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                    );
+                });
+
+            }
+        });
+    });
+
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('#result').html('<tr><td colspan="5" class="text-center">Loading...</td></tr>');
+        $.ajax({
+            url: "<?= site_url('report/grades') ?>",
+            method: "GET",
+            data: data,
+            success: function(response) {
+                if (response === "") {
+                    $('#result').html(
+                        '<tr><td colspan="5" class="text-center">No Data(s) found</td></tr>');
+                } else {
+                    $('#result').html(response);
+                }
+            }
+        });
+    });
+    </script>
 </body>
 
 </html>

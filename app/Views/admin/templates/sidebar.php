@@ -141,6 +141,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                         <span class="nav-link-title"> QR Scanner </span>
                     </a>
                 </li>
+                <?php if($role['grading_system']==1): ?>
                 <li class="nav-item <?= ($title == 'Add Subject') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('gradebook/subject/create')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -158,6 +159,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                         <span class="nav-link-title"> Create Subject</span>
                     </a>
                 </li>
+                <?php endif;?>
                 <li class="nav-item <?= ($title == 'Reports') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('reports/create')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">

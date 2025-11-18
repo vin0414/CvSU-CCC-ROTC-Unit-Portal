@@ -103,7 +103,8 @@
                                         <?php foreach($grades as $row):?>
                                         <tr>
                                             <td><?=$row->school_id ?></td>
-                                            <td><?=$row->fullname ?></td>
+                                            <td><?=$row->lastname ?>,&nbsp;<?=$row->firstname ?>&nbsp;<?=$row->middlename ?>
+                                            </td>
                                             <td><?=$row->attendanceScore ?></td>
                                             <td><?=$row->attendanceValue ?></td>
                                             <td><?=$row->attendancePercentage ?></td>

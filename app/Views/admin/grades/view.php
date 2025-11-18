@@ -103,7 +103,8 @@
                                                 <?php foreach($students as $row): ?>
                                                 <tr>
                                                     <td><?= $row->school_id ?></td>
-                                                    <td><?= $row->fullname ?></td>
+                                                    <td><?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
+                                                    </td>
                                                     <td><?= $row->course ?></td>
                                                     <td><?= $row->year ?> - <?= $row->section ?></td>
                                                     <td>

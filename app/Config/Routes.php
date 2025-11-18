@@ -5,8 +5,6 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-//Scanner
-$routes->get('scanner','Home::scanner');
 //student
 $routes->post('validateUser','Home::validateUser');
 $routes->post('register','Home::register');
@@ -66,6 +64,8 @@ $routes->get('gradebook/class/fetch','Enrolment::fetchClass');
 $routes->get('gradebook/subject/class/fetch','Enrolment::fetchSubjectClass');
 $routes->get('gradebook/class/list','Enrolment::fetchList');
 $routes->get('gradebook/attendance/list','Enrolment::listAttendance');
+//report
+$routes->get('report/grades','Enrolment::fetchGrades');
 //inventory
 $routes->post('inventory/category/add','Inventory::addCategory');
 $routes->get('inventory/category/fetch','Inventory::fetchCategory');
@@ -99,6 +99,7 @@ $routes->post('account/password/change','Administrator::changePassword');
 $routes->group('',['filter'=>'AdminCheck'],function($routes)
 {
     $routes->get('dashboard','Administrator::index');
+    $routes->get('scanner','Home::scanner');
     //cadets
     $routes->get('cadets','Administrator::cadetInformation');
     $routes->get('cadets/edit/(:any)','Administrator::editCadet/$1');
