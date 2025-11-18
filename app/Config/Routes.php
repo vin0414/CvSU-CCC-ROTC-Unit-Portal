@@ -66,6 +66,8 @@ $routes->get('gradebook/class/list','Enrolment::fetchList');
 $routes->get('gradebook/attendance/list','Enrolment::listAttendance');
 //report
 $routes->get('report/grades','Enrolment::fetchGrades');
+$routes->post('report/grades/update','Enrolment::updateGrades');
+$routes->post('report/save','Enrolment::saveReport');
 //inventory
 $routes->post('inventory/category/add','Inventory::addCategory');
 $routes->get('inventory/category/fetch','Inventory::fetchCategory');

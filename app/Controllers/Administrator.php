@@ -1454,26 +1454,25 @@ class Administrator extends BaseController
         else
         {
             $title = 'Reports';
-            $data = ['title'=>$title];
+            //violations
+            $violation = $this->db->table('reports a')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->groupBy('a.report_id')
+                        ->get()->getResult();
+            $data = ['title'=>$title,'violation'=>$violation];
             return view('admin/reports/index',$data);
         }
     }
 
     public function createReport()
     {
-        if(!$this->hasPermission('report'))
-        {
-            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
-        }
-        else
-        {
-            $title = 'Reports';
-            //student
-            $studentModel = new studentModel();
-            $student = $studentModel->where('status',1)->findAll();
-            $data = ['title'=>$title,'student'=>$student];
-            return view('admin/reports/create',$data);
-        }
+        $title = 'Create Report';
+        //student
+        $studentModel = new studentModel();
+        $student = $studentModel->where('status',1)->findAll();
+        $data = ['title'=>$title,'student'=>$student];
+        return view('admin/reports/create',$data);
     }
 
     public function accounts()

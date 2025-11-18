@@ -6,6 +6,7 @@ use \App\Models\cadetTrainingModel;
 use \App\Models\performanceModel;
 use \App\Models\classModel;
 use \App\Models\scheduleModel;
+use \App\Models\reportModel;
 
 class Enrolment extends BaseController
 {   
@@ -280,26 +281,87 @@ class Enrolment extends BaseController
        $className = $this->request->getGet('className'); 
        $output="";
         $result = $this->db->table('trainings a')
-                    ->select('b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status')
+                    ->select('b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->join('student_performance c','c.student_id=a.student_id','LEFT')
                     ->where('a.class_id',$className)->groupBy('a.student_id')->get()->getResult();
         foreach($result as $row)
         {
-            $output.='<tr>
-                        <td>'.$row->firstname.' '.$row->middlename.' '.$row->lastname.'</td>
-                        <td><input type="number" class="form-control" name="score[]" value="'.$row->finalScore.'"/></td>
-                        <td><input type="number" class="form-control" name="grade[]" value="'.$row->finalGrade.'"/></td>
-                        <td><input type="text" class="form-control" name="remarks[]" value="'.$row->remarks.'"/></td>
-                        <td>
-                            <select class="form-select" name="status[]">
-                                <option value="">Choose</option>
-                                <option value="1">Final</option>
-                                <option value="0">Draft</option>
-                            </select>
-                        </td>
-                     </tr>';
+            $output .= '<tr>
+                            <td><input type="checkbox" name="student[]" style="width:20px;height:20px;" value="'.$row->performance_id.'" checked/></td>
+                            <td>'.$row->firstname.' '.$row->middlename.' '.$row->lastname.'</td>
+                            <td><input type="number" class="form-control" name="score[]" value="'.$row->finalScore.'"/></td>
+                            <td><input type="number" class="form-control" name="grade[]" value="'.$row->finalGrade.'"/></td>
+                            <td><input type="text" class="form-control" name="remarks[]" value="'.$row->remarks.'"/></td>
+                            <td>
+                                <select class="form-select" name="status[]">
+                                    <option value="">Choose</option>
+                                    <option value="1" '.(($row->status == "1") ? "selected" : "").'>Final</option>
+                                    <option value="0" '.(($row->status == "0") ? "selected" : "").'>Draft</option>
+                                </select>
+                            </td>
+                        </tr>';
         }
         echo $output;
+    }
+
+    public function updateGrades()
+    {
+        $performance = new performanceModel();
+        $student = array_map('strip_tags', (array) $this->request->getPost('student'));
+        $score = array_map(fn($q) => (float) strip_tags($q), (array) $this->request->getPost('score')); 
+        $grade = array_map(fn($q) => (float) strip_tags($q), (array) $this->request->getPost('grade'));
+        $remarks =  array_map('strip_tags', (array) $this->request->getPost('remarks'));
+        $status= array_map('strip_tags', (array) $this->request->getPost('status'));
+
+        for($i=0;$i<count($student);$i++)
+        {
+            $data = [
+                'finalScore'=>$score[$i],
+                'finalGrade'=>$grade[$i],
+                'remarks'=>$remarks[$i],
+                'status'=>$status[$i]
+                ];
+            $performance->update($student[$i],$data);
+        }
+        //logs  
+        date_default_timezone_set('Asia/Manila');
+        $logModel = new \App\Models\logModel();
+        $data = ['account_id'=>session()->get('loggedAdmin'),
+                'activities'=>'Update grades',
+                'page'=>'Report',
+                'datetime'=>date('Y-m-d h:i:s a')
+                ];      
+        $logModel->save($data);
+        return $this->response->setJSON(['success'=>'Successfully updated']);
+    }
+
+    public function saveReport()
+    {
+        $reportModel = new reportModel();
+        $validation = $this->validate([
+            'violation'=>'required',
+            'category'=>'required',
+            'student'=>'required',
+            'details'=>'required'
+        ]);  
+        
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                    'violation'=>$this->request->getPost('violation'),
+                    'category'=>$this->request->getPost('category'),
+                    'student_id'=>$this->request->getPost('student'),
+                    'details'=>$this->request->getPost('details'),
+                    'points'=>0,
+                    'status'=>0
+                ];
+            $reportModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully submitted']);
+        }
     }
 }

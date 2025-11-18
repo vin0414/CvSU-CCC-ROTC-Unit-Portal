@@ -157,7 +157,26 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-activity-8">
-
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="table">
+                                            <thead>
+                                                <th>Title</th>
+                                                <th>Category</th>
+                                                <th>Details</th>
+                                                <th>Points</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach($report as $row): ?>
+                                                <tr>
+                                                    <td><?= $row['violation'] ?></td>
+                                                    <td><?= $row['category'] ?></td>
+                                                    <td><?= $row['details'] ?></td>
+                                                    <td><?= $row['points'] ?></td>
+                                                </tr>
+                                                <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -185,6 +204,9 @@
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>
+    <script>
+    $('#table').DataTable();
+    </script>
 </body>
 
 </html>

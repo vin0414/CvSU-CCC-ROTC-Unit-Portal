@@ -150,22 +150,79 @@
                                             </form>
                                         </div>
                                         <div class="col-lg-12">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered table-striped">
-                                                    <thead>
-                                                        <th>Student Name</th>
-                                                        <th>Raw Score</th>
-                                                        <th>Final Grade</th>
-                                                        <th>Remarks</th>
-                                                        <th>Status</th>
-                                                    </thead>
-                                                    <tbody id="result"></tbody>
-                                                </table>
-                                            </div>
+                                            <form method="POST" class="row g-3" id="frmGenerate">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="id" id="id">
+                                                <div class="col-lg-12">
+                                                    <div class="table-responsive" style="height:400px;overflow-y:auto;">
+                                                        <table class="table table-bordered table-striped">
+                                                            <thead>
+                                                                <th>#</th>
+                                                                <th>Student Name</th>
+                                                                <th>Raw Score</th>
+                                                                <th>Final Grade</th>
+                                                                <th>Remarks</th>
+                                                                <th>Status</th>
+                                                            </thead>
+                                                            <tbody id="result"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12" style="display:none;" id="btn">
+                                                    <button type="submit" class="btn btn-primary" id="btnSave">
+                                                        <i class="ti ti-device-floppy"></i>&nbsp;Save Changes
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-activity-8"></div>
+                                <div class="tab-pane fade" id="tabs-activity-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="table">
+                                            <thead>
+                                                <th>Date</th>
+                                                <th>Violations</th>
+                                                <th>Category</th>
+                                                <th>Details</th>
+                                                <th>Student</th>
+                                                <th>Points</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach($violation as $row): ?>
+                                                <tr>
+                                                    <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
+                                                    <td><?= $row->violation ?></td>
+                                                    <td><?= $row->category ?></td>
+                                                    <td><?= $row->details ?></td>
+                                                    <td>
+                                                        <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
+                                                    </td>
+                                                    <td><?= $row->points ?></td>
+                                                    <td>
+                                                        <button type="button" class="btn dropdown-toggle"
+                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                            role="button">
+                                                            <span>More</span>
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <button type="button" class="dropdown-item addPoints"
+                                                                value="<?= $row->report_id ?>">
+                                                                <i class="ti ti-plus"></i>Add Points
+                                                            </button>
+                                                            <button type="button" class="dropdown-item accept"
+                                                                value="<?= $row->report_id ?>">
+                                                                <i class="ti ti-check"></i>Accept
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -204,6 +261,7 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+    $('#table').DataTable();
     $('#semester').change(function() {
         let semester = $(this).val();
         let year = $('#year').val();
@@ -231,7 +289,7 @@
     $('#form').submit(function(e) {
         e.preventDefault();
         let data = $(this).serialize();
-        $('#result').html('<tr><td colspan="5" class="text-center">Loading...</td></tr>');
+        $('#result').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
         $.ajax({
             url: "<?= site_url('report/grades') ?>",
             method: "GET",
@@ -239,9 +297,46 @@
             success: function(response) {
                 if (response === "") {
                     $('#result').html(
-                        '<tr><td colspan="5" class="text-center">No Data(s) found</td></tr>');
+                        '<tr><td colspan="6" class="text-center">No Data(s) found</td></tr>');
+                    document.getElementById('btn').style = "display:none";
                 } else {
                     $('#result').html(response);
+                    $('#id').attr("value", $('#className').val());
+                    document.getElementById('btn').style = "display:block";
+                }
+            }
+        });
+    });
+
+    $('#frmGenerate').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('#btnSave').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
+        );
+        $.ajax({
+            url: "<?=site_url('report/grades/update')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSave').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Changes'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully saved",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    alert(errors);
                 }
             }
         });

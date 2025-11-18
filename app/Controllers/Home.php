@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Libraries\Hash;
 use App\Models\attachmentModel;
 use App\Models\performanceModel;
+use App\Models\reportModel;
 use App\Models\scheduleModel;
 use App\Models\studentModel;
 use Config\Email;
@@ -405,7 +406,7 @@ class Home extends BaseController
     public function upload()
     {
         $data['title']="Upload File";
-        $attachmentModel = new \App\Models\attachmentModel();
+        $attachmentModel = new attachmentModel();
         $data['attachment'] = $attachmentModel->where('student_id',session()->get('loggedUser'))->first();
         return view('cadet/upload',$data);
     }
@@ -414,7 +415,7 @@ class Home extends BaseController
     public function removeFile()
     {
         $val = $this->request->getPost('value');
-        $attachmentModel = new \App\Models\attachmentModel();
+        $attachmentModel = new attachmentModel();
         //delete the file
         $attachment = $attachmentModel->WHERE('attachment_id',$val)->first();
         $filePath = FCPATH . 'assets/files/' . $attachment['file'];
@@ -451,7 +452,7 @@ class Home extends BaseController
         }
         else
         {
-            $attachmentModel = new \App\Models\attachmentModel();
+            $attachmentModel = new attachmentModel();
             //uploading
             $file = $this->request->getFile('file');
             if ($file && $file->isValid() && !$file->hasMoved()) 
@@ -579,12 +580,18 @@ class Home extends BaseController
         //performance
         $performanceModel = new performanceModel();
         $data['grades'] = $performanceModel->where('student_id',session()->get('loggedUser'))->first();
+        //violations
+        $model = new reportModel();
+        $data['report'] = $model->where('student_id',session()->get('loggedUser'))->findAll();
         return view('cadet/performance',$data);
     }
 
     public function accountSecurity()
     {
         $data['title'] = "Account Security";
+        //student
+        $model = new studentModel();
+        $data['account'] = $model->where('student_id',session()->get('loggedUser'))->first();
         return view('cadet/account',$data);
     }
 
