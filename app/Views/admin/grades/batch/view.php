@@ -34,16 +34,16 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?= $subject['subjectName'] ?> | Grades</h2>
+                            <h2 class="page-title"><?= $batch['batchName'] ?> | Grades</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?=site_url('gradebook/subject')?>"
+                                <a href="<?=site_url('gradebook/batch')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
                                 </a>
-                                <a href="<?=site_url('gradebook/subject')?>"
+                                <a href="<?=site_url('gradebook/batch')?>"
                                     class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-arrow-left"></i>
                                 </a>
@@ -63,7 +63,7 @@
                                 <table class="table table-bordered table-striped" id="table">
                                     <thead>
                                         <tr>
-                                            <th rowspan="2">School ID</th>
+                                            <th rowspan="2">Student No</th>
                                             <th rowspan="2">Fullname</th>
                                             <th colspan="3" class="text-center">Attendance</th>
                                             <th colspan="3" class="text-center">Physical</th>

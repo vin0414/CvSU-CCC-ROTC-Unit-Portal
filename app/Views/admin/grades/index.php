@@ -49,7 +49,7 @@
                                             d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
                                         <path d="M4 13h3l3 3h4l3 -3h3" />
                                     </svg>
-                                    All Batches
+                                    Batches
                                 </a>
                                 <a href="<?= site_url('gradebook/batch/create') ?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">

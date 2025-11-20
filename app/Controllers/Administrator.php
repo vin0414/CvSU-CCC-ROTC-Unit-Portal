@@ -423,7 +423,7 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Schedules';
+            $title = 'Plans';
             $data = ['title'=>$title];
             return view('admin/schedules/all-schedules',$data);
         }
@@ -437,7 +437,7 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Manage Schedules';
+            $title = 'Plans';
             //accounts
             $accountModel = new accountModel();
             $account = $accountModel->where('status',1)->findAll();
@@ -605,7 +605,7 @@ class Administrator extends BaseController
         }
         else
         {
-            $title = 'Create Schedule';
+            $title = 'Create A Plan';
             $data = ['title'=>$title];
             return view('admin/schedules/create-schedule',$data);
         }
@@ -680,7 +680,7 @@ class Administrator extends BaseController
         }
         else
         {
-            $data['title'] = 'Edit Schedule';
+            $data['title'] = 'Edit Plan';
             $scheduleModel = new scheduleModel();
             $schedule = $scheduleModel->where('schedule_id',$id)->first();
             if(empty($schedule))
@@ -964,7 +964,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function viewSummary($id)
+    public function viewBatch($id)
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -972,21 +972,21 @@ class Administrator extends BaseController
         }
         else
         {
-            $model = new subjectModel();
-            $subject = $model->where('subject_id',$id)->first();
-            if(empty($subject))
+            $model = new batchModel();
+            $batch = $model->where('batch_id',$id)->first();
+            if(empty($batch))
             {
-                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
+                 return redirect()->to('/gradebook/batch')->with('fail', 'No Record(s) found! Please try again');
             }
             $data['title']="Gradebook";
-            $data['subject'] = $subject;
+            $data['batch'] = $batch;
             //grades
             $data['grades'] = $this->db->table('student_performance a')
                     ->select('a.*,b.school_id,b.firstname,b.lastname,b.middlename')
                     ->join('students b','b.student_id=a.student_id','LEFT')
-                    ->where('a.subject_id',$id)
+                    ->where('a.batch_id',$id)
                     ->groupBy('a.performance_id')->get()->getResult();
-            return view('admin/grades/subjects/view',$data);
+            return view('admin/grades/batch/view',$data);
         }
     }
 
@@ -1068,7 +1068,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function updateSubject()
+    public function updateBatch()
     {
         $batchModel = new batchModel();
         $validation = $this->validate([
@@ -1111,7 +1111,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function uploadGrades($id)
+    public function uploadBatch($id)
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -1119,15 +1119,15 @@ class Administrator extends BaseController
         }
         else
         {
-            $model = new subjectModel();
-            $subject = $model->where('subject_id',$id)->first();
-            if(empty($subject))
+            $model = new batchModel();
+            $batch = $model->where('batch_id',$id)->first();
+            if(empty($batch))
             {
-                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
+                 return redirect()->to('/gradebook/batch')->with('fail', 'No Record(s) found! Please try again');
             }
-            $data['subject'] = $subject;
+            $data['batch'] = $batch;
             $data['title'] = "Gradebook";
-            return view('admin/grades/subjects/upload',$data);
+            return view('admin/grades/batch/upload',$data);
         }
     }
 

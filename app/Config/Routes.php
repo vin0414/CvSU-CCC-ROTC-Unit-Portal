@@ -58,9 +58,9 @@ $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
 //batch
 $routes->post('gradebook/batch/save','Administrator::saveBatch');
-$routes->post('gradebook/subject/update','Administrator::updateSubject');
+$routes->post('gradebook/batch/update','Administrator::updateBatch');
 $routes->post('gradebook/grades/save',to: 'Enrolment::saveGrades');
-$routes->post('gradebook/class/save','Enrolment::saveClass');
+// $routes->post('gradebook/class/save','Enrolment::saveClass');
 $routes->get('gradebook/class/fetch','Enrolment::fetchClass');
 $routes->get('gradebook/subject/class/fetch','Enrolment::fetchSubjectClass');
 $routes->get('gradebook/class/list','Enrolment::fetchList');

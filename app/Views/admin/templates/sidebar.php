@@ -104,7 +104,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                     <h6 class="ps-4 text-uppercase text-xs font-weight-bolder opacity-6">Entries</h6>
                 </li>
                 <?php if($role['schedule']==1): ?>
-                <li class="nav-item <?= ($title == 'Create Schedule') ? 'active' : '' ?>">
+                <li class="nav-item <?= ($title == 'Create A Plan') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('schedules/create')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -120,7 +120,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M19 16v6" />
                             </svg>
                         </span>
-                        <span class="nav-link-title"> Create Schedule </span>
+                        <span class="nav-link-title"> Create A Plan </span>
                     </a>
                 </li>
                 <?php endif;?>

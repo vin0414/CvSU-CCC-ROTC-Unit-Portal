@@ -185,7 +185,7 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="card-title">
-                                                <i class="ti ti-calendar"></i>&nbsp;My Task
+                                                <i class="ti ti-calendar"></i>&nbsp;My Planner
                                             </div>
                                             <div class="card-actions">
                                                 <a href="<?= site_url('gradebook') ?>" class="btn btn-link">

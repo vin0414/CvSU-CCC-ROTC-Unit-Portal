@@ -14,13 +14,13 @@ class performanceModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
                                     'batch_id','student_id',
-                                    'attendanceScore','attendanceValue','attendancePercentage',
+                                    'present','attendanceScore','attendanceValue','attendancePercentage',
                                     'physicalScore','physicalValue','physicalPercentage',
-                                    'appearanceScore','appearanceValue','appearancePercentage',
+                                    'rawScore','appearanceScore','appearanceValue','appearancePercentage',
                                     'disciplineScore','disciplineValue','disciplinePercentage',
-                                    'qualitiesScore','qualitiesValue','qualitiesPercentage',
-                                    'leadershipScore','leadershipValue','leadershipPercentage',
-                                    'workScore','workValue','workPercentage',
+                                    'knowledge','dependability','unselfishness','decisive','qualitiesRawScore','qualitiesScore','qualitiesValue','qualitiesPercentage',
+                                    'rawLeadershipScore','leadershipScore','leadershipValue','leadershipPercentage',
+                                    'workRawScore','workScore','workValue','workPercentage',
                                     'finalScore','finalGrade','remarks','status'
                                   ];
     // Dates
