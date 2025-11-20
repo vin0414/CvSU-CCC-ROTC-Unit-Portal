@@ -39,7 +39,7 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?= site_url('gradebook/subject/create') ?>" class="btn btn-default">
+                                <a href="<?= site_url('gradebook/batch/create') ?>" class="btn btn-default">
                                     <i class="ti ti-plus"></i>&nbsp;Add
                                 </a>
                                 <a href="<?=site_url('gradebook')?>"
@@ -60,25 +60,23 @@
                 <div class="container-xl">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">All Subjects</div>
+                            <div class="card-title">All Batches</div>
                             <table class="table table-bordered table-striped" id="table">
                                 <thead>
                                     <th>Year</th>
                                     <th>Semester</th>
-                                    <th>Subject Name</th>
-                                    <th>Code</th>
-                                    <th>Description</th>
+                                    <th>Batch Name</th>
+                                    <th>Section</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </thead>
                                 <tbody>
-                                    <?php foreach($subject as $row): ?>
+                                    <?php foreach($batch as $row): ?>
                                     <tr>
                                         <td><?= $row['school_year'] ?></td>
                                         <td><?= $row['semester'] ?></td>
-                                        <td><?= $row['subjectName'] ?></td>
-                                        <td><?= $row['code'] ?></td>
-                                        <td><?= $row['subjectDetails'] ?></td>
+                                        <td><?= $row['batchName'] ?></td>
+                                        <td><?= $row['section'] ?></td>
                                         <td class="text-center">
                                             <?= ($row['status']) ? '<span class="badge bg-success text-white">OPEN</span>' : '<span class="badge bg-danger text-white">CLOSE</span>' ?>
                                         </td>
@@ -88,15 +86,15 @@
                                                 <span>More</span>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="<?= site_url('gradebook/subject/edit/') ?><?= $row['subject_id'] ?>"
+                                                <a href="<?= site_url('gradebook/batch/edit/') ?><?= $row['batch_id'] ?>"
                                                     class="dropdown-item">
-                                                    <i class="ti ti-edit"></i>&nbsp;Edit Subject
+                                                    <i class="ti ti-edit"></i>&nbsp;Edit Batch
                                                 </a>
-                                                <a href="<?= site_url('gradebook/subject/upload/') ?><?= $row['subject_id'] ?>"
+                                                <a href="<?= site_url('gradebook/batch/upload/') ?><?= $row['batch_id'] ?>"
                                                     class="dropdown-item">
                                                     <i class="ti ti-upload"></i>&nbsp;Upload Grades
                                                 </a>
-                                                <a href="<?= site_url('gradebook/subject/view/') ?><?= $row['subject_id'] ?>"
+                                                <a href="<?= site_url('gradebook/batch/view/') ?><?= $row['batch_id'] ?>"
                                                     class="dropdown-item">
                                                     <i class="ti ti-search"></i>&nbsp;View Grades
                                                 </a>
@@ -237,65 +235,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     $('#table').DataTable();
-    $(document).on('click', '.add', function() {
-        $('#addModal').modal('show');
-        $('#subject').attr("value", $(this).val());
-    });
-    $(document).on('click', '.list', function() {
-        $.ajax({
-            url: "<?= site_url('gradebook/class/fetch') ?>",
-            method: "GET",
-            data: {
-                value: $(this).val()
-            },
-            success: function(response) {
-                $('#viewModal').modal('show');
-                $('#output').html(response);
-            }
-        });
-    });
-    $('#form').submit(function(e) {
-        e.preventDefault();
-        $('.error-message').html('');
-        $('#btnSave').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
-        );
-        let data = $(this).serialize();
-        $.ajax({
-            url: "<?=site_url('gradebook/class/save')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSave').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Save'
-                );
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully saved",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#form')[0].reset();
-                            $('#addModal').modal('hide');
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
     </script>
 </body>
 

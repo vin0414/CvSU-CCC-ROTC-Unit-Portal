@@ -13,6 +13,7 @@ use App\Models\attendanceModel;
 use App\Models\qrcodeModel;
 use App\Models\scheduleModel;
 use App\Models\assignmentModel;
+use App\Models\batchModel;
 use App\Models\subjectModel;
 
 class Administrator extends BaseController
@@ -179,9 +180,9 @@ class Administrator extends BaseController
         $staff = $assignmentModel->where('account_id<>',0)->countAllResults();
         //assignment
         $assignment = $this->db->table('assignments a')
-                    ->select('c.subjectName,b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
+                    ->select('c.batchName,b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
                     ->join('schedules b','b.schedule_id=a.schedule_id','LEFT')
-                    ->join('subjects c','c.subject_id=b.subject_id','LEFT')
+                    ->join('batches c','c.batch_id=b.batch_id','LEFT')
                     ->where('a.account_id',session()->get('loggedAdmin'))
                     ->groupBy('a.assignment_id')
                     ->orderBy('a.assignment_id','DESC')->limit(5)
@@ -863,11 +864,11 @@ class Administrator extends BaseController
             $data['title'] = 'Gradebook';
             //get all the schedules and total cadet
             $data['schedules'] = $this->db->table('schedules a')
-                        ->select('a.schedule_id,e.subjectName,e.subject_id,a.school_year,a.name,a.status,c.fullname,d.total')
+                        ->select('a.schedule_id,e.batchName,e.batch_id,a.school_year,a.name,a.status,c.fullname,d.total')
                         ->join('assignments b','b.schedule_id=a.schedule_id','LEFT')
                         ->join('accounts c','c.account_id=b.account_id','LEFT')
                         ->join('(Select schedule_id,count(*)total from trainings group by schedule_id) d','d.schedule_id=a.schedule_id','LEFT')
-                        ->join('subjects e','e.subject_id=a.subject_id','LEFT')
+                        ->join('batches e','e.batch_id=a.batch_id','LEFT')
                         ->groupBy('a.schedule_id')
                         ->get()->getResult();
             //total active subject
@@ -948,7 +949,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function allSubject()
+    public function allBatch()
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -957,9 +958,9 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Gradebook";
-            $model = new subjectModel();
-            $data['subject'] = $model->findAll();
-            return view('admin/grades/subjects/index',$data);
+            $model = new batchModel();
+            $data['batch'] = $model->findAll();
+            return view('admin/grades/batch/index',$data);
         }
     }
 
@@ -989,22 +990,22 @@ class Administrator extends BaseController
         }
     }
 
-    public function createSubject()
+    public function createBatch()
     {
         if(!$this->hasPermission('grading_system'))
         {
-            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+            return redirect()->to('/dashboard/batch')->with('fail', 'You do not have permission to access that page!');
         }
         else
         {
             $data['title']="Gradebook";
             $accountModel = new accountModel();
             $data['account'] = $accountModel->where('status',1)->findAll();
-            return view('admin/grades/subjects/create',$data);
+            return view('admin/grades/batch/create',$data);
         }   
     }
 
-    public function editSubject($id)
+    public function editBatch($id)
     {
         if(!$this->hasPermission('grading_system'))
         {
@@ -1012,28 +1013,28 @@ class Administrator extends BaseController
         }
         else
         {
-            $model = new subjectModel();
-            $subject = $model->where('subject_id',$id)->first();
-            if(empty($subject))
+            $model = new batchModel();
+            $batch = $model->where('batch_id',$id)->first();
+            if(empty($batch))
             {
-                 return redirect()->to('/gradebook/subject')->with('fail', 'No Record(s) found! Please try again');
+                 return redirect()->to('/gradebook/batch')->with('fail', 'No Record(s) found! Please try again');
             }
             $data['title']="Gradebook";
-            $data['subject'] = $subject;
+            $data['batch'] = $batch;
             $accountModel = new accountModel();
             $data['account'] = $accountModel->where('status',1)->findAll();
-            return view('admin/grades/subjects/edit',$data);
+            return view('admin/grades/batch/edit',$data);
         }  
     }
 
-    public function saveSubject()
+    public function saveBatch()
     {
-        $subjectModel = new subjectModel();
+        $batchModel = new batchModel();
         $validation = $this->validate([
             'school_year'=>'required',
             'semester'=>'required',
-            'code'=>'required',
-            'subject'=>'required',
+            'section'=>'required',
+            'batch'=>'required',
             'details'=>'required',
             'account'=>'required|numeric',
         ]);
@@ -1047,18 +1048,18 @@ class Administrator extends BaseController
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
                 'semester'=>$this->request->getPost('semester'),
-                'code'=>$this->request->getPost('code'),
-                'subjectName'=>$this->request->getPost('subject'),
-                'subjectDetails'=>$this->request->getPost('details'),
+                'batchName'=>$this->request->getPost('batch'),
+                'section'=>$this->request->getPost('section'),
+                'details'=>$this->request->getPost('details'),
                 'account_id'=>$this->request->getPost('account'),
                 'status'=>1
             ];
-            $subjectModel->save($data);
+            $batchModel->save($data);
             //logs  
             date_default_timezone_set('Asia/Manila');
             $logModel = new \App\Models\logModel();
             $data = ['account_id'=>session()->get('loggedAdmin'),
-                    'activities'=>'Add new subject :  '.$this->request->getPost('subject'),
+                    'activities'=>'Add new batch :  '.$this->request->getPost('batch'),
                     'page'=>'Gradebook',
                     'datetime'=>date('Y-m-d h:i:s a')
                     ];      
@@ -1069,12 +1070,12 @@ class Administrator extends BaseController
 
     public function updateSubject()
     {
-        $subjectModel = new subjectModel();
+        $batchModel = new batchModel();
         $validation = $this->validate([
             'school_year'=>'required',
             'semester'=>'required',
-            'code'=>'required',
-            'subject'=>'required',
+            'batch'=>'required',
+            'section'=>'required',
             'details'=>'required',
             'account'=>'required|numeric',
             'status'=>'required'
@@ -1090,18 +1091,18 @@ class Administrator extends BaseController
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
                 'semester'=>$this->request->getPost('semester'),
-                'code'=>$this->request->getPost('code'),
-                'subjectName'=>$this->request->getPost('subject'),
-                'subjectDetails'=>$this->request->getPost('details'),
+                'batchName'=>$this->request->getPost('batch'),
+                'section'=>$this->request->getPost('section'),
+                'details'=>$this->request->getPost('details'),
                 'account_id'=>$this->request->getPost('account'),
                 'status'=>$this->request->getPost('status')
             ];
-            $subjectModel->update($id,$data);
+            $batchModel->update($id,$data);
             //logs  
             date_default_timezone_set('Asia/Manila');
             $logModel = new \App\Models\logModel();
             $data = ['account_id'=>session()->get('loggedAdmin'),
-                    'activities'=>'modify subject :  '.$this->request->getPost('subject'),
+                    'activities'=>'modify batch :  '.$this->request->getPost('batch'),
                     'page'=>'Gradebook',
                     'datetime'=>date('Y-m-d h:i:s a')
                     ];      

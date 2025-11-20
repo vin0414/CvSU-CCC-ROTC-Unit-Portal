@@ -39,7 +39,7 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="<?= site_url('gradebook/subject') ?>" class="btn btn-default">
+                                <a href="<?= site_url('gradebook/batch') ?>" class="btn btn-default">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -49,13 +49,13 @@
                                             d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
                                         <path d="M4 13h3l3 3h4l3 -3h3" />
                                     </svg>
-                                    All Subjects
+                                    All Batches
                                 </a>
-                                <a href="<?= site_url('gradebook/subject/create') ?>"
+                                <a href="<?= site_url('gradebook/batch/create') ?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-plus"></i>&nbsp;Add
                                 </a>
-                                <a href="<?= site_url('gradebook/subject/create') ?>"
+                                <a href="<?= site_url('gradebook/batch/create') ?>"
                                     class="btn btn-success btn-6 d-sm-none btn-icon">
                                     <i class="ti ti-plus"></i>
                                 </a>
@@ -87,7 +87,7 @@
                             <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
-                                    <h5>ACTIVE SUBJECTS</h5>
+                                    <h5>ACTIVE BATCHES</h5>
                                     <h1 class="text-center"><?= $activeSubject ?></h1>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                             <div class="card bg-success text-white">
                                 <div class="card-status-bottom bg-success"></div>
                                 <div class="card-body">
-                                    <h5>CLOSED SUBJECTS</h5>
+                                    <h5>INACTIVE BATCHES</h5>
                                     <h1 class="text-center"><?= $inactiveSubject ?></h1>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                     <path d="M4 12h4" />
                                     <path d="M4 18h4" />
                                 </svg>
-                                Task List
+                                Operations Plan
                             </div>
                         </div>
                         <div class="card-body">
@@ -133,7 +133,7 @@
                                 <table class="table table-bordered table-striped" id="table">
                                     <thead>
                                         <th>School Year</th>
-                                        <th>Subject</th>
+                                        <th>Batch</th>
                                         <th>Task</th>
                                         <th>Total Cadets</th>
                                         <th>Assigned Officers</th>
@@ -144,7 +144,7 @@
                                         <?php foreach($schedules as $row): ?>
                                         <tr>
                                             <td><?= $row->school_year ?></td>
-                                            <td><?= $row->subjectName ?></td>
+                                            <td><?= $row->batchName ?></td>
                                             <td><?= $row->name ?></td>
                                             <td class="text-center"><?= $row->total ?? 0 ?></td>
                                             <td><?= $row->fullname ?></td>

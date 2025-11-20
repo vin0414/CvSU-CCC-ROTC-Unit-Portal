@@ -56,7 +56,8 @@ $routes->post('schedules/update','Administrator::updateSchedule');
 $routes->get('assignment','Administrator::assignment');
 $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
-$routes->post('gradebook/subject/save','Administrator::saveSubject');
+//batch
+$routes->post('gradebook/batch/save','Administrator::saveBatch');
 $routes->post('gradebook/subject/update','Administrator::updateSubject');
 $routes->post('gradebook/grades/save',to: 'Enrolment::saveGrades');
 $routes->post('gradebook/class/save','Enrolment::saveClass');
@@ -119,12 +120,19 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook','Administrator::gradingSystem');
     $routes->get('gradebook/grades/add/(:any)','Administrator::addGrades/$1');
     $routes->get('gradebook/view/(:any)','Administrator::viewGradeBook/$1');
+    //subjects
     $routes->get('gradebook/subject','Administrator::allSubject');
     $routes->get('gradebook/subject/create','Administrator::createSubject');
     $routes->get('gradebook/subject/edit/(:any)','Administrator::editSubject/$1');
     $routes->get('gradebook/subject/fetch','Administrator::fetchSubject');
     $routes->get('gradebook/subject/view/(:any)','Administrator::viewSummary/$1');
     $routes->get('gradebook/subject/upload/(:any)','Administrator::uploadGrades/$1');
+    //batches
+    $routes->get('gradebook/batch','Administrator::allBatch');
+    $routes->get('gradebook/batch/create','Administrator::createBatch');
+    $routes->get('gradebook/batch/edit/(:any)','Administrator::editBatch/$1');
+    $routes->get('gradebook/batch/upload/(:any)','Administrator::uploadBatch/$1');
+    $routes->get('gradebook/batch/view/(:any)','Administrator::viewBatch/$1');
     //inventory 
     $routes->get('inventory','Administrator::inventory');
     $routes->get('inventory/stock/add','Administrator::addInventory');

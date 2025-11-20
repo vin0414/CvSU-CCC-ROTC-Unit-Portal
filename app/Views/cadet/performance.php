@@ -40,22 +40,6 @@
                                         My Grades
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-bell-exclamation">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M15 17h-11a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6a2 2 0 1 1 4 0a7 7 0 0 1 4 6v1.5" />
-                                            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-                                            <path d="M19 16v3" />
-                                            <path d="M19 22v.01" />
-                                        </svg>
-                                        Violations
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -152,28 +136,6 @@
                                                     <td><?=$grades['workPercentage'] ?></td>
                                                 </tr>
                                                 <?php endif;?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-activity-8">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table">
-                                            <thead>
-                                                <th>Title</th>
-                                                <th>Category</th>
-                                                <th>Details</th>
-                                                <th>Points</th>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach($report as $row): ?>
-                                                <tr>
-                                                    <td><?= $row['violation'] ?></td>
-                                                    <td><?= $row['category'] ?></td>
-                                                    <td><?= $row['details'] ?></td>
-                                                    <td><?= $row['points'] ?></td>
-                                                </tr>
-                                                <?php endforeach;?>
                                             </tbody>
                                         </table>
                                     </div>

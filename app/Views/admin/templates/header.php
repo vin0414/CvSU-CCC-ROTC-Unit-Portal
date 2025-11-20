@@ -174,7 +174,7 @@
                                 <path d="M16 11h1" />
                                 <path d="M16 15h1" />
                             </svg>
-                            <span class="nav-link-title">&nbsp;Gradebook </span>
+                            <span class="nav-link-title">&nbsp;Grades </span>
                         </a>
                     </li>
                     <?php endif; ?>

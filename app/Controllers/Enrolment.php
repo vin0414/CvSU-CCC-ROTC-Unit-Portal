@@ -4,9 +4,9 @@ namespace App\Controllers;
 use Config\App;
 use \App\Models\cadetTrainingModel;
 use \App\Models\performanceModel;
-use \App\Models\classModel;
 use \App\Models\scheduleModel;
 use \App\Models\reportModel;
+use \App\Models\batchModel;
 
 class Enrolment extends BaseController
 {   
@@ -172,13 +172,12 @@ class Enrolment extends BaseController
 
     public function saveClass()
     {
-        $classModel = new classModel();
+        $batchModel = new batchModel();
         $validation = $this->validate([
             'year'=>'required',
             'semester'=>'required',
-            'subject'=>'required|numeric',
-            'className'=>['rules'=>'required','errors'=>[
-                'required'=>'Name of class is required'
+            'batchName'=>['rules'=>'required','errors'=>[
+                'required'=>'Name of batch is required'
             ]],
             'section'=>['rules'=>'required','errors'=>[
                 'required'=>'Section is required'
@@ -193,17 +192,16 @@ class Enrolment extends BaseController
             $data = [
                     'school_year'=>$this->request->getPost('year'),
                     'semester'=>$this->request->getPost('semester'),
-                    'subject_id'=>$this->request->getPost('subject'),
-                    'className'=>$this->request->getPost('className'),
+                    'batchName'=>$this->request->getPost('className'),
                     'section'=>$this->request->getPost('section'),
                     'status'=>1
                 ];
-            $classModel->save($data);
+            $batchModel->save($data);
             //logs  
             date_default_timezone_set('Asia/Manila');
             $logModel = new \App\Models\logModel();
             $data = ['account_id'=>session()->get('loggedAdmin'),
-                    'activities'=>'Add new class',
+                    'activities'=>'Add new batch',
                     'page'=>'Gradebook',
                     'datetime'=>date('Y-m-d h:i:s a')
                     ];      
@@ -216,14 +214,14 @@ class Enrolment extends BaseController
     {
         $val = $this->request->getGet('value');
         $output="";
-        $classModel = new classModel();
+        $classModel = new batchModel();
         $class = $classModel->where('subject_id',$val)->findAll();
         foreach($class as $row)
         {
             $output.='<tr>
                         <td>'.$row['school_year'].'</td>
                         <td>'.$row['semester'].'</td>
-                        <td>'.$row['className'].'</td>
+                        <td>'.$row['batchName'].'</td>
                         <td>'.$row['section'].'</td>
                      </tr>';
         }
@@ -232,20 +230,18 @@ class Enrolment extends BaseController
 
     public function fetchSubjectClass()
     {
-        $model = new classModel();
+        $model = new batchModel();
         $semester = $this->request->getGet('semester');
         $year = $this->request->getGet('year');
-        $subject = $this->request->getGet('subject');
         $class = $model->where('school_year',$year)
                         ->where('semester',$semester)
-                        ->where('subject_id',$subject)
                         ->findAll();
         return $this->response->setJSON(['class'=>$class]);
     }
 
     public function fetchList()
     {
-        $model = new classModel();
+        $model = new batchModel();
         $semester = $this->request->getGet('semester');
         $year = $this->request->getGet('year');
         $class = $model->where('school_year',$year)

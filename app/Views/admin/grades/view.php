@@ -39,6 +39,9 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <button type="button" class="btn btn-default upload">
+                                    <i class="ti ti-upload"></i>&nbsp;Upload Files
+                                </button>
                                 <a href="<?=site_url('gradebook')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-arrow-left"></i>&nbsp;Back
@@ -97,7 +100,6 @@
                                                 <th>Fullname</th>
                                                 <th>Course</th>
                                                 <th>Year & Section</th>
-                                                <th>Action</th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach($students as $row): ?>
@@ -107,19 +109,6 @@
                                                     </td>
                                                     <td><?= $row->course ?></td>
                                                     <td><?= $row->year ?> - <?= $row->section ?></td>
-                                                    <td>
-                                                        <button type="button" class="btn dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                            role="button">
-                                                            <span>More</span>
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <a href="<?= site_url('gradebook/grades/') ?><?= $row->school_id ?>"
-                                                                class="dropdown-item">
-                                                                <i class="ti ti-search"></i>&nbsp;View Grades
-                                                            </a>
-                                                        </div>
-                                                    </td>
                                                 </tr>
                                                 <?php endforeach;?>
                                             </tbody>

@@ -13,7 +13,7 @@ class performanceModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-                                    'subject_id','student_id',
+                                    'batch_id','student_id',
                                     'attendanceScore','attendanceValue','attendancePercentage',
                                     'physicalScore','physicalValue','physicalPercentage',
                                     'appearanceScore','appearanceValue','appearancePercentage',

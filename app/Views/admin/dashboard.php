@@ -211,7 +211,7 @@
                                                     </div>
                                                     <div class="col text-truncate">
                                                         <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
-                                                            class="text-reset d-block"><?=$row->subjectName?> |
+                                                            class="text-reset d-block"><?=$row->batchName?> |
                                                             <?=$row->name?></a>
                                                         <div class="d-block text-secondary text-truncate mt-n1">
                                                             <small>
@@ -305,7 +305,7 @@
                                                 </div>
                                                 <div class="col">
                                                     <div class="font-weight-medium"><?= $purchase ?></div>
-                                                    <div class="text-secondary">Purchased Items</div>
+                                                    <div class="text-secondary">Request Items</div>
                                                 </div>
                                             </div>
                                         </div>
