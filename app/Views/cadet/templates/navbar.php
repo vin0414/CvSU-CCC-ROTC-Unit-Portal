@@ -129,7 +129,7 @@
                                             <path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" />
                                         </svg>
                                     </span>
-                                    <span class="nav-link-title"> My Profile </span>
+                                    <span class="nav-link-title"> Profile </span>
                                 </a>
                             </li>
                             <li class="nav-item <?= ($title =='My Trainings') ? 'active' : '' ?>">
@@ -144,7 +144,7 @@
                                                 d="M3 17l9 5l9 -5v-3l-9 5l-9 -5v-3l9 5l9 -5v-3l-9 5l-9 -5l9 -5l5.418 3.01" />
                                         </svg>
                                     </span>
-                                    <span class="nav-link-title"> My Trainings </span>
+                                    <span class="nav-link-title"> Trainings </span>
                                 </a>
                             </li>
                             <li class="nav-item <?= ($title =='My Attendance') ? 'active' : '' ?>">
@@ -164,7 +164,7 @@
                                             <path d="M18 16.5v1.5l.5 .5" />
                                         </svg>
                                     </span>
-                                    <span class="nav-link-title"> My Attendance </span>
+                                    <span class="nav-link-title"> Attendance </span>
                                 </a>
                             </li>
                             <li class="nav-item <?= ($title =='My Performance') ? 'active' : '' ?>">
@@ -184,7 +184,25 @@
                                             <path d="M4 20h14" />
                                         </svg>
                                     </span>
-                                    <span class="nav-link-title"> My Performance </span>
+                                    <span class="nav-link-title"> Performance </span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?= ($title =='All Items') ? 'active' : '' ?>">
+                                <a class="nav-link" href="<?=site_url('cadet/items')?>">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-package">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+                                            <path d="M12 12l8 -4.5" />
+                                            <path d="M12 12l0 9" />
+                                            <path d="M12 12l-8 -4.5" />
+                                            <path d="M16 5.25l-8 4.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-title"> Borrow Items </span>
                                 </a>
                             </li>
                         </ul>

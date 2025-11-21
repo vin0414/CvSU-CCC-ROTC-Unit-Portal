@@ -70,4 +70,31 @@ class Cadet extends BaseController
         $qrcodeModel->save($data);
         return $this->response->setJSON(['success'=>'Successfully generated']);
     }
+
+    public function sendItems()
+    {
+        $model = new \App\Models\requestModel();
+        $validation = $this->validate([
+            'item'=>'required',
+            'qty'=>'required|numeric',
+            'date'=>'required'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                    'student_id'=>session()->get('loggedUser'),
+                    'item'=>$this->request->getPost('item'),
+                    'qty'=>$this->request->getPost('qty'),
+                    'date_return'=>$this->request->getPost('date'),
+                    'status'=>0
+                    ] ;
+            $model->save($data);
+            return $this->response->setJSON(['success'=>'Successfully sent']);
+        }
+    }
 }

@@ -15,6 +15,7 @@ $routes->post('remove-file','Home::removeFile');
 //ajax
 $routes->post('save-profile','Home::saveProfile');
 $routes->post('generate-qr-code','Cadet::qrCode');
+$routes->post('cadet/items/send','Cadet::sendItems');
 
 $routes->group('',['filter'=>'AlreadyLoggedIn'],function($routes)
 {
@@ -29,6 +30,8 @@ $routes->group('',['filter'=>'AlreadyLoggedIn'],function($routes)
 $routes->group('',['filter'=>'AuthCheck'],function($routes)
 {
     $routes->get('cadet/dashboard','Home::studentDashboard');
+    $routes->get('cadet/items','Home::allItems');
+    $routes->get('cadet/items/borrow','Home::borrowItem');
     $routes->get('cadet/profile','Home::studentProfile');
     $routes->get('cadet/qr-code','Home::qrCode');
     $routes->get('cadet/upload','Home::upload');

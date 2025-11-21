@@ -330,9 +330,20 @@
                                                 <td><?= $row->qty ?></td>
                                                 <td><?= $row->lastname ?>, <?= $row->firstname ?>
                                                     <?= $row->middlename ?></td>
-                                                <td><?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
+                                                <td><?= date('M d, Y', strtotime($row->date_return)) ?></td>
+                                                <td>
+                                                    <?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
                                                 </td>
-                                                <td></td>
+                                                <td>
+                                                    <button type="button" class="btn dropdown-toggle"
+                                                        data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                        role="button">
+                                                        <span>More</span>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <?php endforeach;?>
                                         </tbody>

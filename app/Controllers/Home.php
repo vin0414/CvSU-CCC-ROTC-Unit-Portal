@@ -372,6 +372,26 @@ class Home extends BaseController
         }
     }
 
+    public function allItems()
+    {
+        $data['title']="All Items";
+        //all request items
+        $data['items'] = $this->db->table('requests a')
+                        ->select('a.*,b.units')
+                        ->join('inventory b','b.item=a.item','LEFT')
+                        ->where('a.student_id',session()->get('loggedUser'))
+                        ->get()->getResult();
+        return view('cadet/all-items',$data);
+    }
+
+    public function borrowItem()
+    {
+        $data['title']="Borrow";
+        $model = new \App\Models\inventoryModel();
+        $data['items'] = $model->where('quantity >',0)->findAll();
+        return view('cadet/borrow',$data);
+    }
+
     public function studentProfile()
     {
         $data['title'] = "Cadet Profile";
