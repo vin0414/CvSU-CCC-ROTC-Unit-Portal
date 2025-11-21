@@ -446,7 +446,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function fetchSchedule()
+    public function fetchPlans()
     {
         $scheduleModel = new scheduleModel();
         $searchTerm = $_GET['search']['value'] ?? '';
@@ -488,7 +488,7 @@ class Administrator extends BaseController
                             <span>Action</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="edit/'.$row['schedule_id'].'" class="dropdown-item"><i class="ti ti-edit"></i>&nbsp;Edit Schedule</a>
+                            <a href="edit/'.$row['schedule_id'].'" class="dropdown-item"><i class="ti ti-edit"></i>&nbsp;Edit Plan</a>
                             <button type="button" value="'.$row['schedule_id'].'" class="dropdown-item assign"><i class="ti ti-user-plus"></i>&nbsp;Assign</button>
                         </div>
                         '
@@ -611,24 +611,23 @@ class Administrator extends BaseController
         }
     }
 
-    public function fetchSubject()
+    public function fetchBatch()
     {
-        $model = new subjectModel();
+        $model = new batchModel();
         $year = $this->request->getGet('year');
         $semester = $this->request->getGet('semester');
-        $subject = $model->where('school_year',$year)->where('semester',$semester)->findAll();
-        return $this->response->setJSON(['subject'=>$subject]);
+        $batch = $model->where('school_year',$year)->where('semester',$semester)->findAll();
+        return $this->response->setJSON(['batch'=>$batch]);
     }
 
-    public function storeSchedule()
+    public function storePlans()
     {
         $scheduleModel = new scheduleModel();
         $validation = $this->validate([
             'school_year'=>['rules'=>'required','errors'=>['required'=>'School Year is required']],
             'semester'=>['rules'=>'required','errors'=>['required'=>'Semester is required']],
-            'subject'=>['rules'=>'required','errors'=>['required'=>'Subject is required']],
-            'className'=>['rules'=>'required','errors'=>['required'=>'Name of Class is required']],
-            'name'=>['rules'=>'required','errors'=>['required'=>'Name/Title is required']],
+            'batch'=>['rules'=>'required','errors'=>['required'=>'Batch is required']],
+            'name'=>['rules'=>'required','errors'=>['required'=>'Name of Plan is required']],
             'code'=>['rules'=>'required','errors'=>['required'=>'Code is required']],
             'day'=>['rules'=>'required','errors'=>['required'=>'Select day of the month']],
             'from_date'=>['rules'=>'required|valid_date','errors'=>['required'=>'Select start date','valid_date'=>'Invalid date format']],
@@ -646,8 +645,7 @@ class Administrator extends BaseController
             $data = [
                 'school_year'=>$this->request->getPost('school_year'),
                 'semester'=>$this->request->getPost('semester'),
-                'subject_id'=>$this->request->getPost('subject'),
-                'class_id'=>$this->request->getPost('className'),
+                'batch_id'=>$this->request->getPost('batch'),
                 'name'=>$this->request->getPost('name'),
                 'details'=>$this->request->getPost('details'),
                 'day'=>$this->request->getPost('day'),
@@ -692,7 +690,7 @@ class Administrator extends BaseController
         }
     }
 
-    public function updateSchedule()
+    public function updatePlans()
     {
         $scheduleModel = new scheduleModel();
         $validation = $this->validate([
@@ -1160,10 +1158,10 @@ class Administrator extends BaseController
                                 ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
                                 ->groupBy('a.return_id')->get()->getResult();
             //purchase Items
-            $data['purchase'] = $this->db->table('purchase a')
-                                ->select('a.*,b.item')
-                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
-                                ->groupBy('a.purchase_id')->get()->getResult();
+            $data['request'] = $this->db->table('requests a')
+                                ->select('a.*,b.lastname,b.firstname,b.middlename')
+                                ->join('students b','b.student_id=a.student_id','LEFT')
+                                ->groupBy('a.request_id')->get()->getResult();
             return view('admin/inventory/index',$data);
         }
     }

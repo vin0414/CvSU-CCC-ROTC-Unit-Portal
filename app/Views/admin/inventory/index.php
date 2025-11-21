@@ -323,7 +323,18 @@
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
-
+                                            <?php foreach($request as $row): ?>
+                                            <tr>
+                                                <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
+                                                <td><?= $row->item ?></td>
+                                                <td><?= $row->qty ?></td>
+                                                <td><?= $row->lastname ?>, <?= $row->firstname ?>
+                                                    <?= $row->middlename ?></td>
+                                                <td><?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            <?php endforeach;?>
                                         </tbody>
                                     </table>
                                 </div>

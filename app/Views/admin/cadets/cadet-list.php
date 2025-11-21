@@ -170,8 +170,8 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <label class="form-label">Name of Class</label>
-                                                    <select name="className" class="form-select" id="className">
+                                                    <label class="form-label">Name of Batch</label>
+                                                    <select name="batchName" class="form-select" id="batchName">
                                                         <option value="">Choose</option>
                                                     </select>
                                                 </div>
@@ -195,10 +195,14 @@
                                                         <th>Course</th>
                                                         <th>Year</th>
                                                         <th>Section</th>
+                                                        <th>Company</th>
+                                                        <th>Platoon</th>
+                                                        <th>Designation</th>
+                                                        <th>Action</th>
                                                     </thead>
                                                     <tbody id="output">
                                                         <tr>
-                                                            <td colspan="5" class="text-center">No Data(s) Found</td>
+                                                            <td colspan="9" class="text-center">No Data(s) Found</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -247,6 +251,73 @@
             </div>
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="addModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Add Designation</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="frmAdd">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="student" id="student">
+                        <div class="col-lg-12">
+                            <label class="form-label">Company</label>
+                            <select name="company" class="form-select">
+                                <option value="">Choose</option>
+                                <option>ALPHA</option>
+                                <option>BRAVO</option>
+                                <option>CHARLIE</option>
+                                <option>DELTA</option>
+                            </select>
+                            <div id="company-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">Platoon Type</label>
+                                    <select name="platoon" class="form-select">
+                                        <option value="">Choose</option>
+                                        <option>1st Platoon</option>
+                                        <option>2nd Platoon</option>
+                                    </select>
+                                    <div id="platoon-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Designation</label>
+                                    <select name="designation" class="form-select">
+                                        <option value="">Choose</option>
+                                        <option>S1</option>
+                                        <option>S3</option>
+                                        <option>S4</option>
+                                        <option>S5</option>
+                                        <option>S6</option>
+                                        <option>S7</option>
+                                    </select>
+                                    <div id="designation-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Special Platoon (Optional)</label>
+                            <select name="others" class="form-select">
+                                <option value="">Choose</option>
+                                <option>MEDIC</option>
+                                <option>MILITARY POLICE</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="form-control btn btn-primary">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -262,7 +333,7 @@
         let semester = $(this).val();
         let year = $('#year').val();
         $.ajax({
-            url: "<?= site_url('gradebook/class/list') ?>",
+            url: "<?= site_url('gradebook/batch/list') ?>",
             method: "GET",
             data: {
                 year: year,
@@ -271,16 +342,56 @@
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                const dropdown = $('#className');
-                response.class.forEach(function(item) {
+                const dropdown = $('#batchName');
+                response.batch.forEach(function(item) {
                     dropdown.append(
-                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                        `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`
                     );
                 });
 
             }
         });
     });
+
+    $(document).on('click', '.add', function() {
+        let value = $(this).val();
+        $('#addModal').modal('show');
+        $('#student').attr("value", value);
+    });
+
+    $('#frmAdd').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $('#modal-loading').modal('show');
+        $('#addModal').modal('hide');
+        $.ajax({
+            url: "<?= site_url('gradebook/attendance/save') ?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#modal-loading').modal('hide');
+                if (response.success) {
+                    Swal.fire({
+                        title: "Great!",
+                        text: "Successfully saved",
+                        icon: "success"
+                    });
+                } else {
+                    $('#addModal').modal('show');
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
+
     let table1 = $('#table1').DataTable({
         "processing": true,
         "serverSide": true,
@@ -389,7 +500,7 @@
     $('#form').submit(function(e) {
         e.preventDefault();
         let data = $(this).serialize();
-        $('#output').html('<tr><td colspan="5" class="text-center">Loading...</td></tr>');
+        $('#output').html('<tr><td colspan="9" class="text-center">Loading...</td></tr>');
         $.ajax({
             url: "<?= site_url('gradebook/attendance/list') ?>",
             method: "GET",
@@ -397,7 +508,7 @@
             success: function(response) {
                 if (response === "") {
                     $('#output').html(
-                        '<tr><td colspan="5" class="text-center">No Data(s) found</td></tr>');
+                        '<tr><td colspan="9" class="text-center">No Data(s) found</td></tr>');
                 } else {
                     $('#output').html(response);
                 }

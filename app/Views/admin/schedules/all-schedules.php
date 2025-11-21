@@ -107,7 +107,7 @@
     <script>
     <?php $eventData = array();?>
     <?php 
-    $scheduleModel = new \App\Models\ScheduleModel();
+    $scheduleModel = new \App\Models\scheduleModel();
     $schedules = $scheduleModel->where('day', 'Saturday')->where('status',1)->findAll();
     // Determine dynamic date range from the records
     $minDate = $scheduleModel->selectMin('from_date')->first()['from_date'];

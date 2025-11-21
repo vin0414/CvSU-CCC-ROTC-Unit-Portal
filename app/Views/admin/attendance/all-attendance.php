@@ -168,8 +168,8 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <label class="form-label">Name of Class</label>
-                                                    <select name="className" class="form-select" id="className">
+                                                    <label class="form-label">Name of Batch</label>
+                                                    <select name="batchName" class="form-select" id="batchName">
                                                         <option value="">Choose</option>
                                                     </select>
                                                 </div>
@@ -229,7 +229,7 @@
         let semester = $(this).val();
         let year = $('#year').val();
         $.ajax({
-            url: "<?= site_url('gradebook/class/list') ?>",
+            url: "<?= site_url('gradebook/batch/list') ?>",
             method: "GET",
             data: {
                 year: year,
@@ -238,10 +238,10 @@
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                const dropdown = $('#className');
-                response.class.forEach(function(item) {
+                const dropdown = $('#batchName');
+                response.batch.forEach(function(item) {
                     dropdown.append(
-                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                        `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`
                     );
                 });
 

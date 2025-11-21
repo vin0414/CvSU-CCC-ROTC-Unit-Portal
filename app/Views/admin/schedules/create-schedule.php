@@ -96,26 +96,15 @@
                                             </select>
                                             <div id="semester-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-label">Subject/Subject Code</label>
-                                            <select class="form-select" name="subject" id="subject">
-                                                <option value="">Choose</option>
-                                            </select>
-                                            <div id="subject-error" class="error-message text-danger text-sm"></div>
-                                        </div>
                                         <div class="col-lg-2">
-                                            <label class="form-label">Name of Class</label>
-                                            <select class="form-select" name="className" id="className">
+                                            <label class="form-label">Name of Batch</label>
+                                            <select class="form-select" name="batch" id="batch">
                                                 <option value="">Choose</option>
                                             </select>
-                                            <div id="className-error" class="error-message text-danger text-sm"></div>
+                                            <div id="batch-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="row g-3">
-                                        <div class="col-lg-8">
-                                            <label class="form-label">Name of Task</label>
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Name of Plan</label>
                                             <input type="text" class="form-control" name="name"
                                                 placeholder="Enter Name or Title">
                                             <div id="name-error" class="error-message text-danger text-sm"></div>
@@ -126,31 +115,31 @@
                                                 placeholder="Enter here">
                                             <div id="code-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">Day of the Month</label>
-                                            <input type="text" class="form-control" name="day" placeholder="Enter here">
-                                            <div id="day-error" class="error-message text-danger text-sm"></div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="row g-3">
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-4">
+                                            <label class="form-label">Day of the Month</label>
+                                            <input type="text" class="form-control" name="day" placeholder="Enter here">
+                                            <div id="day-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-2">
                                             <label class="form-label">From</label>
                                             <input type="date" class="form-control" name="from_date">
                                             <div id="from_date-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Time</label>
                                             <input type="time" class="form-control" name="from_time">
                                             <div id="from_time-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">To</label>
                                             <input type="date" class="form-control" name="to_date">
                                             <div id="to_date-error" class="error-message text-danger text-sm"></div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <label class="form-label">Time</label>
                                             <input type="time" class="form-control" name="to_time">
                                             <div id="to_time-error" class="error-message text-danger text-sm"></div>
@@ -209,7 +198,7 @@
         let semester = $(this).val();
         let year = $('#year').val();
         $.ajax({
-            url: "<?= site_url('gradebook/subject/fetch') ?>",
+            url: "<?= site_url('gradebook/batch/fetch') ?>",
             method: "GET",
             data: {
                 year: year,
@@ -218,36 +207,10 @@
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                const dropdown = $('#subject');
-                response.subject.forEach(function(item) {
+                const dropdown = $('#batch');
+                response.batch.forEach(function(item) {
                     dropdown.append(
-                        `<option value="${item.subject_id}">${item.subjectName} - ${item.subjectDetails}</option>`
-                    );
-                });
-
-            }
-        });
-    });
-
-    $('#subject').change(function() {
-        let semester = $('#semester').val();
-        let year = $('#year').val();
-        let subject = $(this).val();
-        $.ajax({
-            url: "<?= site_url('gradebook/subject/class/fetch') ?>",
-            method: "GET",
-            data: {
-                year: year,
-                semester: semester,
-                subject: subject
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
-                const dropdown = $('#className');
-                response.class.forEach(function(item) {
-                    dropdown.append(
-                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                        `<option value="${item.batch_id}">${item.batchName}</option>`
                     );
                 });
 
@@ -263,7 +226,7 @@
         );
         let data = $(this).serialize();
         $.ajax({
-            url: "<?=site_url('schedules/store')?>",
+            url: "<?=site_url('plans/store')?>",
             method: "POST",
             data: data,
             success: function(response) {
@@ -273,7 +236,7 @@
                 if (response.success) {
                     Swal.fire({
                         title: 'Great!',
-                        text: 'Schedule has been saved successfully!',
+                        text: 'Plan has been saved successfully!',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then((result) => {

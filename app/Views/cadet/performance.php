@@ -46,7 +46,15 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade active show" id="tabs-home-8">
                                     <div class="row g-3 mb-3">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h3>TOTAL ATTENDANCE</h3>
+                                                    <h1><?= $grades['present'] ?></h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h3>RAW SCORE</h3>
@@ -55,7 +63,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h3>FINAL GRADE</h3>
@@ -64,7 +72,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h3>REMARKS</h3>
@@ -74,40 +82,34 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="table-responsive">
+                                    <div class="table-responsive mb-3">
+                                        <h4>Grade Summary</h4>
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th colspan="3" class="text-center">Attendance</th>
-                                                    <th colspan="3" class="text-center">Physical</th>
-                                                    <th colspan="3" class="text-center">Proper<br />Appearance</th>
-                                                    <th colspan="3" class="text-center">Discipline</th>
-                                                    <th colspan="3" class="text-center">Cadet<br /> Qualities</th>
-                                                    <th colspan="3" class="text-center">Leadership</th>
-                                                    <th colspan="3" class="text-center">Work/<br />Designation</th>
+                                                    <th colspan="2" class="text-center">Attendance</th>
+                                                    <th colspan="2" class="text-center">Physical</th>
+                                                    <th colspan="2" class="text-center">Proper<br />Appearance</th>
+                                                    <th colspan="2" class="text-center">Discipline</th>
+                                                    <th colspan="2" class="text-center">Cadet<br /> Qualities</th>
+                                                    <th colspan="2" class="text-center">Leadership</th>
+                                                    <th colspan="2" class="text-center">Work/<br />Designation</th>
                                                 </tr>
                                                 <tr>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                     <th>Total</th>
                                                     <th>Trans</th>
-                                                    <th>%</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -115,25 +117,41 @@
                                                 <tr>
                                                     <td><?=$grades['attendanceScore'] ?></td>
                                                     <td><?=$grades['attendanceValue'] ?></td>
-                                                    <td><?=$grades['attendancePercentage'] ?></td>
                                                     <td><?=$grades['physicalScore'] ?></td>
                                                     <td><?=$grades['physicalValue'] ?></td>
-                                                    <td><?=$grades['physicalPercentage'] ?></td>
                                                     <td><?=$grades['appearanceScore'] ?></td>
                                                     <td><?=$grades['appearanceValue'] ?></td>
-                                                    <td><?=$grades['appearancePercentage'] ?></td>
                                                     <td><?=$grades['disciplineScore'] ?></td>
                                                     <td><?=$grades['disciplineValue'] ?></td>
-                                                    <td><?=$grades['disciplinePercentage'] ?></td>
                                                     <td><?=$grades['qualitiesScore'] ?></td>
                                                     <td><?=$grades['qualitiesValue'] ?></td>
-                                                    <td><?=$grades['qualitiesPercentage'] ?></td>
                                                     <td><?=$grades['leadershipScore'] ?></td>
                                                     <td><?=$grades['leadershipValue'] ?></td>
-                                                    <td><?=$grades['leadershipPercentage'] ?></td>
                                                     <td><?=$grades['workScore'] ?></td>
                                                     <td><?=$grades['workValue'] ?></td>
-                                                    <td><?=$grades['workPercentage'] ?></td>
+                                                </tr>
+                                                <?php endif;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <h4>Cadet Qualities</h4>
+                                        <table class="table table-bordered table-striped" id="qualities">
+                                            <thead>
+                                                <th>Knowledge</th>
+                                                <th>Dependability</th>
+                                                <th>Unselfishness</th>
+                                                <th>Decisive</th>
+                                                <th>Raw Score</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php if($grades):?>
+                                                <tr>
+                                                    <td><?= $grades['knowledge'] ?></td>
+                                                    <td><?= $grades['dependability'] ?></td>
+                                                    <td><?= $grades['unselfishness'] ?></td>
+                                                    <td><?= $grades['decisive'] ?></td>
+                                                    <td><?= $grades['qualitiesRawScore'] ?></td>
                                                 </tr>
                                                 <?php endif;?>
                                             </tbody>
@@ -166,9 +184,6 @@
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>
-    <script>
-    $('#table').DataTable();
-    </script>
 </body>
 
 </html>

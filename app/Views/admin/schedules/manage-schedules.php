@@ -108,7 +108,7 @@
                                         <table class="table table-bordered table-striped" id="table">
                                             <thead>
                                                 <th>Semester</th>
-                                                <th>Task</th>
+                                                <th>Plans</th>
                                                 <th>Details</th>
                                                 <th>Date</th>
                                                 <th>Time</th>
@@ -220,7 +220,7 @@
     let table = $('#table').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "<?= site_url('fetch-schedules') ?>",
+        "ajax": "<?= site_url('plans/fetch') ?>",
         "columns": [{
                 "data": "year"
             },

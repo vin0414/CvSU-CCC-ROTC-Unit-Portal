@@ -244,21 +244,23 @@ class Enrolment extends BaseController
         $model = new batchModel();
         $semester = $this->request->getGet('semester');
         $year = $this->request->getGet('year');
-        $class = $model->where('school_year',$year)
+        $batch = $model->where('school_year',$year)
                         ->where('semester',$semester)
                         ->findAll();
-        return $this->response->setJSON(['class'=>$class]);
+        return $this->response->setJSON(['batch'=>$batch]);
     }
 
     public function listAttendance()
     {
-        $className = $this->request->getGet('className');
+        $batchName = $this->request->getGet('batchName');
         $output="";
         $result = $this->db->table('trainings a')
-                    ->select('b.course,b.year,b.section,c.firstname,c.middlename,c.lastname,c.school_id')
+                    ->select('b.course,b.year,b.section,c.student_id,c.firstname,c.middlename,c.lastname,c.school_id,d.company,d.platoon_type,d.designation,d.others')
                     ->join('cadets b','b.student_id=a.student_id','LEFT')
-                    ->join('students c','c.student_id=a.student_id','LEFT')
-                    ->where('a.class_id',$className)->groupBy('a.student_id')->get()->getResult();
+                    ->join('students c','c.student_id=b.student_id','LEFT')
+                    ->join('cadet_roles d','d.student_id=c.student_id','LEFT')
+                    ->where('a.batch_id',$batchName)
+                    ->groupBy('a.student_id')->get()->getResult();
         foreach($result as $row)
         {
             $output.='<tr>
@@ -267,9 +269,50 @@ class Enrolment extends BaseController
                         <td>'.$row->course.'</td>
                         <td>'.$row->year.'</td>
                         <td>'.$row->section.'</td>
-                     </tr>';
+                        <td>'.$row->company.'<br/><small>'.$row->others.'</small></td>
+                        <td>'.$row->platoon_type.'</td>
+                        <td>'.$row->designation.'</td>';
+                    if(empty($row->company)){
+            $output.='  <td>
+                            <button type="button" class="btn btn-default add" value='.$row->student_id.'>
+                                <i class="ti ti-plus"></i>&nbsp;More
+                            </button>
+                        </td>';
+                    }
+                    else
+                    {
+                        $output.='<td>-</td>';
+                    }
+            $output.='</tr>';
         }
         echo $output;
+    }
+
+    public function saveCompany()
+    {
+        $cadetRoleModel = new \App\Models\cadetRoleModel();
+        $validation = $this->validate([
+            'company'=>'required',
+            'platoon'=>'required',
+            'designation'=>'required'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'student_id'=>$this->request->getPost('student'),
+                'company'=>$this->request->getPost('company'),
+                'platoon_type'=>$this->request->getPost('platoon'),
+                'designation'=>$this->request->getPost('designation'),
+                'others'=>$this->request->getPost('others')
+                ];
+            $cadetRoleModel->save($data);
+            return $this->response->setJSON(['success'=>'Successfully saved']);
+        }
     }
 
     public function fetchGrades()

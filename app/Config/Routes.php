@@ -49,10 +49,10 @@ $routes->get('registered','Administrator::registeredUser');
 $routes->get('enrolled','Administrator::enrolledCadet');
 $routes->post('edit-cadet','Administrator::modifyCadet');
 $routes->post('enroll-cadet','Administrator::enrollCadet');
-//schedules
-$routes->get('fetch-schedules','Administrator::fetchSchedule');
-$routes->post('schedules/store','Administrator::storeSchedule');
-$routes->post('schedules/update','Administrator::updateSchedule');
+//Plans
+$routes->get('plans/fetch','Administrator::fetchPlans');
+$routes->post('plans/store','Administrator::storePlans');
+$routes->post('plans/update','Administrator::updatePlans');
 $routes->get('assignment','Administrator::assignment');
 $routes->post('assignment/save','Administrator::saveAssignment');
 $routes->post('assignment/remove','Administrator::removeAssignment');
@@ -60,11 +60,13 @@ $routes->post('assignment/remove','Administrator::removeAssignment');
 $routes->post('gradebook/batch/save','Administrator::saveBatch');
 $routes->post('gradebook/batch/update','Administrator::updateBatch');
 $routes->post('gradebook/grades/save',to: 'Enrolment::saveGrades');
+//attendance
+$routes->get('gradebook/batch/list','Enrolment::fetchList');
 // $routes->post('gradebook/class/save','Enrolment::saveClass');
 $routes->get('gradebook/class/fetch','Enrolment::fetchClass');
 $routes->get('gradebook/subject/class/fetch','Enrolment::fetchSubjectClass');
-$routes->get('gradebook/class/list','Enrolment::fetchList');
 $routes->get('gradebook/attendance/list','Enrolment::listAttendance');
+$routes->post('gradebook/attendance/save','Enrolment::saveCompany');
 //report
 $routes->get('report/grades','Enrolment::fetchGrades');
 $routes->post('report/grades/update','Enrolment::updateGrades');
@@ -133,6 +135,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook/batch/edit/(:any)','Administrator::editBatch/$1');
     $routes->get('gradebook/batch/upload/(:any)','Administrator::uploadBatch/$1');
     $routes->get('gradebook/batch/view/(:any)','Administrator::viewBatch/$1');
+    $routes->get('gradebook/batch/fetch','Administrator::fetchBatch');
     //inventory 
     $routes->get('inventory','Administrator::inventory');
     $routes->get('inventory/stock/add','Administrator::addInventory');
