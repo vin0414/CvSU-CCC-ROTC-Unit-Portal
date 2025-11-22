@@ -89,6 +89,7 @@ $routes->post('inventory/item/accept','Inventory::AcceptRequest');
 $routes->post('inventory/item/decline','Inventory::declineRequest');
 //excel scanner
 $routes->post('file/upload','ExcelScanner::upload');
+$routes->post('grades/file/upload','Enrolment::uploadFile');
 //cadet trainings
 $routes->get('trainings/fetch','Enrolment::fetchTraining');
 $routes->post('trainings/save','Enrolment::saveTraining');

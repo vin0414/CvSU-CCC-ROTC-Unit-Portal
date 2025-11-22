@@ -943,7 +943,9 @@ class Administrator extends BaseController
                         ->where('a.schedule_id',$id)
                         ->groupBy('a.training_id')
                         ->get()->getResult();
-            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account,'students'=>$students];
+            $fileModel = new \App\Models\scheduleFileModel();
+            $files = $fileModel->where('schedule_id',$id)->findAll();
+            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account,'students'=>$students,'files'=>$files];
             return view('admin/grades/view',$data);
         }
     }
@@ -1458,9 +1460,17 @@ class Administrator extends BaseController
             $violation = $this->db->table('reports a')
                         ->select('a.*,b.lastname,b.firstname,b.middlename')
                         ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->where('type_report','Violations')
                         ->groupBy('a.report_id')
                         ->get()->getResult();
-            $data = ['title'=>$title,'violation'=>$violation];
+            //merits/demerits
+            $others = $this->db->table('reports a')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->where('type_report !=','Violations')
+                        ->groupBy('a.report_id')
+                        ->get()->getResult();
+            $data = ['title'=>$title,'violation'=>$violation,'others'=>$others];
             return view('admin/reports/index',$data);
         }
     }

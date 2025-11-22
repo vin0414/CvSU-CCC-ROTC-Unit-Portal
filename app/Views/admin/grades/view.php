@@ -65,50 +65,88 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row g-2">
-                                <div class="col-lg-12">
-                                    <label class="form-label">Description</label>
-                                    <textarea class="form-control"><?= $schedule['details'] ?></textarea>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="row g-3">
-                                        <div class="col-lg-3">
-                                            <label class="form-label">Day of the Month</label>
-                                            <p class="form-control"><?= $schedule['day'] ?></p>
+                            <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                                <li class="nav-item">
+                                    <a href="#tabs-home-8" class="nav-link active" data-bs-toggle="tab">
+                                        <i class="ti ti-list"></i>&nbsp;Details
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-files-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-files"></i>&nbsp;Files
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade active show" id="tabs-home-8">
+                                    <br />
+                                    <div class="row g-2">
+                                        <div class="col-lg-12">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control"><?= $schedule['details'] ?></textarea>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">From</label>
-                                            <p class="form-control">
-                                                <?= date('h:i:s a',strtotime($schedule['from_time'])) ?></p>
+                                        <div class="col-lg-12">
+                                            <div class="row g-3">
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">Day of the Month</label>
+                                                    <p class="form-control"><?= $schedule['day'] ?></p>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">From</label>
+                                                    <p class="form-control">
+                                                        <?= date('h:i:s a',strtotime($schedule['from_time'])) ?></p>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">To</label>
+                                                    <p class="form-control">
+                                                        <?= date('h:i:s a',strtotime($schedule['to_time'])) ?></p>
+                                                </div>
+                                                <div class="col-lg-5">
+                                                    <label class="form-label">Assigned Officer</label>
+                                                    <p class="form-control"><?= $account['fullname'] ?></p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-lg-2">
-                                            <label class="form-label">To</label>
-                                            <p class="form-control">
-                                                <?= date('h:i:s a',strtotime($schedule['to_time'])) ?></p>
-                                        </div>
-                                        <div class="col-lg-5">
-                                            <label class="form-label">Assigned Officer</label>
-                                            <p class="form-control"><?= $account['fullname'] ?></p>
+                                        <div class="col-lg-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-striped" id="table">
+                                                    <thead>
+                                                        <th>School ID</th>
+                                                        <th>Fullname</th>
+                                                        <th>Course</th>
+                                                        <th>Year & Section</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach($students as $row): ?>
+                                                        <tr>
+                                                            <td><?= $row->school_id ?></td>
+                                                            <td><?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
+                                                            </td>
+                                                            <td><?= $row->course ?></td>
+                                                            <td><?= $row->year ?> - <?= $row->section ?></td>
+                                                        </tr>
+                                                        <?php endforeach;?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="tab-pane fade" id="tabs-files-8">
+                                    <br />
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table">
+                                        <table class="table table-bordered table-striped" id="files">
                                             <thead>
-                                                <th>School ID</th>
-                                                <th>Fullname</th>
-                                                <th>Course</th>
-                                                <th>Year & Section</th>
+                                                <th>Files</th>
+                                                <th>Action</th>
                                             </thead>
                                             <tbody>
-                                                <?php foreach($students as $row): ?>
+                                                <?php foreach($files as $row): ?>
                                                 <tr>
-                                                    <td><?= $row->school_id ?></td>
-                                                    <td><?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
+                                                    <td><?= $row['filename'] ?></td>
+                                                    <td><a href="<?= base_url('assets/attachment/') ?><?= $row['filename'] ?>"
+                                                            target="_blank" class="btn btn-primary btn-sm">Download</a>
                                                     </td>
-                                                    <td><?= $row->course ?></td>
-                                                    <td><?= $row->year ?> - <?= $row->section ?></td>
                                                 </tr>
                                                 <?php endforeach;?>
                                             </tbody>
@@ -121,26 +159,32 @@
                 </div>
             </div>
             <!-- END PAGE BODY -->
-            <!--  BEGIN FOOTER  -->
-            <footer class="footer footer-transparent d-print-none">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; <?= date('Y')?>
-                                    <a href="." class="link-secondary">CvSU-CCC ROTC Unit Portal</a>. All rights
-                                    reserved.
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="" class="link-secondary" rel="noopener"> v1.1.1 </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="uploadModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Upload Files</div>
                 </div>
-            </footer>
-            <!--  END FOOTER  -->
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="form" enctype="multipart/form-data">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="schedule" value="<?= $schedule['schedule_id'] ?>">
+                        <div class="col-lg-12">
+                            <label class="form-label">Attach File</label>
+                            <input type="file" name="file" class="form-control"
+                                accept=".pdf,.zip,.doc,.docx,application/pdf,application/zip,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-primary" id="btnUpload">
+                                <i class="ti ti-upload"></i>&nbsp;Upload
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
@@ -154,6 +198,53 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     $('#table').DataTable();
+    $('#files').DataTable();
+    $(document).on('click', '.upload', function() {
+        $('#uploadModal').modal('show');
+    });
+    $('#form').on('submit', function(e) {
+        e.preventDefault();
+        $('#btnUpload').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Uploading...'
+        );
+        let data = $(this).serialize();
+        $.ajax({
+            url: "<?=site_url('grades/file/upload')?>",
+            method: "POST",
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(response) {
+                $('#btnUpload').attr('disabled', false).html(
+                    '<span class="ti ti-upload"></span>&nbsp;Upload'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully uploaded and saved",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                            $('#uploadModal').modal('hide');
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    console.log(response.errors);
+                    Swal.fire({
+                        title: "Error!",
+                        text: errors.file,
+                        icon: "warning"
+                    });
+                }
+            }
+        });
+    });
     </script>
 </body>
 

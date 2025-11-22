@@ -7,6 +7,7 @@ use \App\Models\performanceModel;
 use \App\Models\scheduleModel;
 use \App\Models\reportModel;
 use \App\Models\batchModel;
+use \App\Models\scheduleFileModel;
 
 class Enrolment extends BaseController
 {   
@@ -83,7 +84,7 @@ class Enrolment extends BaseController
                     $data = [
                         'student_id'=>$this->request->getPost('cadet'),
                         'schedule_id'=>$schedule[$i],
-                        'class_id'=>$classID['class_id'],
+                        'batch_id'=>$classID['batch_id'],
                         'status'=>1,
                         'remarks'=>'N/A'
                     ];
@@ -379,8 +380,9 @@ class Enrolment extends BaseController
     {
         $reportModel = new reportModel();
         $validation = $this->validate([
-            'violation'=>'required',
+            'title'=>'required',
             'category'=>'required',
+            'report'=>'required',
             'student'=>'required',
             'details'=>'required'
         ]);  
@@ -392,8 +394,9 @@ class Enrolment extends BaseController
         else
         {
             $data = [
-                    'violation'=>$this->request->getPost('violation'),
+                    'violation'=>$this->request->getPost('title'),
                     'category'=>$this->request->getPost('category'),
+                    'type_report'=>$this->request->getPost('report'),
                     'student_id'=>$this->request->getPost('student'),
                     'details'=>$this->request->getPost('details'),
                     'points'=>0,
@@ -401,6 +404,54 @@ class Enrolment extends BaseController
                 ];
             $reportModel->save($data);
             return $this->response->setJSON(['success'=>'Successfully submitted']);
+        }
+    }
+
+    public function uploadFile()
+    {
+        $validation = $this->validate([
+            'file'=>[
+                'rules' => 'uploaded[file]|mime_in[file,application/zip,application/x-zip-compressed,application/pdf]|max_size[file,25600]',
+                'errors' => [
+                    'uploaded' => 'You must choose a file to upload.',
+                    'mime_in' => 'The file must be either a PDF document.',
+                    'max_size' => 'The file size must not exceed 25MB.',
+                ]
+            ]
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $fileModel = new scheduleFileModel();
+            $file = $this->request->getFile('file');
+            if ($file && $file->isValid() && !$file->hasMoved()) 
+            {
+                $extension = $file->getExtension();
+                $originalname = pathinfo($file->getClientName(), PATHINFO_FILENAME);
+                $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $originalname);
+                $newName = date('YmdHis') . '_' . $safeName . '.' . $extension;
+                //create folder
+                $folderName = "assets/attachment";
+                if (!is_dir($folderName)) {
+                    mkdir($folderName, 0755, true);
+                }
+                $file->move($folderName.'/',$newName);
+                $data = [
+                    'schedule_id'=>$this->request->getPost('schedule'),
+                    'filename'=>$newName
+                ];
+                $fileModel->save($data);
+                return $this->response->setJSON(['success'=>'Successfully uploaded']);
+            }
+            else
+            {
+                $errors = ['file'=>'File upload failed or no file selected.'];
+                return $this->response->setJSON(['errors'=>$errors]);
+            }
         }
     }
 }

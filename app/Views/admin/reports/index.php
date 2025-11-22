@@ -187,22 +187,7 @@
                                         <table class="table table-bordered table-striped" id="tables">
                                             <thead>
                                                 <th>Date</th>
-                                                <th>Category</th>
-                                                <th>Details</th>
-                                                <th>Student</th>
-                                                <th>Points</th>
-                                                <th>Action</th>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-activity-8">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table">
-                                            <thead>
-                                                <th>Date</th>
-                                                <th>Violations</th>
+                                                <th>Type</th>
                                                 <th>Category</th>
                                                 <th>Details</th>
                                                 <th>Student</th>
@@ -210,10 +195,10 @@
                                                 <th>Action</th>
                                             </thead>
                                             <tbody>
-                                                <?php foreach($violation as $row): ?>
+                                                <?php foreach($others as $row): ?>
                                                 <tr>
                                                     <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
-                                                    <td><?= $row->violation ?></td>
+                                                    <td><?= $row->type_report ?></td>
                                                     <td><?= $row->category ?></td>
                                                     <td><?= $row->details ?></td>
                                                     <td>
@@ -227,15 +212,34 @@
                                                             <span>More</span>
                                                         </button>
                                                         <div class="dropdown-menu">
-                                                            <button type="button" class="dropdown-item addPoints"
-                                                                value="<?= $row->report_id ?>">
-                                                                <i class="ti ti-plus"></i>Add Points
-                                                            </button>
-                                                            <button type="button" class="dropdown-item accept"
-                                                                value="<?= $row->report_id ?>">
-                                                                <i class="ti ti-check"></i>Accept
-                                                            </button>
+
                                                         </div>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-activity-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="table">
+                                            <thead>
+                                                <th>Date</th>
+                                                <th>Title</th>
+                                                <th>Category</th>
+                                                <th>Details</th>
+                                                <th>Student</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach($violation as $row): ?>
+                                                <tr>
+                                                    <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
+                                                    <td><?= $row->violation ?></td>
+                                                    <td><?= $row->category ?></td>
+                                                    <td><?= $row->details ?></td>
+                                                    <td>
+                                                        <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
                                                     </td>
                                                 </tr>
                                                 <?php endforeach;?>
@@ -249,26 +253,6 @@
                 </div>
             </div>
             <!-- END PAGE BODY -->
-            <!--  BEGIN FOOTER  -->
-            <footer class="footer footer-transparent d-print-none">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; <?= date('Y')?>
-                                    <a href="." class="link-secondary">CvSU-CCC ROTC Unit Portal</a>. All rights
-                                    reserved.
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="" class="link-secondary" rel="noopener"> v1.1.1 </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!--  END FOOTER  -->
         </div>
     </div>
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
