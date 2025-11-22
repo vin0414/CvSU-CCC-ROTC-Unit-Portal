@@ -163,6 +163,7 @@
                                                         <table class="table table-bordered table-striped">
                                                             <thead>
                                                                 <th>#</th>
+                                                                <th>Student No</th>
                                                                 <th>Student Name</th>
                                                                 <th>Raw Score</th>
                                                                 <th>Final Grade</th>
@@ -206,14 +207,19 @@
                                                     </td>
                                                     <td><?= $row->points ?></td>
                                                     <td>
+                                                        <?php if($row->status==0): ?>
                                                         <button type="button" class="btn dropdown-toggle"
                                                             data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                                             role="button">
                                                             <span>More</span>
                                                         </button>
                                                         <div class="dropdown-menu">
-
+                                                            <button type="button" class="dropdown-item view"
+                                                                value="<?= $row->report_id ?>">
+                                                                <i class="ti ti-search"></i>&nbsp;View
+                                                            </button>
                                                         </div>
+                                                        <?php endif;?>
                                                     </td>
                                                 </tr>
                                                 <?php endforeach;?>
@@ -255,6 +261,41 @@
             <!-- END PAGE BODY -->
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="viewModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">View Details</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-3" id="frmReport">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="reportID" id="reportID" />
+                        <div class="col-lg-12">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title">
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Details</label>
+                            <textarea name="details" class="form-control" style="height: 150px;"></textarea>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Points</label>
+                            <input type="number" class="form-control" name="points" min="1" max="5">
+                            <div id="points-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="form-control btn btn-primary" id="btnSend">
+                                <i class="ti ti-send"></i>&nbsp;Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -267,6 +308,72 @@
     <script>
     $('#table').DataTable();
     $('#tables').DataTable();
+
+    $(document).on('click', '.view', function() {
+        $.ajax({
+            url: "<?= site_url('report/view') ?>",
+            method: "GET",
+            data: {
+                value: $(this).val()
+            },
+            success: function(response) {
+                if (response.report) {
+                    const report = response.report;
+                    $('#frmReport input[name="reportID"]').val(report.report_id);
+                    $('#frmReport input[name="title"]').val(report.violation);
+                    $('#frmReport textarea[name="details"]').val(report.details);
+                    $('#viewModal').modal('show');
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to fetch report details.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while fetching report details.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+    $('#frmReport').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $('#btnSend').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Submitting...'
+        );
+        $.ajax({
+            url: "<?= site_url('report/update') ?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnSend').attr('disabled', false).html(
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Submit'
+                );
+                if (response.success) {
+                    location.reload();
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
+    });
+
     $('#semester').change(function() {
         let semester = $(this).val();
         let year = $('#year').val();
@@ -294,7 +401,7 @@
     $('#form').submit(function(e) {
         e.preventDefault();
         let data = $(this).serialize();
-        $('#result').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
+        $('#result').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
         $.ajax({
             url: "<?= site_url('report/grades') ?>",
             method: "GET",
@@ -302,7 +409,7 @@
             success: function(response) {
                 if (response === "") {
                     $('#result').html(
-                        '<tr><td colspan="6" class="text-center">No Data(s) found</td></tr>');
+                        '<tr><td colspan="7" class="text-center">No Data(s) found</td></tr>');
                     document.getElementById('btn').style = "display:none";
                 } else {
                     $('#result').html(response);

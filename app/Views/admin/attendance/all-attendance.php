@@ -14,6 +14,21 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
     <style>
     @import url("https://rsms.me/inter/inter.css");
+
+    .present {
+        background-color: #0baf11ff;
+        /* light green */
+    }
+
+    .late {
+        background-color: #d4c117ff;
+        /* light yellow */
+    }
+
+    .absent {
+        background-color: #7c0d18ff;
+        /* light red */
+    }
     </style>
 </head>
 
@@ -150,7 +165,7 @@
                                                     $semesters[] = "$from-$to";
                                                 }
                                                 ?>
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-2">
                                                     <label class="form-label">School Year</label>
                                                     <select name="year" class="form-select" id="year">
                                                         <option value="">Choose</option>
@@ -167,22 +182,59 @@
                                                         <option>2nd</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-2">
                                                     <label class="form-label">Name of Batch</label>
                                                     <select name="batchName" class="form-select" id="batchName">
                                                         <option value="">Choose</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-lg-3">
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">From</label>
+                                                    <input type="date" name="from" class="form-control">
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <label class="form-label">To</label>
+                                                    <input type="date" name="to" class="form-control">
+                                                </div>
+                                                <div class="col-lg-2">
                                                     <label class="form-label">&nbsp;</label>
                                                     <button type="submit" class="btn btn-success">
-                                                        <i class="ti ti-settings"></i>&nbsp;Generate
+                                                        <i class="ti ti-settings"></i>&nbsp;Search
                                                     </button>
                                                     <button type="button" class="btn btn-default">
-                                                        <i class="ti ti-download"></i>&nbsp;Download
+                                                        <i class="ti ti-download"></i>
                                                     </button>
                                                 </div>
                                             </form>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="table-responsive" style="height: 400px;overflow-y:auto;">
+                                                <table class="table table-bordered table-striped">
+                                                    <thead>
+                                                        <th>Fullname</th>
+                                                        <th>1st</th>
+                                                        <th>2nd</th>
+                                                        <th>3rd</th>
+                                                        <th>4th</th>
+                                                        <th>5th</th>
+                                                        <th>6th</th>
+                                                        <th>7th</th>
+                                                        <th>8th</th>
+                                                        <th>9th</th>
+                                                        <th>10th</th>
+                                                        <th>11th</th>
+                                                        <th>12th</th>
+                                                        <th>13th</th>
+                                                        <th>14th</th>
+                                                        <th>15th</th>
+                                                    </thead>
+                                                    <tbody id="result">
+                                                        <tr>
+                                                            <td colspan="16" class="text-center">No Record(s)</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -225,6 +277,25 @@
                     );
                 });
 
+            }
+        });
+    });
+
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('#result').html('<tr><td colspan="16" class="text-center">Loading...</td></tr>');
+        $.ajax({
+            url: "<?= site_url('attendance/generate') ?>",
+            method: "GET",
+            data: data,
+            success: function(response) {
+                if (response === "") {
+                    $('#result').html(
+                        '<tr><td colspan="16" class="text-center">No Record(s) found</td></tr>');
+                } else {
+                    $('#result').html(response);
+                }
             }
         });
     });

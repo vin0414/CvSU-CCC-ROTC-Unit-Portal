@@ -65,6 +65,7 @@ $routes->post('gradebook/batch/update','Administrator::updateBatch');
 $routes->post('gradebook/grades/save',to: 'Enrolment::saveGrades');
 //attendance
 $routes->get('gradebook/batch/list','Enrolment::fetchList');
+$routes->get('attendance/generate','Enrolment::generateAttendance');
 // $routes->post('gradebook/class/save','Enrolment::saveClass');
 $routes->get('gradebook/class/fetch','Enrolment::fetchClass');
 $routes->get('gradebook/subject/class/fetch','Enrolment::fetchSubjectClass');
@@ -74,6 +75,8 @@ $routes->post('gradebook/attendance/save','Enrolment::saveCompany');
 $routes->get('report/grades','Enrolment::fetchGrades');
 $routes->post('report/grades/update','Enrolment::updateGrades');
 $routes->post('report/save','Enrolment::saveReport');
+$routes->get('report/view','Enrolment::viewReport');
+$routes->post('report/update','Enrolment::updateReport');
 //inventory
 $routes->post('inventory/category/add','Inventory::addCategory');
 $routes->post('inventory/category/edit','Inventory::editCategory');

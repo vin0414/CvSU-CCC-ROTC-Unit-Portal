@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\attendanceModel;
+use App\Models\studentModel;
 use Config\App;
 use \App\Models\cadetTrainingModel;
 use \App\Models\performanceModel;
@@ -8,6 +10,9 @@ use \App\Models\scheduleModel;
 use \App\Models\reportModel;
 use \App\Models\batchModel;
 use \App\Models\scheduleFileModel;
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 class Enrolment extends BaseController
 {   
@@ -318,10 +323,10 @@ class Enrolment extends BaseController
 
     public function fetchGrades()
     {
-       $batchName = $this->request->getGet('batchName'); 
-       $output="";
+        $batchName = $this->request->getGet('batchName'); 
+        $output="";
         $result = $this->db->table('trainings a')
-                    ->select('b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
+                    ->select('b.school_id,b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->join('student_performance c','c.student_id=a.student_id','LEFT')
                     ->where('a.batch_id',$batchName)->groupBy('a.student_id')->get()->getResult();
@@ -329,6 +334,7 @@ class Enrolment extends BaseController
         {
             $output .= '<tr>
                             <td><input type="checkbox" name="student[]" style="width:20px;height:20px;" value="'.$row->performance_id.'" checked/></td>
+                            <td>'.$row->school_id.'</td>
                             <td>'.$row->firstname.' '.$row->middlename.' '.$row->lastname.'</td>
                             <td><input type="number" class="form-control" name="score[]" value="'.$row->finalScore.'"/></td>
                             <td><input type="number" class="form-control" name="grade[]" value="'.$row->finalGrade.'"/></td>
@@ -453,5 +459,111 @@ class Enrolment extends BaseController
                 return $this->response->setJSON(['errors'=>$errors]);
             }
         }
+    }
+
+    public function viewReport()
+    {
+        $val = $this->request->getGet('value');
+        $model = new reportModel();
+        $data = $model->where('report_id',$val)->first();
+        return response()->setJSON(['report'=>$data]);
+    }
+
+    public function updateReport()
+    {
+        $model = new reportModel();
+        $validation = $this->validate([
+            'points'=>'required|numeric|min_length[1]|max_length[5]'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $id = $this->request->getPost('reportID');
+            $data = ['points'=>$this->request->getPost('points'),'status'=>1];
+            $model->update($id,$data);
+            return $this->response->setJSON(['success'=>'Successfully submitted']);
+        }
+    }
+
+    public function generateAttendance()
+    {
+        $startDate = $this->request->getGet('from');
+        $endDate = $this->request->getGet('to');
+        $val = $this->request->getGet('batchName');
+
+        $students = $this->db->table('trainings a')
+                    ->select('b.school_id,b.firstname,b.middlename,b.lastname,b.student_id')
+                    ->join('students b','b.student_id=a.student_id','LEFT')
+                    ->where('a.batch_id',$val)->groupBy('a.student_id')->get()->getResult();
+
+        $attendanceModel = new attendanceModel();
+
+        $saturdays = [];
+        $period = new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            (new DateTime($endDate))->modify('+1 day')
+        );
+
+        foreach ($period as $date) {
+            if ($date->format('N') == 6) { 
+                $saturdays[] = $date->format('Y-m-d');
+            }
+        }
+
+        $rows = $attendanceModel->where('date >=', $startDate)
+                            ->where('date <=', $endDate)
+                            ->findAll();
+
+        $attendance = [];
+
+        foreach ($rows as $row) 
+        {
+            $attendance[$row['student_id']][$row['date']][$row['remarks']] = $row['time'];
+        }
+
+        $html = "";
+
+        foreach ($students as $stu) {
+
+            $html .= "<tr>";
+            $html .= "<td>{$stu->lastname},{$stu->firstname} {$stu->middlename}</td>";
+
+            foreach ($saturdays as $sat) 
+            {
+
+                $in  = $attendance[$stu->student_id][$sat]['IN']  ?? null ;
+                $out = $attendance[$stu->student_id][$sat]['OUT'] ?? null ;
+
+                
+                if (!$in && !$out) {
+                    $status = "A"; // Absent
+                    $class  = "absent";
+                } else {
+                    $timeIn  = strtotime($in);
+                    $timeOut = strtotime($out);
+
+                    if ($timeIn > strtotime("08:00:00")) {
+                        $status = "L"; // Late
+                        $class  = "late";
+                    } elseif ($timeIn <= strtotime("08:00:00") && $timeOut >= strtotime("17:00:00")) {
+                        $status = "P"; // Present
+                        $class  = "present";
+                    } else {
+                        $status = "L"; // Any deviation considered Late
+                        $class  = "late";
+                    }
+                }
+                $html .= "<td class='{$class}' title='In: {$in}, Out: {$out}'>{$status}</td>";
+            }
+
+            $html .= "</tr>";
+        }
+
+        return $html;
     }
 }

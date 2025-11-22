@@ -20,4 +20,11 @@ class attendanceModel extends Model
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
+
+    public function getAttendanceRange($start, $end)
+    {
+        return $this->where('date >=', $start)
+                    ->where('date <=', $end)
+                    ->findAll();
+    }
 }
