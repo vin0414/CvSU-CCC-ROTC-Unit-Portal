@@ -317,13 +317,13 @@ class Enrolment extends BaseController
 
     public function fetchGrades()
     {
-       $className = $this->request->getGet('className'); 
+       $batchName = $this->request->getGet('batchName'); 
        $output="";
         $result = $this->db->table('trainings a')
                     ->select('b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->join('student_performance c','c.student_id=a.student_id','LEFT')
-                    ->where('a.class_id',$className)->groupBy('a.student_id')->get()->getResult();
+                    ->where('a.batch_id',$batchName)->groupBy('a.student_id')->get()->getResult();
         foreach($result as $row)
         {
             $output .= '<tr>

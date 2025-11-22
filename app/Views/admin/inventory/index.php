@@ -335,14 +335,23 @@
                                                     <?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
                                                 </td>
                                                 <td>
+                                                    <?php if($row->status==0):?>
                                                     <button type="button" class="btn dropdown-toggle"
                                                         data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                                         role="button">
                                                         <span>More</span>
                                                     </button>
                                                     <div class="dropdown-menu">
-
+                                                        <button type="button" class="dropdown-item accept"
+                                                            value="<?= $row->request_id ?>">
+                                                            <i class="ti ti-check"></i>&nbsp;Accept
+                                                        </button>
+                                                        <button type="button" class="dropdown-item decline"
+                                                            value="<?= $row->request_id ?>">
+                                                            <i class="ti ti-x"></i>&nbsp;Decline
+                                                        </button>
                                                     </div>
+                                                    <?php endif;?>
                                                 </td>
                                             </tr>
                                             <?php endforeach;?>
@@ -555,6 +564,42 @@
     $(document).on('click', '.return', function() {
         $('#returnModal').modal('show');
         $('#returnID').attr("value", $(this).val());
+    });
+
+    $(document).on('click', '.edit', function() {
+        const {
+            value: name
+        } = Swal.fire({
+            title: "Rename category",
+            input: "text",
+            inputLabel: "Enter here",
+            showCancelButton: true,
+            inputValidator: (name) => {
+                if (!name) {
+                    return "You need to write something!";
+                } else {
+                    $.ajax({
+                        url: "<?= site_url('inventory/category/edit') ?>",
+                        method: "POST",
+                        data: {
+                            value: $(this).val(),
+                            name: name
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                category.ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.error,
+                                    icon: "warning"
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
     });
 
     let category = $('#tblcategory').DataTable({
@@ -780,6 +825,72 @@
                             'text-danger'); // Highlight the input field with an error
                     }
                 }
+            }
+        });
+    });
+
+    $(document).on('click', '.accept', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to accept this request?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, accept it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?=site_url('inventory/item/accept')?>",
+                    method: "POST",
+                    data: {
+                        value: $(this).val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "warning"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.decline', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to decline this request?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, decline it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?=site_url('inventory/item/decline')?>",
+                    method: "POST",
+                    data: {
+                        value: $(this).val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "warning"
+                            });
+                        }
+                    }
+                });
             }
         });
     });

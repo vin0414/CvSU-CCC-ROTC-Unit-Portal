@@ -76,6 +76,7 @@ $routes->post('report/grades/update','Enrolment::updateGrades');
 $routes->post('report/save','Enrolment::saveReport');
 //inventory
 $routes->post('inventory/category/add','Inventory::addCategory');
+$routes->post('inventory/category/edit','Inventory::editCategory');
 $routes->get('inventory/category/fetch','Inventory::fetchCategory');
 $routes->post('inventory/item/save','Inventory::saveItem');
 $routes->post('inventory/item/edit','Inventory::editItem');
@@ -84,6 +85,8 @@ $routes->post('inventory/item/restore','Inventory::restoreItem');
 $routes->post('inventory/item/borrow','Inventory::borrowItem');
 $routes->post('inventory/item/return','Inventory::returnItem');
 $routes->post('inventory/item/release','Inventory::releaseItem');
+$routes->post('inventory/item/accept','Inventory::AcceptRequest');
+$routes->post('inventory/item/decline','Inventory::declineRequest');
 //excel scanner
 $routes->post('file/upload','ExcelScanner::upload');
 //cadet trainings

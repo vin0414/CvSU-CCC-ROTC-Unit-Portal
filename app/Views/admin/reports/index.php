@@ -92,6 +92,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="#tabs-others-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-award"></i>&nbsp;Merits/Demerits
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
                                         <i class="ti ti-clipboard-data"></i>&nbsp;Violations
                                     </a>
@@ -133,8 +138,8 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-4">
-                                                    <label class="form-label">Name of Class</label>
-                                                    <select name="className" class="form-select" id="className">
+                                                    <label class="form-label">Name of Batch</label>
+                                                    <select name="batchName" class="form-select" id="batchName">
                                                         <option value="">Choose</option>
                                                     </select>
                                                 </div>
@@ -175,6 +180,21 @@
                                                 </div>
                                             </form>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-others-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped" id="tables">
+                                            <thead>
+                                                <th>Date</th>
+                                                <th>Category</th>
+                                                <th>Details</th>
+                                                <th>Student</th>
+                                                <th>Points</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-activity-8">
@@ -262,11 +282,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     $('#table').DataTable();
+    $('#tables').DataTable();
     $('#semester').change(function() {
         let semester = $(this).val();
         let year = $('#year').val();
         $.ajax({
-            url: "<?= site_url('gradebook/class/list') ?>",
+            url: "<?= site_url('gradebook/batch/list') ?>",
             method: "GET",
             data: {
                 year: year,
@@ -275,10 +296,10 @@
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                const dropdown = $('#className');
-                response.class.forEach(function(item) {
+                const dropdown = $('#batchName');
+                response.batch.forEach(function(item) {
                     dropdown.append(
-                        `<option value="${item.class_id}">${item.className} - ${item.section}</option>`
+                        `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`
                     );
                 });
 

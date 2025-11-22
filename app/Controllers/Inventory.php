@@ -48,6 +48,27 @@ class Inventory extends BaseController
         }
     }
 
+    public function editCategory()
+    {
+        $categoryModel = new categoryModel();
+        $val = $this->request->getPost('value');
+        $name = $this->request->getPost('name');
+        $data = [
+                'categoryName'=>$name,
+            ];
+        $categoryModel->update($val,$data);
+        //logs  
+        date_default_timezone_set('Asia/Manila');
+        $logModel = new \App\Models\logModel();
+        $data = ['account_id'=>session()->get('loggedAdmin'),
+                'activities'=>'Edit category',
+                'page'=>'Inventory',
+                'datetime'=>date('Y-m-d h:i:s a')
+                ];      
+        $logModel->save($data);
+        return $this->response->setJSON(['success'=>'Successfully saved']);
+    }
+
     public function fetchCategory()
     {
         $model = new categoryModel();
@@ -359,5 +380,23 @@ class Inventory extends BaseController
                 ];      
         $logModel->save($data);
         return $this->response->setJSON(['success'=>'Successfully saved']);
+    }
+
+    public function acceptRequest()
+    {
+        $model = new \App\Models\requestModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>1];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully accepted']);
+    }
+
+    public function declineRequest()
+    {
+        $model = new \App\Models\requestModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>2];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully declined']);
     }
 }

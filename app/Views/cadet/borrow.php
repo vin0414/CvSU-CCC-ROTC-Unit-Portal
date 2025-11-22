@@ -47,7 +47,8 @@
                                             <select name="item" class="form-select">
                                                 <option value="">Choose</option>
                                                 <?php foreach($items as $row): ?>
-                                                <option><?= $row['item'] ?></option>
+                                                <option value="<?= $row['item'] ?>"><?= $row['item'] ?> -
+                                                    <?= $row['quantity'] ?> Qty</option>
                                                 <?php endforeach;?>
                                             </select>
                                             <div id="item-error" class="error-message text-danger text-sm"></div>

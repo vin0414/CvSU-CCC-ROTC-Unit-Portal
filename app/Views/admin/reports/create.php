@@ -53,13 +53,13 @@
                                     <form method="POST" class="row g-2" id="form">
                                         <?= csrf_field() ?>
                                         <div class="col-lg-12">
-                                            <label class="form-label">Violation</label>
-                                            <input type="text" class="form-control" name="violation">
-                                            <div id="violation-error" class="error-message text-danger text-sm"></div>
+                                            <label class="form-label">Title</label>
+                                            <input type="text" class="form-control" name="title">
+                                            <div id="title-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="row g-3">
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-3">
                                                     <label class="form-label">Category</label>
                                                     <select class="form-select" name="category">
                                                         <option value="">Choose</option>
@@ -71,7 +71,18 @@
                                                     <div id="category-error" class="error-message text-danger text-sm">
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-8">
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">Type</label>
+                                                    <select class="form-select" name="report">
+                                                        <option value="">Choose</option>
+                                                        <option value="Merits">Merits</option>
+                                                        <option value="Demerits">Demerits</option>
+                                                        <option value="Violations">Violations</option>
+                                                    </select>
+                                                    <div id="report-error" class="error-message text-danger text-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
                                                     <label class="form-label">Student Name</label>
                                                     <select class="form-select" name="student">
                                                         <option value="">Choose</option>

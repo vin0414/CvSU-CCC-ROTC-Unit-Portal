@@ -14,6 +14,7 @@ use App\Models\qrcodeModel;
 use App\Models\scheduleModel;
 use App\Models\assignmentModel;
 use App\Models\batchModel;
+use App\Models\requestModel;
 use App\Models\subjectModel;
 
 class Administrator extends BaseController
@@ -193,13 +194,13 @@ class Administrator extends BaseController
         $borrow = $borrowModel->countAllResults();
         $returnModel = new returnModel();
         $return = $returnModel->countAllResults();
-        $purchaseModel = new purchaseModel();
-        $purchase = $purchaseModel->countAllResults();
+        $requestModel = new requestModel();
+        $requests = $requestModel->countAllResults();
 
         $data = ['title'=>$title,'announcement'=>$announcement,'assignment'=>$assignment,
                 'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
                 'enrolled'=>$totalEnrolled,'training'=>$training,
-                'stocks'=>$stocks,'borrow'=>$borrow,'return'=>$return,'purchase'=>$purchase
+                'stocks'=>$stocks,'borrow'=>$borrow,'return'=>$return,'purchase'=>$requests
             ];
         return view('admin/dashboard',$data);
     }

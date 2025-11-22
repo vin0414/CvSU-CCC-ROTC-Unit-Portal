@@ -84,7 +84,13 @@
                                             <td><?= $row->qty ?></td>
                                             <td><?= date('M d, Y h:i:s a',strtotime($row->date_return)) ?></td>
                                             <td>
-
+                                                <?php if($row->status==0): ?>
+                                                <span class="badge bg-warning text-white">PENDING</span>
+                                                <?php elseif($row->status==1):?>
+                                                <span class="badge bg-success text-white">APPROVED</span>
+                                                <?php else : ?>
+                                                <span class="badge bg-danger text-white">DECLINED</span>
+                                                <?php endif;?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
