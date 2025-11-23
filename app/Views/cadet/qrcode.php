@@ -25,7 +25,7 @@ img {
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <button type="button" class="btn btn-default" onclick="downloadAsImage()">
+                                <button type="button" class="btn btn-default" onclick="downloadCard()">
                                     <i class="ti ti-download"></i>
                                 </button>
                                 <?php if(empty($qrcode)): ?>
@@ -67,7 +67,7 @@ img {
                     <div class="row g-3">
                         <div class="col-lg-3"></div>
                         <div class="col-lg-6">
-                            <div class="card mb-2">
+                            <div class="card mb-2" id="card">
                                 <div class="card-header">
                                     <div class="card-title">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -94,13 +94,14 @@ img {
                                         QR Code
                                     </div>
                                 </div>
-                                <div class="card-body" id="capture">
+                                <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-lg-4 text-center">
                                             <div style="margin: 10px;">
                                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x200&data=<?=$qrcode['token'] ?? 'N/A' ?>"
                                                     alt="QRCode" class="mb-2"
-                                                    style="border: 10px solid green;border-radius:10px 10px;width:100%;" />
+                                                    style="border: 10px solid green;border-radius:10px 10px;width:100%;"
+                                                    crossorigin="anonymous" />
                                                 <p class="bg-success text-white"
                                                     style="border-radius:10px 10px;font-size:20px;">SCAN ME</p>
                                             </div>
@@ -145,23 +146,6 @@ img {
                 </div>
             </div>
             <!-- END PAGE BODY -->
-            <!--  BEGIN FOOTER  -->
-            <footer class="footer footer-transparent d-print-none">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; <?=date('Y')?>
-                                    <a href="." class="link-secondary">CvSU-CCC ROTC Unit Portal</a>. All rights
-                                    reserved.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!--  END FOOTER  -->
         </div>
     </div>
     <div class="modal" id="modal-loading" data-backdrop="static">
@@ -179,18 +163,9 @@ img {
     </div>
     <?=view('cadet/templates/footer') ?>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script>
-    function downloadAsImage() {
-        const element = document.getElementById("capture");
-
-        html2canvas(element).then(canvas => {
-            const link = document.createElement("a");
-            link.download = "screenshot.png";
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-        });
-    }
     $('#frmQRCode').on('submit', function(e) {
         e.preventDefault();
         let data = $(this).serialize();
@@ -220,6 +195,19 @@ img {
             }
         });
     });
+
+    function downloadCard() {
+        const card = document.getElementById("card");
+
+        html2canvas(card, {
+            useCORS: true
+        }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = "id-card.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        });
+    }
     </script>
 </body>
 

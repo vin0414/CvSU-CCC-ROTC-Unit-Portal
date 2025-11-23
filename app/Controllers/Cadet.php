@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\studentModel;
+use App\Libraries\Hash;
 use Config\App;
 
 class Cadet extends BaseController
@@ -95,6 +96,71 @@ class Cadet extends BaseController
                     ] ;
             $model->save($data);
             return $this->response->setJSON(['success'=>'Successfully sent']);
+        }
+    }
+
+    public function changePassword()
+    {
+        $studentModel = new studentModel();
+        $user = session()->get('loggedUser');
+        $validation = $this->validate([
+            'current' => [
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
+                'errors' => [
+                    'required' => 'Password is required',
+                    'min_length' => 'Password must be at least 8 characters long',
+                    'max_length' => 'Password cannot exceed 20 characters',
+                    'regex_match' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                ]
+            ],
+            'new_password' => [
+                'rules' => 'required|min_length[8]|max_length[20]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/]',
+                'errors' => [
+                    'required' => 'New Password is required',
+                    'min_length' => 'Password must be at least 8 characters long',
+                    'max_length' => 'Password cannot exceed 20 characters',
+                    'regex_match' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                ]
+            ],
+            'confirm_password'=>[
+                'rules'=>'required|matches[new_password]',
+                'errors'=>[
+                    'required'=>'Re-type your password',
+                    'matches'=>'Password do not match'
+                ]
+            ],
+        ]);
+        if(!$validation)
+        {
+            return $this->response->SetJSON(['error' => $this->validator->getErrors()]);
+        }
+        else
+        {
+            $oldpassword = $this->request->getPost('current');
+            $newpassword = $this->request->getPost('new_password');
+
+            $account = $studentModel->WHERE('student_id',$user)->first();
+            $checkPassword = Hash::check($oldpassword,$account['password']);
+            if(!$checkPassword||empty($checkPassword))
+            {
+                $error = ['current'=>'Password mismatched. Please try again'];
+                return $this->response->SetJSON(['error' => $error]);
+            }
+            else
+            {
+                if(($oldpassword==$newpassword))
+                {
+                    $error = ['new_password'=>'The new password cannot be the same as the current password.'];
+                    return $this->response->SetJSON(['error' => $error]);
+                }
+                else
+                {
+                    $HashPassword = Hash::make($newpassword);
+                    $data = ['password'=>$HashPassword];
+                    $studentModel->update($user,$data);
+                    return $this->response->setJSON(['success' => 'Successfully submitted']);
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ use App\Libraries\Hash;
 use App\Models\attachmentModel;
 use App\Models\performanceModel;
 use App\Models\reportModel;
+use App\Models\scheduleFileModel;
 use App\Models\scheduleModel;
 use App\Models\studentModel;
 use Config\Email;
@@ -367,7 +368,23 @@ class Home extends BaseController
                         ->orderBy('a.training_id','DESC')
                         ->limit(8)
                         ->get()->getResult();
-            
+            //total merits
+            $reportModel = new reportModel();
+            $data['merits'] = $reportModel
+                    ->selectSum('points')        // <-- replace 'points' with your column name
+                    ->where('type_report', 'Merits')
+                    ->where('student_id', session()->get('loggedUser'))
+                    ->get()
+                    ->getRow()
+                    ->points;
+            //total demerits
+            $data['demerits'] = $reportModel
+                    ->selectSum('points')        // <-- replace 'points' with your column name
+                    ->where('type_report', 'Demerits')
+                    ->where('student_id', session()->get('loggedUser'))
+                    ->get()
+                    ->getRow()
+                    ->points;
             return view('cadet/dashboard', $data);
         }
     }
@@ -540,8 +557,15 @@ class Home extends BaseController
         $data['title'] = "My Trainings";
         $model = new \App\Models\cadetTrainingModel();
         $training = $model->where('training_id',$id)->first();
+        if(empty($training))
+        {
+            return redirect()->back();
+        }
         $scheduleModel = new scheduleModel();
         $data['schedule'] = $scheduleModel->where('schedule_id',$training['schedule_id'])->first();
+        //get the files
+        $scheduleFileModel = new scheduleFileModel();
+        $data['files'] = $scheduleFileModel->where('schedule_id',$training['schedule_id'])->findAll(); 
         return view('cadet/view-training',$data);
     }
 
@@ -555,19 +579,27 @@ class Home extends BaseController
         {
             return redirect()->to(base_url('cadet/profile'));
         }
-        $qrcodeModel = new qrcodeModel();
         $attendanceModel = new attendanceModel();
         //total attendance
-        $data['totalAttendance'] = $attendanceModel->where('student_id',session()->get('loggedUser'))
+        $totalAttendance = $attendanceModel->where('student_id',session()->get('loggedUser'))
                         ->whereIn('remarks',['In','Out'])
                         ->groupBy('date')
                         ->countAllResults();
+        $data['totalAttendance']  = $totalAttendance;
+        //attendance rate
+        $data['attendanceRate'] = ($totalAttendance/15)*100;
         //late attendance
         $data['late'] = $attendanceModel->where('student_id',session()->get('loggedUser'))
                         ->where('remarks','In')
-                        ->where('time >','08:00')
+                        ->where('time >','08:05')
                         ->countAllResults();
-        $data['qrcode'] = $qrcodeModel->where('student_id',session()->get('loggedUser'))->first();
+        //absent
+        $totalDates = $attendanceModel->select('date')
+                    ->where('student_id', session()->get('loggedUser'))
+                    ->groupBy('date')
+                    ->countAllResults();
+        $data['absent'] = $totalAttendance-$totalDates;
+        
         $data['attendance'] = $attendanceModel->where('student_id',session()->get('loggedUser'))
                                 ->orderBy('attendance_id','DESC')->limit(10)
                                 ->findAll();

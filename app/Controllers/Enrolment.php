@@ -547,10 +547,10 @@ class Enrolment extends BaseController
                     $timeIn  = strtotime($in);
                     $timeOut = strtotime($out);
 
-                    if ($timeIn > strtotime("08:00:00")) {
+                    if ($timeIn > strtotime("08:05")) {
                         $status = "L"; // Late
                         $class  = "late";
-                    } elseif ($timeIn <= strtotime("08:00:00") && $timeOut >= strtotime("17:00:00")) {
+                    } elseif ($timeIn <= strtotime("08:05") && $timeOut >= strtotime("17:00")) {
                         $status = "P"; // Present
                         $class  = "present";
                     } else {

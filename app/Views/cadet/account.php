@@ -109,23 +109,6 @@
                 </div>
             </div>
             <!-- END PAGE BODY -->
-            <!--  BEGIN FOOTER  -->
-            <footer class="footer footer-transparent d-print-none">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; <?=date('Y')?>
-                                    <a href="." class="link-secondary">CvSU-CCC ROTC Unit Portal</a>. All rights
-                                    reserved.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!--  END FOOTER  -->
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>
@@ -151,6 +134,36 @@
         } else {
             xxx.type = "password";
         }
+    });
+
+    $('#frmPassword').on('submit', function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $.ajax({
+            url: "<?=site_url('password/change')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                if (response.success) {
+                    $('#frmPassword')[0].reset();
+                    Swal.fire({
+                        title: "Great!",
+                        text: "Successfully applied changes",
+                        icon: "success"
+                    });
+                } else {
+                    var errors = response.error;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
     });
     </script>
 </body>

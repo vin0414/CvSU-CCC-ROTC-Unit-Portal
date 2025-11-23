@@ -425,7 +425,25 @@
                             </div>
                         </div>
                         <div class="col-lg-3">
-                            <div class="card mb-3">
+                            <div class="row g-3 mb-3">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-title">Merits</div>
+                                            <h1><?= ($merits) ?? 0 ?></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-title">Demerits</div>
+                                            <h1><?= ($demerits) ?? 0 ?></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
                                 <div class="card-header">
                                     <div class="card-title">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -479,23 +497,6 @@
                 </div>
             </div>
             <!-- END PAGE BODY -->
-            <!--  BEGIN FOOTER  -->
-            <footer class="footer footer-transparent d-print-none">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item">
-                                    Copyright &copy; <?=date('Y')?>
-                                    <a href="." class="link-secondary">CvSU-CCC ROTC Unit Portal</a>. All rights
-                                    reserved.
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!--  END FOOTER  -->
         </div>
     </div>
     <?=view('cadet/templates/footer') ?>

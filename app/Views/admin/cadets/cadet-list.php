@@ -180,7 +180,7 @@
                                                     <button type="submit" class="btn btn-success">
                                                         <i class="ti ti-settings"></i>&nbsp;Generate
                                                     </button>
-                                                    <button type="button" class="btn btn-default">
+                                                    <button type="button" class="btn btn-default" id="btnExport">
                                                         <i class="ti ti-download"></i>&nbsp;Download
                                                     </button>
                                                 </div>
@@ -494,6 +494,18 @@
                 }
             }
         });
+    });
+
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('table');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'master-list.xls';
+        link.click();
     });
     </script>
 </body>

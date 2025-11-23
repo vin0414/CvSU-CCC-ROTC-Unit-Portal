@@ -16,17 +16,23 @@
     @import url("https://rsms.me/inter/inter.css");
 
     .present {
-        background-color: #0baf11ff;
+        background-color: #0baf11ff !important;
+        color: #ffffff !important;
+        text-align: center;
         /* light green */
     }
 
     .late {
-        background-color: #d4c117ff;
+        background-color: #d4c117ff !important;
+        color: #ffffff !important;
+        text-align: center;
         /* light yellow */
     }
 
     .absent {
-        background-color: #7c0d18ff;
+        background-color: #ef1026ff !important;
+        color: #ffffff !important;
+        text-align: center;
         /* light red */
     }
     </style>
@@ -201,7 +207,7 @@
                                                     <button type="submit" class="btn btn-success">
                                                         <i class="ti ti-settings"></i>&nbsp;Search
                                                     </button>
-                                                    <button type="button" class="btn btn-default">
+                                                    <button type="button" class="btn btn-default" id="btnExport">
                                                         <i class="ti ti-download"></i>
                                                     </button>
                                                 </div>
@@ -209,7 +215,7 @@
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="table-responsive" style="height: 400px;overflow-y:auto;">
-                                                <table class="table table-bordered table-striped">
+                                                <table class="table table-bordered table-striped" id="tblattendance">
                                                     <thead>
                                                         <th>Fullname</th>
                                                         <th>1st</th>
@@ -276,7 +282,6 @@
                         `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`
                     );
                 });
-
             }
         });
     });
@@ -298,6 +303,18 @@
                 }
             }
         });
+    });
+
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('tblattendance');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'attendance-sheet.xls';
+        link.click();
     });
     </script>
 </body>
