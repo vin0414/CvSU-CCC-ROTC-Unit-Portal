@@ -152,10 +152,13 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('inventory/stock/add','Administrator::addInventory');
     $routes->get('inventory/stock/export','Administrator::exportInventory');
     $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory/$1');
+    $routes->get('inventory/borrow','Administrator::borrowInventory');
+    $routes->get('inventory/return','Administrator::returnInventory');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');
     $routes->get('announcement/edit/(:any)','Administrator::editAnnouncement/$1');
+    $routes->get('announcement/view/(:any)','Administrator::viewAnnouncement/$1');
     //reports
     $routes->get('reports','Administrator::report');
     $routes->get('reports/create','Administrator::createReport');

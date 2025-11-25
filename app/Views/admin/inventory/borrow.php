@@ -65,135 +65,71 @@
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
-                                    <a href="#tabs-home-8" class="nav-link active" data-bs-toggle="tab">
+                                    <a href="#tabs-borrow-8" class="nav-link active" data-bs-toggle="tab">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-package">
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-package-export">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
                                             <path d="M12 12l8 -4.5" />
-                                            <path d="M12 12l0 9" />
-                                            <path d="M12 12l-8 -4.5" />
-                                            <path d="M16 5.25l-8 4.5" />
-                                        </svg>
-                                        &nbsp;All Stocks
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-package-off">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M8.812 4.793l3.188 -1.793l8 4.5v8.5m-2.282 1.784l-5.718 3.216l-8 -4.5v-9l2.223 -1.25" />
-                                            <path d="M14.543 10.57l5.457 -3.07" />
                                             <path d="M12 12v9" />
                                             <path d="M12 12l-8 -4.5" />
-                                            <path d="M16 5.25l-4.35 2.447m-2.564 1.442l-1.086 .611" />
-                                            <path d="M3 3l18 18" />
+                                            <path d="M15 18h7" />
+                                            <path d="M19 15l3 3l-3 3" />
                                         </svg>
-                                        &nbsp;Damaged items
+                                        &nbsp;Borrowed items
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#tabs-setup-8" class="nav-link" data-bs-toggle="tab">
+                                    <a href="#tabs-purchase-8" class="nav-link" data-bs-toggle="tab">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-cash-register">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                             <path
-                                                d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                d="M21 15h-2.5c-.398 0 -.779 .158 -1.061 .439c-.281 .281 -.439 .663 -.439 1.061c0 .398 .158 .779 .439 1.061c.281 .281 .663 .439 1.061 .439h1c.398 0 .779 .158 1.061 .439c.281 .281 .439 .663 .439 1.061c0 .398 -.158 .779 -.439 1.061c-.281 .281 -.663 .439 -1.061 .439h-2.5" />
+                                            <path d="M19 21v1m0 -8v1" />
+                                            <path
+                                                d="M13 21h-7c-.53 0 -1.039 -.211 -1.414 -.586c-.375 -.375 -.586 -.884 -.586 -1.414v-10c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h2m12 3.12v-1.12c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-2" />
+                                            <path
+                                                d="M16 10v-6c0 -.53 -.211 -1.039 -.586 -1.414c-.375 -.375 -.884 -.586 -1.414 -.586h-4c-.53 0 -1.039 .211 -1.414 .586c-.375 .375 -.586 .884 -.586 1.414v6m8 0h-8m8 0h1m-9 0h-1" />
+                                            <path d="M8 14v.01" />
+                                            <path d="M8 17v.01" />
+                                            <path d="M12 13.99v.01" />
+                                            <path d="M12 17v.01" />
                                         </svg>
-                                        &nbsp;Setup
+                                        &nbsp;Request
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade active show" id="tabs-home-8">
-                                    <table class="table table-bordered table-striped" id="table">
+                                <div class="tab-pane fade show active" id="tabs-borrow-8">
+                                    <table class="table table-bordered table-striped" id="tblborrowed">
                                         <thead>
-                                            <th>Item(s)</th>
-                                            <th>Category</th>
-                                            <th>Units</th>
-                                            <th>Quantity</th>
-                                            <th>Unit Price</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach($inventory as $row): ?>
-                                            <tr>
-                                                <td><?= $row['item'] ?></td>
-                                                <td><?= $row['categoryName'] ?></td>
-                                                <td><?= $row['units'] ?></td>
-                                                <td><?= $row['quantity'] ?></td>
-                                                <td><?= number_format($row['price'],2) ?></td>
-                                                <td><?= $row['details'] ?></td>
-                                                <td>
-                                                    <?= ($row['quantity'] == 0) 
-                                                            ? '<span class="badge bg-danger text-white">OUT OF STOCKS</span>' 
-                                                            : (($row['quantity'] <= $row['min']) 
-                                                                ? '<span class="badge bg-warning text-white">CRITICAL</span>' 
-                                                                : '<span class="badge bg-success text-white">IN STOCKS</span>') ?>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn dropdown-toggle"
-                                                        data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                        role="button">
-                                                        <span>More</span>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a href="<?= site_url('inventory/stock/edit/') ?><?= $row['inventory_id'] ?>"
-                                                            class="dropdown-item">
-                                                            <i class="ti ti-edit"></i>&nbsp;Edit Item
-                                                        </a>
-                                                        <button type="button" class="dropdown-item borrow"
-                                                            value="<?= $row['inventory_id'] ?>">
-                                                            <i class="ti ti-package-export"></i>Borrow Item
-                                                        </button>
-                                                        <button type="button" class="dropdown-item damage"
-                                                            value="<?= $row['inventory_id'] ?>">
-                                                            <i class="ti ti-hammer"></i>Damage Item
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach;?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-activity-8">
-                                    <table class="table table-bordered table-striped" id="tbldamaged">
-                                        <thead>
-                                            <th>Date Created</th>
+                                            <th>Date</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
+                                            <th>Borrower</th>
+                                            <th>Expected Date</th>
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
-                                            <?php foreach($damage as $row): ?>
+                                            <?php foreach($borrow as $row): ?>
                                             <tr>
                                                 <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
-                                                <td><?= $row->reason ?></td>
-                                                <td><?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
-                                                </td>
+                                                <td><?= $row->borrower ?></td>
+                                                <td><?= date('M d, Y',strtotime($row->date_expected)) ?></td>
                                                 <td>
                                                     <?php if($row->status==0): ?>
-                                                    <button type="button" class="btn btn-primary restore"
-                                                        value="<?= $row->damaged_id ?>">
-                                                        <i class="ti ti-restore"></i>&nbsp;Restore
+                                                    <button type="button" class="btn btn-primary return"
+                                                        value="<?= $row->inventory_id ?>">
+                                                        <i class="ti ti-package-import"></i>&nbsp;Return
                                                     </button>
                                                     <?php endif;?>
                                                 </td>
@@ -202,44 +138,52 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-setup-8">
-                                    <div class="row g-3">
-                                        <div class="col-lg-4">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <div class="card-title">Add Category</div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <form method="POST" class="row g-3" id="form">
-                                                        <?= csrf_field() ?>
-                                                        <div class="col-lg-12">
-                                                            <label class="form-label">Category</label>
-                                                            <input type="text" class="form-control" name="category" />
-                                                            <div id="category-error"
-                                                                class="error-message text-danger text-sm"></div>
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <button type="submit" class="btn btn-primary" id="btnSave">
-                                                                <i class="ti ti-device-floppy"></i>&nbsp;Save
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-8">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered table-striped" id="tblcategory">
-                                                    <thead>
-                                                        <th>Date Created</th>
-                                                        <th>Category</th>
-                                                        <th>Action</th>
-                                                    </thead>
-                                                    <tbody></tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="tab-pane fade" id="tabs-purchase-8">
+                                    <table class="table table-bordered table-striped" id="tblpurchase">
+                                        <thead>
+                                            <th>Date</th>
+                                            <th>Item(s)</th>
+                                            <th>Qty</th>
+                                            <th>Borrower's Name</th>
+                                            <th>Date Return</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach($request as $row): ?>
+                                            <tr>
+                                                <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
+                                                <td><?= $row->item ?></td>
+                                                <td><?= $row->qty ?></td>
+                                                <td><?= $row->lastname ?>, <?= $row->firstname ?>
+                                                    <?= $row->middlename ?></td>
+                                                <td><?= date('M d, Y', strtotime($row->date_return)) ?></td>
+                                                <td>
+                                                    <?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($row->status==0):?>
+                                                    <button type="button" class="btn dropdown-toggle"
+                                                        data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                        role="button">
+                                                        <span>More</span>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <button type="button" class="dropdown-item accept"
+                                                            value="<?= $row->request_id ?>">
+                                                            <i class="ti ti-check"></i>&nbsp;Accept
+                                                        </button>
+                                                        <button type="button" class="dropdown-item decline"
+                                                            value="<?= $row->request_id ?>">
+                                                            <i class="ti ti-x"></i>&nbsp;Decline
+                                                        </button>
+                                                    </div>
+                                                    <?php endif;?>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach;?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -421,77 +365,6 @@
                             }
                         }
                     });
-                }
-            }
-        });
-    });
-
-    let category = $('#tblcategory').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "<?=site_url('inventory/category/fetch')?>",
-            "type": "GET",
-            "dataSrc": function(json) {
-                // Handle the data if needed
-                return json.data;
-            },
-            "error": function(xhr, error, code) {
-                console.error("AJAX Error: " + error);
-                alert("Error occurred while loading data.");
-            }
-        },
-        "searching": true,
-        "columns": [{
-                "data": "date"
-            },
-            {
-                "data": "category"
-            },
-            {
-                "data": "action"
-            }
-        ]
-    });
-
-    $('#form').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSave').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/category/add')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSave').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Save'
-                );
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully saved",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#form')[0].reset();
-                            category.ajax.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
                 }
             }
         });

@@ -197,9 +197,11 @@ class Administrator extends BaseController
         $requestModel = new requestModel();
         $requests = $requestModel->countAllResults();
 
+        $pretitle = "Dashboard";
+
         $data = ['title'=>$title,'announcement'=>$announcement,'assignment'=>$assignment,
                 'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
-                'enrolled'=>$totalEnrolled,'training'=>$training,
+                'enrolled'=>$totalEnrolled,'training'=>$training,'pretitle'=>$pretitle,
                 'stocks'=>$stocks,'borrow'=>$borrow,'return'=>$return,'purchase'=>$requests
             ];
         return view('admin/dashboard',$data);
@@ -214,6 +216,7 @@ class Administrator extends BaseController
         else
         {
             $title = 'Cadets';
+            $data['pretitle']="Cadets";
             $data['title'] = $title;
             return view('admin/cadets/cadet-list',$data);
         }
@@ -231,6 +234,7 @@ class Administrator extends BaseController
             $student = new studentModel();
             $data['student'] = $student->where('token',$id)->first();
             $data['title'] = $title;
+            $data['pretitle']="Cadets";
             return view('admin/cadets/edit',$data);
         }
     }
@@ -244,6 +248,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'View Cadet';
+            $data['pretitle'] = "View Cadet";
             $studentModel = new studentModel();
             $infoModel = new cadetModel();
             $attachment = new \App\Models\attachmentModel();
@@ -425,7 +430,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'Plans';
-            $data = ['title'=>$title];
+            $pretitle = "Plans";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             return view('admin/schedules/all-schedules',$data);
         }
     }
@@ -439,10 +445,11 @@ class Administrator extends BaseController
         else
         {
             $title = 'Plans';
+            $pretitle = "Plans";
             //accounts
             $accountModel = new accountModel();
             $account = $accountModel->where('status',1)->findAll();
-            $data = ['title'=>$title,'account'=>$account];
+            $data = ['title'=>$title,'account'=>$account,'pretitle'=>$pretitle];
             return view('admin/schedules/manage-schedules',$data);
         }
     }
@@ -479,9 +486,9 @@ class Administrator extends BaseController
                 'date' => 'From: ' . date('F d, Y', strtotime($row['from_date'])) . 
                            '<br>' . 
                            'To: ' . date('F d,  Y', strtotime($row['to_date'])),
-                'time' => 'Start: ' . date('h:i:s a', strtotime($row['from_time'])) . 
+                'time' => 'Start: ' . date('H:i:s', strtotime($row['from_time'])) . 
                            '<br>' . 
-                           'End: ' . date('h:i:s a', strtotime($row['to_time'])),
+                           'End: ' . date('H:i:s', strtotime($row['to_time'])),
                 'status'=>($row['status']==1) ? 'Active' : 'Archive',
                 'action'=>'<button type="button" class="btn dropdown-toggle"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -607,7 +614,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'Create A Plan';
-            $data = ['title'=>$title];
+            $pretitle = "Plans";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             return view('admin/schedules/create-schedule',$data);
         }
     }
@@ -680,6 +688,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'Edit Plan';
+            $data['pretitle'] = "Edit Plan";
             $scheduleModel = new scheduleModel();
             $schedule = $scheduleModel->where('schedule_id',$id)->first();
             if(empty($schedule))
@@ -750,6 +759,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Attendance";
+            $data['pretitle'] = "Attendance";
             $attendance = $this->db->table('attendance a')
                           ->select('a.*,b.firstname,b.middlename,b.lastname,b.school_id')
                           ->join('students b','b.student_id=a.student_id','LEFT')
@@ -839,6 +849,7 @@ class Administrator extends BaseController
         $date = $uri->getSegment(3);   // attendance/view/{date}
         $token = $uri->getSegment(4);  // attendance/view/{date}/{token}
         $data['title'] = "View Attendance";
+        $data['pretitle'] = "Attendance";
         $attendanceModel = new attendanceModel();
         $data['attendance'] = $attendanceModel->where('date',$date)
                     ->where('token',$token)
@@ -861,6 +872,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'Gradebook';
+            $data['pretitle']="Gradebook";
             //get all the schedules and total cadet
             $data['schedules'] = $this->db->table('schedules a')
                         ->select('a.schedule_id,e.batchName,e.batch_id,a.school_year,a.name,a.status,c.fullname,d.total')
@@ -894,6 +906,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'Gradebook';
+            $data['pretitle']="Gradebook";
             $model = new scheduleModel();
             $schedule = $model->where('schedule_id',$id)->first();
             if(empty($schedule))
@@ -923,6 +936,7 @@ class Administrator extends BaseController
         else
         {
             $title = 'Gradebook';
+            $pretitle="Gradebook";
             //schedule
             $scheduleModel = new scheduleModel();
             $schedule = $scheduleModel->where('schedule_id',$id)->first();
@@ -945,7 +959,7 @@ class Administrator extends BaseController
                         ->get()->getResult();
             $fileModel = new \App\Models\scheduleFileModel();
             $files = $fileModel->where('schedule_id',$id)->findAll();
-            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account,'students'=>$students,'files'=>$files];
+            $data = ['title'=>$title,'schedule'=>$schedule,'account'=>$account,'students'=>$students,'files'=>$files,'pretitle'=>$pretitle];
             return view('admin/grades/view',$data);
         }
     }
@@ -959,6 +973,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Gradebook";
+            $data['pretitle']="Gradebook";
             $model = new batchModel();
             $data['batch'] = $model->findAll();
             return view('admin/grades/batch/index',$data);
@@ -980,6 +995,7 @@ class Administrator extends BaseController
                  return redirect()->to('/gradebook/batch')->with('fail', 'No Record(s) found! Please try again');
             }
             $data['title']="Gradebook";
+            $data['pretitle']="Gradebook";
             $data['batch'] = $batch;
             //grades
             $data['grades'] = $this->db->table('student_performance a')
@@ -1000,6 +1016,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Gradebook";
+            $data['pretitle']="Gradebook";
             $accountModel = new accountModel();
             $data['account'] = $accountModel->where('status',1)->findAll();
             return view('admin/grades/batch/create',$data);
@@ -1021,6 +1038,7 @@ class Administrator extends BaseController
                  return redirect()->to('/gradebook/batch')->with('fail', 'No Record(s) found! Please try again');
             }
             $data['title']="Gradebook";
+            $data['pretitle']="Gradebook";
             $data['batch'] = $batch;
             $accountModel = new accountModel();
             $data['account'] = $accountModel->where('status',1)->findAll();
@@ -1128,6 +1146,7 @@ class Administrator extends BaseController
             }
             $data['batch'] = $batch;
             $data['title'] = "Gradebook";
+            $data['pretitle']="Gradebook";
             return view('admin/grades/batch/upload',$data);
         }
     }
@@ -1141,6 +1160,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Inventory";
+            $data['pretitle'] = "All Stocks";
             //load all the items
             $inventoryModel = new inventoryModel();
             $data['inventory'] = $inventoryModel->join('categories','categories.category_id=inventory.category_id','LEFT')
@@ -1150,22 +1170,51 @@ class Administrator extends BaseController
                                 ->select('a.*,b.item')
                                 ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
                                 ->groupBy('a.damaged_id')->get()->getResult();
-            //damaged Items
+            return view('admin/inventory/index',$data);
+        }
+    }
+
+    public function borrowInventory()
+    {
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            $data['pretitle'] = "Borrowed Items";
+            //borrow Items
             $data['borrow'] = $this->db->table('borrow_item a')
                                 ->select('a.*,b.item')
                                 ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
                                 ->groupBy('a.borrow_id')->get()->getResult();
-            //return Items
-            $data['return'] = $this->db->table('return_item a')
-                                ->select('a.*,b.item')
-                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
-                                ->groupBy('a.return_id')->get()->getResult();
             //purchase Items
             $data['request'] = $this->db->table('requests a')
                                 ->select('a.*,b.lastname,b.firstname,b.middlename')
                                 ->join('students b','b.student_id=a.student_id','LEFT')
                                 ->groupBy('a.request_id')->get()->getResult();
-            return view('admin/inventory/index',$data);
+            return view('admin/inventory/borrow',$data);
+        }
+    }
+
+    public function returnInventory()
+    {
+        if(!$this->hasPermission('inventory'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title']="Inventory";
+            $data['pretitle'] = "Returned Items";
+            //load all the items
+            //return Items
+            $data['return'] = $this->db->table('return_item a')
+                                ->select('a.*,b.item')
+                                ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
+                                ->groupBy('a.return_id')->get()->getResult();
+            return view('admin/inventory/return',$data);
         }
     }
 
@@ -1178,6 +1227,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Inventory";
+            $data['pretitle']="Inventory";
             //category
             $model = new \App\Models\categoryModel();
             $data['category'] = $model->findAll();
@@ -1194,6 +1244,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Inventory";
+            $data['pretitle']="Inventory";
             $categoryModel = new \App\Models\categoryModel();
             $data['category'] = $categoryModel->findAll();
             //item
@@ -1217,6 +1268,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']="Inventory";
+            $data['pretitle']="Inventory";
             $model = new inventoryModel();
             $data['item'] = $model->findAll();
             return view('admin/inventory/release',$data);
@@ -1232,6 +1284,7 @@ class Administrator extends BaseController
         else
         {
             $data['title']='Announcement';
+            $data['pretitle']="Announcement";
             $val = $this->request->getGet('search');
             $announcement = new \App\Models\announcementModel();
             $page = (int) ($this->request->getGet('page') ?? 1);
@@ -1264,7 +1317,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'New Announcement';
-            $data = ['title'=>$title];
+            $pretitle="Announcement";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             return view('admin/announcement/create',$data);
         }
     }
@@ -1435,7 +1489,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'Edit Announcement';
-            $data = ['title'=>$title];
+            $pretitle="Announcement";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             $announcementModel = new \App\Models\announcementModel();
             $announcement = $announcementModel->where('announcement_id',$id)->first();
             if(empty($announcement))
@@ -1444,6 +1499,28 @@ class Administrator extends BaseController
             }
             $data['announcement'] = $announcement;
             return view('admin/announcement/edit',$data);
+        }
+    }
+
+    public function viewAnnouncement($id)
+    {
+        if(!$this->hasPermission('announcement'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'View Announcement';
+            $pretitle="Announcement";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
+            $announcementModel = new \App\Models\announcementModel();
+            $announcement = $announcementModel->where('announcement_id',$id)->first();
+            if(empty($announcement))
+            {
+                return redirect()->to('/announcement')->with('fail', 'Data not found! Please try again');
+            }
+            $data['announcement'] = $announcement;
+            return view('admin/announcement/view',$data);
         }
     }
 
@@ -1456,6 +1533,7 @@ class Administrator extends BaseController
         else
         {
             $title = 'Reports';
+            $pretitle = "Reports";
             //violations
             $violation = $this->db->table('reports a')
                         ->select('a.*,b.lastname,b.firstname,b.middlename')
@@ -1470,7 +1548,7 @@ class Administrator extends BaseController
                         ->where('type_report !=','Violations')
                         ->groupBy('a.report_id')
                         ->get()->getResult();
-            $data = ['title'=>$title,'violation'=>$violation,'others'=>$others];
+            $data = ['title'=>$title,'violation'=>$violation,'others'=>$others,'pretitle'=>$pretitle];
             return view('admin/reports/index',$data);
         }
     }
@@ -1478,10 +1556,11 @@ class Administrator extends BaseController
     public function createReport()
     {
         $title = 'Create Report';
+        $pretitle = "Report";
         //student
         $studentModel = new studentModel();
         $student = $studentModel->where('status',1)->findAll();
-        $data = ['title'=>$title,'student'=>$student];
+        $data = ['title'=>$title,'student'=>$student,'pretitle'=>$pretitle];
         return view('admin/reports/create',$data);
     }
 
@@ -1494,7 +1573,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'Accounts';
-            $data = ['title'=>$title];
+            $pretitle = "Accounts";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             return view('admin/maintenance/accounts/manage-user',$data);
         }
     }
@@ -1508,9 +1588,10 @@ class Administrator extends BaseController
         else
         {
             $title = 'Create Account';
+            $pretitle = "Account";
             $roleModel = new \App\Models\roleModel();
             $role = $roleModel->findAll();
-            $data = ['title'=>$title,'role'=>$role];
+            $data = ['title'=>$title,'role'=>$role,'pretitle'=>$pretitle];
             return view('admin/maintenance/accounts/create-account',$data);
         }
     }
@@ -1524,12 +1605,13 @@ class Administrator extends BaseController
         else
         {
             $title = 'Edit Account';
+            $pretitle = "Account";
             $roleModel = new \App\Models\roleModel();
             $role = $roleModel->findAll();
             //account
             $accountModel = new accountModel();
             $account = $accountModel->where('account_id',$id)->first();
-            $data = ['title'=>$title,'role'=>$role,'account'=>$account];
+            $data = ['title'=>$title,'role'=>$role,'account'=>$account,'pretitle'=>$pretitle];
             return view('admin/maintenance/accounts/edit-account',$data);
         }
     }
@@ -1543,7 +1625,8 @@ class Administrator extends BaseController
         else
         {
             $title = 'Back-up and Recovery';
-            $data = ['title'=>$title];
+            $pretitle = "Maintenance";
+            $data = ['title'=>$title,'pretitle'=>$pretitle];
             return view('admin/maintenance/others/recovery',$data);
         }
     }
@@ -1696,13 +1779,14 @@ class Administrator extends BaseController
         else
         {
             $title = 'Settings';
+            $pretitle = "Settings";
             //logs
             $builder = $this->db->table('logs a');
             $builder->select('a.*,b.fullname');
             $builder->join('accounts b','b.account_id=a.account_id','LEFT');
             $logs = $builder->get()->getResult();
 
-            $data = ['title'=>$title,'logs'=>$logs];
+            $data = ['title'=>$title,'logs'=>$logs,'pretitle'=>$pretitle];
             return view('admin/maintenance/others/settings',$data);
         }
     }
@@ -1716,6 +1800,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'Create Permission';
+            $data['pretitle'] = "Maintenance";
             return view('admin/maintenance/others/add-permission',$data);
         }
     }
@@ -1729,6 +1814,7 @@ class Administrator extends BaseController
         else
         {
             $data['title'] = 'Edit Permission';
+            $data['pretitle'] = "Maintenance";
             $permission = (new \App\Models\roleModel())->WHERE('role_id',$id)->first();
             if(!$permission)
             {
@@ -1742,6 +1828,7 @@ class Administrator extends BaseController
     public function myAccount()
     {
         $data['title'] = 'My Account';
+        $data['pretitle'] = "Account";
         $account = new accountModel();
         $data['account'] = $account->where('account_id',session()->get('loggedAdmin'))->first();
         return view('admin/account',$data);

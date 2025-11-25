@@ -312,7 +312,7 @@
                                 <div class="col-lg-3">
                                     <div class="card">
                                         <div class="img-responsive img-responsive-21x15 card-img-top"
-                                            style="background-image: url(<?=base_url('assets/images/announcement/')?><?=$row['image']?>)">
+                                            style="background-image: url(<?=base_url('assets/images/logo.png')?>)">
                                         </div>
                                         <div class="card-body text-center">
                                             <div class="card-title"><?=$row['title']?></div>
@@ -323,6 +323,10 @@
                                             <a href="<?=site_url('announcement/edit/')?><?=$row['announcement_id']?>"
                                                 class="card-btn">
                                                 <i class="ti ti-edit"></i>&nbsp;Edit
+                                            </a>
+                                            <a href="<?=site_url('announcement/view/')?><?=$row['announcement_id']?>"
+                                                class="card-btn">
+                                                <i class="ti ti-search"></i>&nbsp;View
                                             </a>
                                         </div>
                                     </div>

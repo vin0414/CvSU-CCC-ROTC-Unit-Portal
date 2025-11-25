@@ -182,8 +182,9 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                     </a>
                 </li>
                 <?php if($role['inventory']==1): ?>
-                <li class="nav-item <?= ($title == 'Inventory') ? 'active' : '' ?>">
-                    <a class="nav-link" href="<?=site_url('inventory')?>">
+                <li class="nav-item dropdown <?= ($title == 'Inventory') ? 'active' : '' ?>">
+                    <a class="nav-link dropdown-toggle" href="#navbar-inventory" data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside" role="button" aria-expanded="false">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -197,6 +198,55 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                         </span>
                         <span class="nav-link-title"> Inventory</span>
                     </a>
+                    <div class="dropdown-menu <?= ($title == 'Inventory') ? 'show' : '' ?>">
+                        <a href="<?= site_url('inventory') ?>"
+                            class="dropdown-item <?= ($pretitle == 'All Stocks') ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-package">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+                                <path d="M12 12l8 -4.5" />
+                                <path d="M12 12l0 9" />
+                                <path d="M12 12l-8 -4.5" />
+                                <path d="M16 5.25l-8 4.5" />
+                            </svg>
+                            All Stocks
+                        </a>
+                        <a href="<?= site_url('inventory/borrow') ?>"
+                            class="dropdown-item <?= ($pretitle == 'Borrowed Items') ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-package-export">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                <path d="M12 12l8 -4.5" />
+                                <path d="M12 12v9" />
+                                <path d="M12 12l-8 -4.5" />
+                                <path d="M15 18h7" />
+                                <path d="M19 15l3 3l-3 3" />
+                            </svg>
+                            Borrowed Items
+                        </a>
+                        <a href="<?= site_url('inventory/return') ?>"
+                            class="dropdown-item <?= ($pretitle == 'Returned Items') ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-package-import">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5" />
+                                <path d="M12 12l8 -4.5" />
+                                <path d="M12 12v9" />
+                                <path d="M12 12l-8 -4.5" />
+                                <path d="M22 18h-7" />
+                                <path d="M18 15l-3 3l3 3" />
+                            </svg>
+                            Returned Items
+                        </a>
+                    </div>
                 </li>
                 <?php endif;?>
                 <?php if($role['maintenance']==1): ?>
