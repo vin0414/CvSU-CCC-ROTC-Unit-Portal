@@ -74,6 +74,7 @@
                                         <th>Qty</th>
                                         <th>Date Return</th>
                                         <th>Status</th>
+                                        <th>Action</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach($items as $row): ?>
@@ -89,8 +90,16 @@
                                                 <?php elseif($row->status==1):?>
                                                 <span class="badge bg-success text-white">APPROVED</span>
                                                 <?php else : ?>
-                                                <span class="badge bg-danger text-white">DECLINED</span>
+                                                <span class="badge bg-danger text-white">CANCELLED</span>
                                                 <?php endif;?>
+                                            </td>
+                                            <td>
+                                                <?php if($row->status==0): ?>
+                                                <button type="button" class="btn btn-primary cancel"
+                                                    value="<?= $row->request_id ?>">
+                                                    <i class="ti ti-trash"></i>&nbsp;Cancel
+                                                </button>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
@@ -107,6 +116,45 @@
     <?=view('cadet/templates/footer') ?>
     <script>
     $('#table').DataTable();
+    $(document).on('click', '.cancel', function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to cancel this request?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            // Action based on user's choice
+            if (result.isConfirmed) {
+                const value = $(this).val();
+                $.ajax({
+                    url: "<?=site_url('cadet/items/cancel')?>",
+                    method: "POST",
+                    data: {
+                        value: value,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Great!",
+                                text: "Successfully cancelled your request",
+                                icon: "success",
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                            location.reload();
+                        } else {
+                            alert(response.errors);
+                        }
+                    }
+                });
+            }
+        });
+    });
     </script>
 </body>
 

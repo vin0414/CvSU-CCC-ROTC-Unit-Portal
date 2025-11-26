@@ -36,19 +36,6 @@
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
-                        <!-- Page title actions -->
-                        <div class="col-auto ms-auto d-print-none">
-                            <div class="btn-list">
-                                <a href="<?=site_url('inventory/stock/add')?>"
-                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
-                                    <i class="ti ti-package-import"></i>&nbsp;Add Stock
-                                </a>
-                                <a href="<?=site_url('inventory/stock/add')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
-                                    <i class="ti ti-package-import"></i>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -91,8 +78,11 @@
                                             <th>Date Returned</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
-                                            <th>Borrower</th>
+                                            <th>Remarks</th>
+                                            <th>Lost Item</th>
+                                            <th>Total Price</th>
                                             <th>Status</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                             <?php foreach($return as $row): ?>
@@ -100,8 +90,11 @@
                                                 <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
-                                                <td><?= $row->borrower ?></td>
                                                 <td><?= $row->status ?></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                             <?php endforeach;?>
                                         </tbody>

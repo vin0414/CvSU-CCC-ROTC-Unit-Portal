@@ -36,19 +36,6 @@
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
-                        <!-- Page title actions -->
-                        <div class="col-auto ms-auto d-print-none">
-                            <div class="btn-list">
-                                <a href="<?=site_url('inventory/stock/add')?>"
-                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
-                                    <i class="ti ti-package-import"></i>&nbsp;Add Stock
-                                </a>
-                                <a href="<?=site_url('inventory/stock/add')?>"
-                                    class="btn btn-success btn-6 d-sm-none btn-icon">
-                                    <i class="ti ti-package-import"></i>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -161,7 +148,13 @@
                                                     <?= $row->middlename ?></td>
                                                 <td><?= date('M d, Y', strtotime($row->date_return)) ?></td>
                                                 <td>
-                                                    <?= ($row->status) ? '<span class="badge bg-success text-white">CLOSE</span>' : '<span class="badge bg-warning text-white">PENDING</span>' ?>
+                                                    <?php if($row->status==0):?>
+                                                    <span class="badge bg-warning text-white">PENDING</span>
+                                                    <?php elseif($row->status==1):?>
+                                                    <span class="badge bg-success text-white">APPROVED</span>
+                                                    <?php else:?>
+                                                    <span class="badge bg-danger text-white">DECLINED</span>
+                                                    <?php endif;?>
                                                 </td>
                                                 <td>
                                                     <?php if($row->status==0):?>
@@ -193,37 +186,6 @@
                 </div>
             </div>
             <!-- END PAGE BODY -->
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="damageModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Damage Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmDamage">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="damageID" name="damageID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="quantity" min="1">
-                            <div id="quantity-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Reason</label>
-                            <textarea class="form-control" name="reason"></textarea>
-                            <div id="reason-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnSubmit">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -272,26 +234,31 @@
                 <div class="modal-body">
                     <form method="POST" class="row g-3" id="frmReturn">
                         <?= csrf_field() ?>
-                        <input type="hidden" id="returnID" name="returnID" />
+                        <div class="col-lg-12">
+                            <label class="form-label">Name of the Borrower</label>
+                            <input type="text" class="form-control" name="return_by">
+                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
+                        </div>
                         <div class="col-lg-12">
                             <label class="form-label">No of Items</label>
                             <input type="number" class="form-control" name="return_qty" min="1">
                             <div id="return_qty-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="return_by">
-                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Item Status</label>
-                            <select class="form-select" name="status">
+                            <label class="form-label">Remarks</label>
+                            <select class="form-select" name="status" id="remarks">
                                 <option value="">Choose</option>
                                 <option>Good Condition</option>
                                 <option>Damaged</option>
                                 <option>Partially Damaged</option>
+                                <option>Lost Items</option>
                             </select>
                             <div id="status-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12" id="lost_option" style="display:none;">
+                            <label class="form-label">Total Number of Lost Item</label>
+                            <input type="number" class="form-control" name="lost_qty" min="1">
+                            <div id="lost_qty-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12">
                             <button type="submit" class="form-control btn btn-primary" id="btnReturn">
@@ -314,136 +281,26 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#table').DataTable();
-    $('#tbldamaged').DataTable();
     $('#tblborrowed').DataTable();
-    $('#tblreturned').DataTable();
     $('#tblpurchase').DataTable();
+
+    $('#remarks').change(function() {
+        let val = $(this).val();
+        if (val === "Lost Items") {
+            $('#lost_option').slideDown();
+        } else {
+            $('#lost_option').slideUp();
+        }
+    });
 
     $(document).on('click', '.borrow', function() {
         $('#borrowModal').modal('show');
         $('#borrowID').attr("value", $(this).val());
     });
 
-    $(document).on('click', '.damage', function() {
-        $('#damageModal').modal('show');
-        $('#damageID').attr("value", $(this).val());
-    });
-
-
     $(document).on('click', '.return', function() {
         $('#returnModal').modal('show');
         $('#returnID').attr("value", $(this).val());
-    });
-
-    $(document).on('click', '.edit', function() {
-        const {
-            value: name
-        } = Swal.fire({
-            title: "Rename category",
-            input: "text",
-            inputLabel: "Enter here",
-            showCancelButton: true,
-            inputValidator: (name) => {
-                if (!name) {
-                    return "You need to write something!";
-                } else {
-                    $.ajax({
-                        url: "<?= site_url('inventory/category/edit') ?>",
-                        method: "POST",
-                        data: {
-                            value: $(this).val(),
-                            name: name
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                category.ajax.reload();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: response.error,
-                                    icon: "warning"
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    });
-
-    $('#frmDamage').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSubmit').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/damage')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSubmit').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmDamage').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $(document).on('click', '.restore', function() {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to restore this records?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, restore it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?=site_url('inventory/item/restore')?>",
-                    method: "POST",
-                    data: {
-                        value: $(this).val()
-                    },
-                    success: function(response) {
-                        if (response === "success") {
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "warning"
-                            });
-                        }
-                    }
-                });
-            }
-        });
     });
 
     $('#frmBorrow').submit(function(e) {

@@ -99,6 +99,15 @@ class Cadet extends BaseController
         }
     }
 
+    public function cancelItems()
+    {
+        $model = new \App\Models\requestModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>2];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully applied changes']);
+    }
+
     public function changePassword()
     {
         $studentModel = new studentModel();

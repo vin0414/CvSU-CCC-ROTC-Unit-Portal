@@ -16,6 +16,7 @@ $routes->post('remove-file','Home::removeFile');
 $routes->post('save-profile','Home::saveProfile');
 $routes->post('generate-qr-code','Cadet::qrCode');
 $routes->post('cadet/items/send','Cadet::sendItems');
+$routes->post('cadet/items/cancel','Cadet::cancelItems');
 $routes->post('password/change','Cadet::changePassword');
 
 $routes->group('',['filter'=>'AlreadyLoggedIn'],function($routes)
