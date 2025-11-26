@@ -1341,10 +1341,9 @@ class Administrator extends BaseController
             ],
             'details'=>['rules'=>'required','errors'=>['required'=>'Details is required']],
             'file' => [
-                'rules' => 'uploaded[file]|mime_in[file,image/jpg,image/jpeg,image/png]|max_size[file,10240]',
+                'rules' => 'uploaded[file]|max_size[file,10240]',
                 'errors' => [
                     'uploaded' => 'Please upload a file before submitting.',
-                    'mime_in' => 'Only JPG, JPEG, and PNG image formats are allowed.',
                     'max_size' => 'The file size must not exceed 10MB.',
                 ]
             ],

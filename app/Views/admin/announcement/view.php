@@ -59,7 +59,27 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Announcement</div>
+                        </div>
+                        <div class="card-body row g-2">
+                            <div class="col-lg-12">
+                                <div class="page-pretitle"><?= date('M d, Y', strtotime($announcement['created_at'])) ?>
+                                </div>
+                                <h1 class="page-title"><?= $announcement['title'] ?></h1>
+                            </div>
+                            <div class="col-lg-12">
+                                <article class="mb-3" style="height:300px;"><?= $announcement['details'] ?></article>
+                            </div>
+                            <div class="col-lg-12">
+                                <label>Supported Documents</label><br />
+                                <a href="<?= base_url('assets/images/announcement/') ?><?= $announcement['image'] ?>"
+                                    class="btn btn-primary" target="_blank"><i class="ti ti-download"></i>&nbsp;Click
+                                    here to download</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- END PAGE BODY -->

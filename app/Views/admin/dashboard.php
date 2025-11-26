@@ -353,12 +353,12 @@
                                                 <div class="col-auto">
                                                     <a href="javascript:void(0);">
                                                         <span class="avatar avatar-1"
-                                                            style="background-image: url(<?=base_url('assets/images/announcement/')?><?=$row['image']?>)">
+                                                            style="background-image: url(<?=base_url('assets/images/logo.png')?>)">
                                                         </span>
                                                     </a>
                                                 </div>
                                                 <div class="col text-truncate">
-                                                    <a href="javascript:void(0);"
+                                                    <a href="<?= site_url('announcement/view/') ?><?=$row['announcement_id']?>"
                                                         class="text-reset d-block"><?=$row['title']?></a>
                                                     <div class="d-block text-secondary text-truncate mt-n1">
                                                         <?=$row['details']?>

@@ -89,8 +89,13 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <label class="form-label">Semester</label>
-                                            <input type="text" class="form-control" name="semester"
-                                                placeholder="Enter here" value="<?= $batch['semester'] ?>">
+                                            <select name="semester" class="form-select">
+                                                <option value="">Choose</option>
+                                                <option value="1st"
+                                                    <?= ($batch['semester']=="1st") ? 'selected' : '' ?>>1st</option>
+                                                <option value="2nd"
+                                                    <?= ($batch['semester']=="2nd") ? 'selected' : '' ?>>2nd</option>
+                                            </select>
                                             <div id="semester-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-6">
