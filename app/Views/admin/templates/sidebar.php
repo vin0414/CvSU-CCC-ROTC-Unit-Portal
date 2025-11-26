@@ -182,7 +182,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                     </a>
                 </li>
                 <?php if($role['inventory']==1): ?>
-                <li class="nav-item <?= ($pretitle == 'Inventory') ? 'active' : '' ?>">
+                <li class="nav-item <?= ($pretitle == 'All Stocks') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?=site_url('inventory')?>">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -201,7 +201,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                 <?php endif;?>
                 <?php if($role['inventory']==1): ?>
                 <li
-                    class="nav-item dropdown <?= ($pretitle == 'Borrowed Items' || $pretitle == 'Returned Items') ? 'active' : '' ?>">
+                    class="nav-item dropdown <?= ($pretitle == 'Borrowed Items' || $pretitle == 'Returned Items' || $pretitle == 'Inventory Report') ? 'active' : '' ?>">
                     <a class="nav-link dropdown-toggle" href="#navbar-inventory" data-bs-toggle="dropdown"
                         data-bs-auto-close="outside" role="button" aria-expanded="false">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -220,7 +220,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                         <span class="nav-link-title"> Manage Equipment</span>
                     </a>
                     <div
-                        class="dropdown-menu <?= ($pretitle == 'Borrowed Items' || $pretitle == 'Returned Items') ? 'show' : '' ?>">
+                        class="dropdown-menu <?= ($pretitle == 'Borrowed Items' || $pretitle == 'Returned Items' || $pretitle == 'Inventory Report') ? 'show' : '' ?>">
                         <a href="<?= site_url('inventory/borrow') ?>"
                             class="dropdown-item <?= ($pretitle == 'Borrowed Items') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -254,7 +254,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                             Returned Items
                         </a>
                         <a href="<?= site_url('inventory/report') ?>"
-                            class="dropdown-item <?= ($pretitle == 'Report Items') ? 'active' : '' ?>">
+                            class="dropdown-item <?= ($pretitle == 'Inventory Report') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"

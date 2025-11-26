@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\studentModel;
 use Config\App;
 use \App\Models\categoryModel;
 use \App\Models\inventoryModel;
@@ -313,19 +314,20 @@ class Inventory extends BaseController
         }
         else
         {
+            //update the borrow status 
+            $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
+                                  ->first();
+            $record = ['status'=>1];
+            $borrowModel->update($borrow['borrow_id'],$record);
             //save the data
             $data = [
+                'borrow_id'=>$borrow['borrow_id'],
                 'inventory_id'=>$this->request->getPost('returnID'),
                 'qty'=>$this->request->getPost('return_qty'),
                 'borrower'=>$this->request->getPost('return_by'),
                 'status'=>$this->request->getPost('status')
             ];
             $returnModel->save($data);
-            //update the borrow status
-            $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
-                                  ->first();
-            $record = ['status'=>1];
-            $borrowModel->update($borrow['borrow_id'],$record);
             //return the stocks
             $inventory = $model->where('inventory_id',$this->request->getPost('returnID'))->first();
             $oldQty = $inventory['quantity'];
@@ -386,10 +388,34 @@ class Inventory extends BaseController
 
     public function acceptRequest()
     {
+        $inventory = new inventoryModel();
         $model = new \App\Models\requestModel();
+        $borrowModel = new borrowModel();
+        $studentModel = new studentModel();
+
         $val = $this->request->getPost('value');
         $data = ['status'=>1];
         $model->update($val,$data);
+        //get the data
+        $records = $model->where('request_id',$val)->first();
+        $stock = $inventory->where('item',$records['item'])->first();
+        //update the inventory
+        $newQty = $stock['quantity'] - $records['qty'];
+        $newData = ['quantity'=>$newQty];
+        $inventory->update($stock['inventory_id'],$newData);
+        //get the name of the borrower
+        $student = $studentModel->where('student_id',$records['student_id'])->first();
+        $fullname = $student['firstname'].' '.$student['middlename']." ".$student['lastname'];
+        //save the request in borrow table
+        $newRecord = [
+                'inventory_id'=>$stock['inventory_id'],
+                'qty'=>$records['qty'],
+                'borrower'=>$fullname,
+                'date_expected'=>$records['date_return'],
+                'details'=>'N/A',
+                'status'=>0
+        ];
+        $borrowModel->save($newRecord);
         return $this->response->setJSON(['success'=>'Successfully accepted']);
     }
 

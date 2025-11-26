@@ -190,7 +190,7 @@
         );
         let data = $(this).serialize();
         $.ajax({
-            url: "<?=site_url('schedules/update')?>",
+            url: "<?=site_url('plans/update')?>",
             method: "POST",
             data: data,
             success: function(response) {

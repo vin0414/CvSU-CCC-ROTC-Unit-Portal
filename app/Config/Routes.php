@@ -154,6 +154,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory/$1');
     $routes->get('inventory/borrow','Administrator::borrowInventory');
     $routes->get('inventory/return','Administrator::returnInventory');
+    $routes->get('inventory/report','Administrator::reportInventory');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');

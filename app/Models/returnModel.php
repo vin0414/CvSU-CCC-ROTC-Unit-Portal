@@ -12,7 +12,7 @@ class returnModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['inventory_id','qty','borrower','status'];
+    protected $allowedFields    = ['borrow_id','inventory_id','qty','borrower','status'];
 
     // Dates
     protected $useTimestamps = true;
