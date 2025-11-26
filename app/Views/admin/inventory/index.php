@@ -302,6 +302,11 @@
                             <div id="borrower-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12">
+                            <label class="form-label">Details</label>
+                            <textarea name="details" class="form-control"></textarea>
+                            <div id="details-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
                             <label class="form-label">Date Return</label>
                             <input type="date" class="form-control" name="date_return">
                             <div id="date_return-error" class="error-message text-danger text-sm"></div>

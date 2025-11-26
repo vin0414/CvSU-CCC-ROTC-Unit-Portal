@@ -114,6 +114,7 @@
                                             <th>Item</th>
                                             <th>Quantity</th>
                                             <th>Borrower</th>
+                                            <th>Details</th>
                                             <th>Expected Date</th>
                                             <th>Action</th>
                                         </thead>
@@ -124,6 +125,7 @@
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
                                                 <td><?= $row->borrower ?></td>
+                                                <td><?= $row->details ?></td>
                                                 <td><?= date('M d, Y',strtotime($row->date_expected)) ?></td>
                                                 <td>
                                                     <?php if($row->status==0): ?>

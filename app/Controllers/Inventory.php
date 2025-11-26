@@ -258,6 +258,7 @@ class Inventory extends BaseController
         $validation = $this->validate([
             'qty'=>'required|numeric',
             'borrower'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
+            'details'=>['rules'=>'required','errors'=>['required'=>'Please enter other details']],
             'date_return'=>['rules'=>'required','errors'=>['required'=>'Enter the return date of the item']]
         ]);
 
@@ -272,6 +273,7 @@ class Inventory extends BaseController
                 'qty'=>$this->request->getPost('qty'),
                 'borrower'=>$this->request->getPost('borrower'),
                 'date_expected'=>$this->request->getPost('date_return'),
+                'details'=>$this->request->getPost('details'),
                 'status'=>0
             ];
             $borrowModel->save($data);
