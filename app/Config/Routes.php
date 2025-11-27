@@ -18,6 +18,7 @@ $routes->post('generate-qr-code','Cadet::qrCode');
 $routes->post('cadet/items/send','Cadet::sendItems');
 $routes->post('cadet/items/cancel','Cadet::cancelItems');
 $routes->post('password/change','Cadet::changePassword');
+$routes->get('send-email','Notification::sendEmail');
 
 $routes->group('',['filter'=>'AlreadyLoggedIn'],function($routes)
 {
