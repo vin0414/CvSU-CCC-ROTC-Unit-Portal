@@ -810,7 +810,7 @@ class Administrator extends BaseController
                                         ->first();
                 if($check)
                 {
-                    return $this->response->setJSON(['errors'=>'You have already scanned your QR Code for today.']);
+                    return $this->response->setJSON(['warning'=>'You have already scanned your QR Code for today.']);
                 }
                 else
                 {
@@ -1160,9 +1160,33 @@ class Administrator extends BaseController
             $data['title']="Inventory";
             $data['pretitle'] = "All Stocks";
             //load all the items
+            $search = $this->request->getGet('search');
+            $filter = $this->request->getGet('filter'); // either active or archive
             $inventoryModel = new inventoryModel();
-            $data['inventory'] = $inventoryModel->join('categories','categories.category_id=inventory.category_id','LEFT')
-                                                ->findAll();
+            $page = (int) ($this->request->getGet('page') ?? 1);
+            $perPage = 10;
+            // Build query
+            if (!empty($search)) {
+                $inventoryModel->like('item', $search)
+                            ->orLike('details', $search);
+            }
+
+            if (!empty($filter)) {
+                if ($filter === 'Active') {
+                    $inventoryModel->where('status', 1);   // Active = 1
+                } elseif ($filter === 'Archive') {
+                    $inventoryModel->where('status', 0);   // Archive = 0
+                }
+            }
+
+            $data['inventory'] = $inventoryModel
+                                ->join('categories', 'categories.category_id = inventory.category_id', 'LEFT')
+                                ->paginate($perPage, 'default', $page);
+
+            $data['total'] = $inventoryModel->countAllResults();       
+            $data['pager'] = $inventoryModel->pager;
+            $data['page']=$page;
+            $data['perPage']=$perPage;
             //damaged Items
             $data['damage'] = $this->db->table('damaged_item a')
                                 ->select('a.*,b.item')
@@ -1192,6 +1216,8 @@ class Administrator extends BaseController
                                 ->select('a.*,b.lastname,b.firstname,b.middlename')
                                 ->join('students b','b.student_id=a.student_id','LEFT')
                                 ->groupBy('a.request_id')->get()->getResult();
+            $inventoryModel = new inventoryModel();
+            $data['inventory'] = $inventoryModel->where('status',1)->findAll();
             return view('admin/inventory/borrow',$data);
         }
     }

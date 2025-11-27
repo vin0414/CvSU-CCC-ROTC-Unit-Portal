@@ -120,58 +120,106 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade active show" id="tabs-home-8">
-                                    <table class="table table-bordered table-striped" id="table">
-                                        <thead>
-                                            <th>Item(s)</th>
-                                            <th>Category</th>
-                                            <th>Units</th>
-                                            <th>Quantity</th>
-                                            <th>Unit Price</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach($inventory as $row): ?>
-                                            <tr>
-                                                <td><?= $row['item'] ?></td>
-                                                <td><?= $row['categoryName'] ?></td>
-                                                <td><?= $row['units'] ?></td>
-                                                <td><?= $row['quantity'] ?></td>
-                                                <td><?= number_format($row['price'],2) ?></td>
-                                                <td><?= $row['details'] ?></td>
-                                                <td>
-                                                    <?= ($row['quantity'] == 0) 
+                                    <form method="GET" class="row g-3 mb-3">
+                                        <div class="col-lg-6">
+                                            <input type="search" name="search" class="form-control"
+                                                placeholder="Search here..."
+                                                value="<?= isset($_GET['search']) ? esc($_GET['search']) : '' ?>">
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <select name="filter" class="form-select">
+                                                <option value="">Filter By</option>
+                                                <option value="Active"
+                                                    <?= (isset($_GET['filter']) && $_GET['filter'] === "Active") ? 'selected' : '' ?>>
+                                                    Active</option>
+                                                <option value="Archive"
+                                                    <?= (isset($_GET['filter']) && $_GET['filter'] === "Archive") ? 'selected' : '' ?>>
+                                                    Archive</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="ti ti-search"></i>&nbsp;Search
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="table-responsive mb-3">
+                                        <table class="table table-bordered table-striped" id="table">
+                                            <thead>
+                                                <th>Item(s)</th>
+                                                <th>Category</th>
+                                                <th>Units</th>
+                                                <th>Quantity</th>
+                                                <th>Unit Price</th>
+                                                <th>Description</th>
+                                                <th>Remarks</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php if(!empty($inventory)): ?>
+                                                <?php foreach($inventory as $row): ?>
+                                                <tr>
+                                                    <td><?= $row['item'] ?></td>
+                                                    <td><?= $row['categoryName'] ?></td>
+                                                    <td><?= $row['units'] ?></td>
+                                                    <td><?= $row['quantity'] ?></td>
+                                                    <td><?= number_format($row['price'],2) ?></td>
+                                                    <td><?= $row['details'] ?></td>
+                                                    <td>
+                                                        <?= ($row['quantity'] == 0) 
                                                             ? '<span class="badge bg-danger text-white">OUT OF STOCKS</span>' 
                                                             : (($row['quantity'] <= $row['min']) 
                                                                 ? '<span class="badge bg-warning text-white">CRITICAL</span>' 
                                                                 : '<span class="badge bg-success text-white">IN STOCKS</span>') ?>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn dropdown-toggle"
-                                                        data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                        role="button">
-                                                        <span>More</span>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a href="<?= site_url('inventory/stock/edit/') ?><?= $row['inventory_id'] ?>"
-                                                            class="dropdown-item">
-                                                            <i class="ti ti-edit"></i>&nbsp;Edit Item
-                                                        </a>
-                                                        <button type="button" class="dropdown-item borrow"
-                                                            value="<?= $row['inventory_id'] ?>">
-                                                            <i class="ti ti-package-export"></i>Borrow Item
+                                                    </td>
+                                                    <td>
+                                                        <?php if($row['status']==1): ?>
+                                                        <span class="badge bg-success text-white">ACTIVE</span>
+                                                        <?php else:?>
+                                                        <span class="badge bg-default text-white">ARCHIVED</span>
+                                                        <?php endif;?>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn dropdown-toggle"
+                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                            role="button">
+                                                            <span>More</span>
                                                         </button>
-                                                        <button type="button" class="dropdown-item damage"
-                                                            value="<?= $row['inventory_id'] ?>">
-                                                            <i class="ti ti-hammer"></i>Damage Item
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <?php endforeach;?>
-                                        </tbody>
-                                    </table>
+                                                        <div class="dropdown-menu">
+                                                            <a href="<?= site_url('inventory/stock/edit/') ?><?= $row['inventory_id'] ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-edit"></i>&nbsp;Edit Item
+                                                            </a>
+                                                            <?php if($row['status']==1): ?>
+                                                            <button type="button" class="dropdown-item archive"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-archive"></i>Moved to Archives
+                                                            </button>
+                                                            <?php else :?>
+                                                            <button type="button" class="dropdown-item move"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-restore"></i>Restore
+                                                            </button>
+                                                            <?php endif;?>
+                                                            <button type="button" class="dropdown-item damage"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-hammer"></i>Damage Item
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach;?>
+                                                <?php else :?>
+                                                <tr>
+                                                    <td colspan="9" class="text-center">No Available Data(s)</td>
+                                                </tr>
+                                                <?php endif;?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <?= $pager->makeLinks($page, $perPage, $total, 'custom_view') ?>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-activity-8">
                                     <table class="table table-bordered table-striped" id="tbldamaged">
@@ -284,88 +332,6 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="borrowModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Borrow Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmBorrow">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="borrowID" name="borrowID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="qty" min="1">
-                            <div id="qty-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Name of Borrower</label>
-                            <input type="text" class="form-control" name="borrower">
-                            <div id="borrower-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Details</label>
-                            <textarea name="details" class="form-control"></textarea>
-                            <div id="details-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Date Return</label>
-                            <input type="date" class="form-control" name="date_return">
-                            <div id="date_return-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnSend">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="returnModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Return Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmReturn">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="returnID" name="returnID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="return_qty" min="1">
-                            <div id="return_qty-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="return_by">
-                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Item Status</label>
-                            <select class="form-select" name="status">
-                                <option value="">Choose</option>
-                                <option>Good Condition</option>
-                                <option>Damaged</option>
-                                <option>Partially Damaged</option>
-                            </select>
-                            <div id="status-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnReturn">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -376,26 +342,11 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#table').DataTable();
     $('#tbldamaged').DataTable();
-    $('#tblborrowed').DataTable();
-    $('#tblreturned').DataTable();
-    $('#tblpurchase').DataTable();
-
-    $(document).on('click', '.borrow', function() {
-        $('#borrowModal').modal('show');
-        $('#borrowID').attr("value", $(this).val());
-    });
 
     $(document).on('click', '.damage', function() {
         $('#damageModal').modal('show');
         $('#damageID').attr("value", $(this).val());
-    });
-
-
-    $(document).on('click', '.return', function() {
-        $('#returnModal').modal('show');
-        $('#returnID').attr("value", $(this).val());
     });
 
     $(document).on('click', '.edit', function() {
@@ -707,6 +658,72 @@
             if (result.isConfirmed) {
                 $.ajax({
                     url: "<?=site_url('inventory/item/decline')?>",
+                    method: "POST",
+                    data: {
+                        value: $(this).val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "warning"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.archive', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to move this item to archives?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?=site_url('inventory/archive')?>",
+                    method: "POST",
+                    data: {
+                        value: $(this).val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "warning"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.move', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to restore this item from archives?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?=site_url('inventory/restore')?>",
                     method: "POST",
                     data: {
                         value: $(this).val()

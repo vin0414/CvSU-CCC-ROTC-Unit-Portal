@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\inventoryModel;
 use App\Models\studentModel;
 use App\Libraries\Hash;
 use Config\App;
@@ -75,6 +76,7 @@ class Cadet extends BaseController
     public function sendItems()
     {
         $model = new \App\Models\requestModel();
+        $inventoryModel = new inventoryModel();
         $validation = $this->validate([
             'item'=>'required',
             'qty'=>'required|numeric',
@@ -87,15 +89,26 @@ class Cadet extends BaseController
         }
         else
         {
-            $data = [
-                    'student_id'=>session()->get('loggedUser'),
-                    'item'=>$this->request->getPost('item'),
-                    'qty'=>$this->request->getPost('qty'),
-                    'date_return'=>$this->request->getPost('date'),
-                    'status'=>0
-                    ] ;
-            $model->save($data);
-            return $this->response->setJSON(['success'=>'Successfully sent']);
+            $item = $this->request->getPost('item');
+            $qty = $this->request->getPost('qty');
+            $inventory = $inventoryModel->where('inventory_id',$item)->first();
+            if($qty>$inventory['quantity'])
+            {
+                $errors = ['item'=>'Your request exceeds the available stock'];
+                return $this->response->setJSON(['errors'=>$errors]);
+            }
+            else
+            {
+                $data = [
+                        'student_id'=>session()->get('loggedUser'),
+                        'item'=>$inventory['item'],
+                        'qty'=>$qty,
+                        'date_return'=>$this->request->getPost('date'),
+                        'status'=>0
+                        ] ;
+                $model->save($data);
+                return $this->response->setJSON(['success'=>'Successfully sent']);
+            }
         }
     }
 

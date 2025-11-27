@@ -224,7 +224,31 @@
                         title: "Great!",
                         html: response.success.message,
                         icon: "success",
-                        timer: 2000,
+                        timer: 5000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log("I was closed by the timer");
+                        }
+                    });
+                } else if (response.warning) {
+                    let timerInterval;
+                    Swal.fire({
+                        title: "Warning!",
+                        html: response.warning,
+                        icon: "warning",
+                        timer: 5000,
                         timerProgressBar: true,
                         didOpen: () => {
                             Swal.showLoading();
@@ -245,10 +269,10 @@
                 } else {
                     let timerInterval;
                     Swal.fire({
-                        title: "Invalid QR Code!",
+                        title: "Error!",
                         html: response.errors,
                         icon: "error",
-                        timer: 2000,
+                        timer: 5000,
                         timerProgressBar: true,
                         didOpen: () => {
                             Swal.showLoading();

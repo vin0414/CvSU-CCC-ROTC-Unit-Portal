@@ -257,7 +257,6 @@ class Inventory extends BaseController
         $model = new inventoryModel();
         $borrowModel = new borrowModel();
         $validation = $this->validate([
-            'qty'=>'required|numeric',
             'borrower'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
             'details'=>['rules'=>'required','errors'=>['required'=>'Please enter other details']],
             'date_return'=>['rules'=>'required','errors'=>['required'=>'Enter the return date of the item']]
@@ -269,26 +268,34 @@ class Inventory extends BaseController
         }
         else
         {
-            $data = [
-                'inventory_id'=>$this->request->getPost('borrowID'),
-                'qty'=>$this->request->getPost('qty'),
-                'borrower'=>$this->request->getPost('borrower'),
-                'date_expected'=>$this->request->getPost('date_return'),
-                'details'=>$this->request->getPost('details'),
-                'status'=>0
-            ];
-            $borrowModel->save($data);
-            //deduct the items
-            $inventory = $model->where('inventory_id',$this->request->getPost('borrowID'))->first();
-            $oldQty = $inventory['quantity'];
-            $newQty = $oldQty-$this->request->getPost('qty');
-            $records = ['quantity'=>$newQty];
-            $model->update($this->request->getPost('borrowID'),$records);
+            $item = $this->request->getPost('item');
+            $qty = $this->request->getPost('qty');
+            for($i = 0;$i < count($item);$i++)
+            {
+                if (!empty($item[$i]) && !empty($qty[$i]) && $qty[$i] > 0) 
+                {
+                    $data = [
+                        'inventory_id'=>$item[$i],
+                        'qty'=>$qty[$i],
+                        'borrower'=>$this->request->getPost('borrower'),
+                        'date_expected'=>$this->request->getPost('date_return'),
+                        'details'=>$this->request->getPost('details'),
+                        'status'=>0
+                    ];
+                    $borrowModel->save($data);
+                    //deduct the items
+                    $inventory = $model->where('inventory_id',$item[$i])->first();
+                    $oldQty = $inventory['quantity'];
+                    $newQty = $oldQty-$qty[$i];
+                    $records = ['quantity'=>$newQty];
+                    $model->update($item[$i],$records);
+                }
+            }
             //logs  
             date_default_timezone_set('Asia/Manila');
             $logModel = new \App\Models\logModel();
             $data = ['account_id'=>session()->get('loggedAdmin'),
-                    'activities'=>'Borrowed item  total of :'.$this->request->getPost('qty'),
+                    'activities'=>'Borrowed item',
                     'page'=>'Inventory',
                     'datetime'=>date('Y-m-d h:i:s a')
                     ];      
@@ -304,7 +311,6 @@ class Inventory extends BaseController
         $returnModel = new returnModel();
         $validation = $this->validate([
             'return_qty'=>['rules'=>'required|numeric','errors'=>['required'=>'Quantity is required','numeric'=>'Enter valid value']],
-            'return_by'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
             'remarks'=>'required'
         ]);
 
@@ -332,7 +338,7 @@ class Inventory extends BaseController
                 'borrow_id'=>$borrow['borrow_id'],
                 'inventory_id'=>$this->request->getPost('returnID'),
                 'qty'=>$this->request->getPost('return_qty'),
-                'borrower'=>$this->request->getPost('return_by'),
+                'borrower'=>'N/A',
                 'remarks'=>$this->request->getPost('remarks'),
                 'lost_item'=>$this->request->getPost('lost_qty'),
                 'status'=>0
@@ -445,5 +451,23 @@ class Inventory extends BaseController
         $data = ['status'=>1];
         $model->update($val,$data);
         return $this->response->setJSON(['success'=>'Successfully tagged']);
+    }
+
+    public function archive()
+    {
+        $model = new inventoryModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>0];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully moved to archives']);
+    }
+
+    public function restore()
+    {
+        $model = new inventoryModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>1];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully restore the item']);
     }
 }

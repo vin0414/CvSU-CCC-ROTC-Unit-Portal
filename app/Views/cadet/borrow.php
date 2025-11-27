@@ -47,7 +47,7 @@
                                             <select name="item" class="form-select">
                                                 <option value="">Choose</option>
                                                 <?php foreach($items as $row): ?>
-                                                <option value="<?= $row['item'] ?>"><?= $row['item'] ?> -
+                                                <option value="<?= $row['inventory_id'] ?>"><?= $row['item'] ?> -
                                                     <?= $row['quantity'] ?> Qty</option>
                                                 <?php endforeach;?>
                                             </select>

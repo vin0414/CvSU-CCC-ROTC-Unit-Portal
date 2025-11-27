@@ -83,7 +83,6 @@
                                             <th>Date Returned</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
-                                            <th>Borrower's Name</th>
                                             <th>Remarks</th>
                                             <th>Lost Item</th>
                                             <th>Total Price</th>
@@ -96,7 +95,6 @@
                                                 <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
-                                                <td><?= $row->borrower ?></td>
                                                 <td><?= $row->remarks ?></td>
                                                 <td><?= $row->lost_item ?></td>
                                                 <td><?= number_format($row->lost_item * $row->price,2) ?></td>

@@ -38,6 +38,9 @@
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <button type="button" class="btn btn-default borrow">
+                                    <i class="ti ti-package-export"></i>&nbsp;Borrow
+                                </button>
                                 <a href="#" class="btn btn-success btn-5 d-none d-sm-inline-block" id="btnExport">
                                     <i class="ti ti-download"></i>&nbsp;Export
                                 </a>
@@ -200,7 +203,7 @@
     </div>
 
     <div class="modal modal-blur fade" id="borrowModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-title">Borrow Item</div>
@@ -208,16 +211,40 @@
                 <div class="modal-body">
                     <form method="POST" class="row g-3" id="frmBorrow">
                         <?= csrf_field() ?>
-                        <input type="hidden" id="borrowID" name="borrowID" />
                         <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="qty" min="1">
-                            <div id="qty-error" class="error-message text-danger text-sm"></div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="table">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Item(s)</th>
+                                        <th>Qty</th>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($inventory as $row): ?>
+                                        <tr>
+                                            <td><input type="checkbox" style="width:20px;height:20px;" name="item[]"
+                                                    value="<?= $row['inventory_id'] ?>"></td>
+                                            <td>
+                                                <?= $row['item'] ?><br />
+                                                Qty: <?= $row['quantity'] ?>
+                                            </td>
+                                            <td><input type="number" name="qty[]" class="form-control" min="1"
+                                                    max="<?= $row['quantity'] ?>"></td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Name of Borrower</label>
                             <input type="text" class="form-control" name="borrower">
                             <div id="borrower-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="form-label">Details</label>
+                            <textarea class="form-control" name="details"></textarea>
+                            <div id="details-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Date Return</label>
@@ -245,11 +272,6 @@
                     <form method="POST" class="row g-3" id="frmReturn">
                         <?= csrf_field() ?>
                         <input type="hidden" name="returnID" id="returnID">
-                        <div class="col-lg-12">
-                            <label class="form-label">Name of the Borrower</label>
-                            <input type="text" class="form-control" name="return_by">
-                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
-                        </div>
                         <div class="col-lg-12">
                             <label class="form-label">No of Items</label>
                             <input type="number" class="form-control" name="return_qty" min="1">
@@ -294,6 +316,9 @@
     <script>
     $('#tblborrowed').DataTable();
     $('#tblpurchase').DataTable();
+    $('#table').DataTable({
+        dom: 'ftp'
+    });
 
     $('#remarks').change(function() {
         let val = $(this).val();
@@ -306,7 +331,6 @@
 
     $(document).on('click', '.borrow', function() {
         $('#borrowModal').modal('show');
-        $('#borrowID').attr("value", $(this).val());
     });
 
     $(document).on('click', '.return', function() {

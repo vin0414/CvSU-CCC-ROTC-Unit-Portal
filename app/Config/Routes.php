@@ -94,6 +94,8 @@ $routes->post('inventory/item/release','Inventory::releaseItem');
 $routes->post('inventory/item/accept','Inventory::AcceptRequest');
 $routes->post('inventory/item/decline','Inventory::declineRequest');
 $routes->post('inventory/return/accept','Inventory::acceptReturn');
+$routes->post('inventory/archive','Inventory::archive');
+$routes->post('inventory/restore','Inventory::restore');
 //excel scanner
 $routes->post('file/upload','ExcelScanner::upload');
 $routes->post('grades/file/upload','Enrolment::uploadFile');
@@ -151,7 +153,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('gradebook/batch/view/(:any)','Administrator::viewBatch/$1');
     $routes->get('gradebook/batch/fetch','Administrator::fetchBatch');
     //inventory 
-    $routes->get('inventory','Administrator::inventory');
+    $routes->match(['get','post'],'inventory','Administrator::inventory');
     $routes->get('inventory/stock/add','Administrator::addInventory');
     $routes->get('inventory/stock/export','Administrator::exportInventory');
     $routes->get('inventory/stock/edit/(:any)','Administrator::editInventory/$1');
