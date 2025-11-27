@@ -1211,7 +1211,7 @@ class Administrator extends BaseController
             //load all the items
             //return Items
             $data['return'] = $this->db->table('return_item a')
-                                ->select('a.*,b.item')
+                                ->select('a.*,b.item,b.price')
                                 ->join('inventory b','b.inventory_id=a.inventory_id','LEFT')
                                 ->groupBy('a.return_id')->get()->getResult();
             return view('admin/inventory/return',$data);
@@ -1388,6 +1388,21 @@ class Administrator extends BaseController
                             'account_id'=>session()->get('loggedAdmin'),
                             ];
                     $announcementModel->save($data);
+                    //get the last id
+                    $lastId = $announcementModel->insertID();
+                    //send to all active account
+                    $model = new \App\Models\notificationModel();
+                    $accountModel = new accountModel();
+                    $account = $accountModel->where('status',1)->findAll();
+                    foreach($account as $row)
+                    {
+                        $record = [
+                            'account_id'=>$row['account_id'],
+                            'announcement_id'=>$lastId,
+                            'status'=>0
+                        ];
+                        $model->save($record);
+                    }
                     return $this->response->setJSON(['success'=>'Successfully uploaded']);
                 }
                 else
@@ -1521,6 +1536,15 @@ class Administrator extends BaseController
             if(empty($announcement))
             {
                 return redirect()->to('/announcement')->with('fail', 'Data not found! Please try again');
+            }
+            //update the status
+            $model  = new \App\Models\notificationModel();
+            $assign = $model->where('account_id',session()->get('loggedAdmin'))
+                            ->where('announcement_id',$id)->first();
+            if(!empty($assign))
+            {
+                $record = ['status'=>1];
+                $model->update($assign['notification_id'],$record);
             }
             $data['announcement'] = $announcement;
             return view('admin/announcement/view',$data);

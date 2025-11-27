@@ -39,6 +39,9 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
+                                <a href="#" class="btn btn-default" id="btnExport">
+                                    <i class="ti ti-download"></i>&nbsp;Export
+                                </a>
                                 <a href="<?=site_url('inventory/stock/add')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
                                     <i class="ti ti-package-import"></i>&nbsp;Add Stock
@@ -722,6 +725,18 @@
                 });
             }
         });
+    });
+
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('table');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'inventory.xls';
+        link.click();
     });
     </script>
 </body>

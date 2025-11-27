@@ -34,7 +34,17 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title">Borrowed Items</h2>
+                        </div>
+                        <div class="col-auto ms-auto d-print-none">
+                            <div class="btn-list">
+                                <a href="#" class="btn btn-success btn-5 d-none d-sm-inline-block" id="btnExport">
+                                    <i class="ti ti-download"></i>&nbsp;Export
+                                </a>
+                                <a href="#" class="btn btn-success btn-6 d-sm-none btn-icon" id="btnExport">
+                                    <i class="ti ti-download"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -234,6 +244,7 @@
                 <div class="modal-body">
                     <form method="POST" class="row g-3" id="frmReturn">
                         <?= csrf_field() ?>
+                        <input type="hidden" name="returnID" id="returnID">
                         <div class="col-lg-12">
                             <label class="form-label">Name of the Borrower</label>
                             <input type="text" class="form-control" name="return_by">
@@ -246,14 +257,14 @@
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Remarks</label>
-                            <select class="form-select" name="status" id="remarks">
+                            <select class="form-select" name="remarks" id="remarks">
                                 <option value="">Choose</option>
-                                <option>Good Condition</option>
-                                <option>Damaged</option>
-                                <option>Partially Damaged</option>
-                                <option>Lost Items</option>
+                                <option value="Good Condition">Good Condition</option>
+                                <option value="Damaged">Damaged</option>
+                                <option value="Partially Damaged">Partially Damaged</option>
+                                <option value="Lost Items">With Lost Items</option>
                             </select>
-                            <div id="status-error" class="error-message text-danger text-sm"></div>
+                            <div id="remarks-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12" id="lost_option" style="display:none;">
                             <label class="form-label">Total Number of Lost Item</label>
@@ -449,6 +460,18 @@
                 });
             }
         });
+    });
+
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('tblborrowed');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'borrowed-items.xls';
+        link.click();
     });
     </script>
 </body>

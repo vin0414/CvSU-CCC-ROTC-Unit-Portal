@@ -305,7 +305,7 @@ class Inventory extends BaseController
         $validation = $this->validate([
             'return_qty'=>['rules'=>'required|numeric','errors'=>['required'=>'Quantity is required','numeric'=>'Enter valid value']],
             'return_by'=>['rules'=>'required','errors'=>['required'=>'Enter the name of the borrower']],
-            'status'=>'required'
+            'remarks'=>'required'
         ]);
 
         if(!$validation)
@@ -314,8 +314,16 @@ class Inventory extends BaseController
         }
         else
         {
+            $remarks = $this->request->getPost('remarks');
+            $lost_qty = $this->request->getPost('lost_qty');
+            if($remarks==="Lost Items" && empty($lost_qty))
+            {
+                $error = ['lost_qty'=>'Please enter number of items lost'];
+                return $this->response->setJSON(['errors'=>$error]);
+            }
             //update the borrow status 
             $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
+                                  ->where('status',0)
                                   ->first();
             $record = ['status'=>1];
             $borrowModel->update($borrow['borrow_id'],$record);
@@ -325,13 +333,15 @@ class Inventory extends BaseController
                 'inventory_id'=>$this->request->getPost('returnID'),
                 'qty'=>$this->request->getPost('return_qty'),
                 'borrower'=>$this->request->getPost('return_by'),
-                'status'=>$this->request->getPost('status')
+                'remarks'=>$this->request->getPost('remarks'),
+                'lost_item'=>$this->request->getPost('lost_qty'),
+                'status'=>0
             ];
             $returnModel->save($data);
             //return the stocks
             $inventory = $model->where('inventory_id',$this->request->getPost('returnID'))->first();
             $oldQty = $inventory['quantity'];
-            $newQty = $oldQty+$this->request->getPost('return_qty');
+            $newQty = $oldQty+($this->request->getPost('return_qty')-$lost_qty);
             $newData = ['quantity'=>$newQty];
             $model->update($inventory['inventory_id'],$newData);
             //logs 
@@ -426,5 +436,14 @@ class Inventory extends BaseController
         $data = ['status'=>2];
         $model->update($val,$data);
         return $this->response->setJSON(['success'=>'Successfully declined']);
+    }
+
+    public function acceptReturn()
+    {
+        $model = new returnModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>1];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully tagged']);
     }
 }

@@ -388,6 +388,8 @@
             success: function(response) {
                 console.log(response);
                 const dropdown = $('#batchName');
+                dropdown.empty();
+                dropdown.append('<option value="">Choose</option>');
                 response.batch.forEach(function(item) {
                     dropdown.append(
                         `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`

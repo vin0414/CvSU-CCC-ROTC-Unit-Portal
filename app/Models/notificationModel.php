@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class returnModel extends Model
+class notificationModel extends Model
 {
-    protected $table            = 'return_item';
-    protected $primaryKey       = 'return_id';
+    protected $table            = 'notifications';
+    protected $primaryKey       = 'notification_id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['borrow_id','inventory_id','qty','borrower','remarks','lost_item','status'];
+    protected $allowedFields    = ['account_id','announcement_id','status'];
 
     // Dates
     protected $useTimestamps = true;

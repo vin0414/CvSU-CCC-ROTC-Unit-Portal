@@ -41,15 +41,45 @@
                                 d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
                             <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                         </svg>
-                        <span class="badge bg-red"></span>
+                        <span class="badge bg-red text-white">
+                            <?php 
+                            $model = new \App\Models\notificationModel();
+                            $total = $model->where('account_id',session()->get('loggedAdmin'))
+                                    ->where('status',0)
+                                    ->countAllResults();
+                            echo $total;
+                            ?>
+                        </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header d-flex">
                                 <h3 class="card-title">Notifications</h3>
                             </div>
                             <div class="list-group list-group-flush list-group-hoverable">
-
+                                <?php 
+                                $db = \Config\Database::connect();
+                                $query = $db->table('notifications a')
+                                        ->select('a.announcement_id,b.title,b.details')
+                                        ->join('announcement b','b.announcement_id=a.announcement_id','LEFT')
+                                        ->where('a.account_id',session()->get('loggedAdmin'))->where('a.status',0)
+                                        ->get()->getResult();
+                                foreach($query as $row)
+                                { ?>
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto"><span
+                                                class="status-dot status-dot-animated bg-red d-block"></span></div>
+                                        <div class="col text-truncate">
+                                            <a href="<?= site_url('announcement/view/') ?><?= $row->announcement_id ?>"
+                                                class="text-body d-block"><?= $row->title ?></a>
+                                            <div class="d-block text-secondary text-truncate mt-n1">
+                                                <?= $row->details ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>

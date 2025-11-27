@@ -34,7 +34,17 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title">Returned Items</h2>
+                        </div>
+                        <div class="col-auto ms-auto d-print-none">
+                            <div class="btn-list">
+                                <a href="#" class="btn btn-success btn-5 d-none d-sm-inline-block" id="btnExport">
+                                    <i class="ti ti-download"></i>&nbsp;Export
+                                </a>
+                                <a href="#" class="btn btn-success btn-6 d-sm-none btn-icon" id="btnExport">
+                                    <i class="ti ti-download"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,11 +53,6 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
-                    <?php if(!empty(session()->getFlashdata('fail'))) : ?>
-                    <div class="alert alert-important alert-danger alert-dismissible" role="alert">
-                        <?= session()->getFlashdata('fail'); ?>
-                    </div>
-                    <?php endif; ?>
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
@@ -78,6 +83,7 @@
                                             <th>Date Returned</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
+                                            <th>Borrower's Name</th>
                                             <th>Remarks</th>
                                             <th>Lost Item</th>
                                             <th>Total Price</th>
@@ -90,11 +96,25 @@
                                                 <td><?= date('M d,Y h:i:s a',strtotime($row->created_at)) ?></td>
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
-                                                <td><?= $row->status ?></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td><?= $row->borrower ?></td>
+                                                <td><?= $row->remarks ?></td>
+                                                <td><?= $row->lost_item ?></td>
+                                                <td><?= number_format($row->lost_item * $row->price,2) ?></td>
+                                                <td>
+                                                    <?php if($row->status==0): ?>
+                                                    <span class="badge bg-warning text-white">UNPAID</span>
+                                                    <?php else: ?>
+                                                    <span class="badge bg-success text-white">PAID</span>
+                                                    <?php endif;?>
+                                                </td>
+                                                <td>
+                                                    <?php if($row->status==0): ?>
+                                                    <button type="button" class="btn btn-primary accept"
+                                                        value="<?= $row->return_id ?>">
+                                                        <i class="ti ti-check"></i>&nbsp;Accept
+                                                    </button>
+                                                    <?php endif;?>
+                                                </td>
                                             </tr>
                                             <?php endforeach;?>
                                         </tbody>
@@ -109,114 +129,6 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="damageModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Damage Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmDamage">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="damageID" name="damageID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="quantity" min="1">
-                            <div id="quantity-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Reason</label>
-                            <textarea class="form-control" name="reason"></textarea>
-                            <div id="reason-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnSubmit">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="borrowModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Borrow Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmBorrow">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="borrowID" name="borrowID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="qty" min="1">
-                            <div id="qty-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Name of Borrower</label>
-                            <input type="text" class="form-control" name="borrower">
-                            <div id="borrower-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Date Return</label>
-                            <input type="date" class="form-control" name="date_return">
-                            <div id="date_return-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnSend">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="returnModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">Return Item</div>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" class="row g-3" id="frmReturn">
-                        <?= csrf_field() ?>
-                        <input type="hidden" id="returnID" name="returnID" />
-                        <div class="col-lg-12">
-                            <label class="form-label">No of Items</label>
-                            <input type="number" class="form-control" name="return_qty" min="1">
-                            <div id="return_qty-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" name="return_by">
-                            <div id="return_by-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <label class="form-label">Item Status</label>
-                            <select class="form-select" name="status">
-                                <option value="">Choose</option>
-                                <option>Good Condition</option>
-                                <option>Damaged</option>
-                                <option>Partially Damaged</option>
-                            </select>
-                            <div id="status-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnReturn">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -227,224 +139,11 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#table').DataTable();
-    $('#tbldamaged').DataTable();
-    $('#tblborrowed').DataTable();
     $('#tblreturned').DataTable();
-    $('#tblpurchase').DataTable();
-
-    $(document).on('click', '.borrow', function() {
-        $('#borrowModal').modal('show');
-        $('#borrowID').attr("value", $(this).val());
-    });
-
-    $(document).on('click', '.damage', function() {
-        $('#damageModal').modal('show');
-        $('#damageID').attr("value", $(this).val());
-    });
-
-
-    $(document).on('click', '.return', function() {
-        $('#returnModal').modal('show');
-        $('#returnID').attr("value", $(this).val());
-    });
-
-    $(document).on('click', '.edit', function() {
-        const {
-            value: name
-        } = Swal.fire({
-            title: "Rename category",
-            input: "text",
-            inputLabel: "Enter here",
-            showCancelButton: true,
-            inputValidator: (name) => {
-                if (!name) {
-                    return "You need to write something!";
-                } else {
-                    $.ajax({
-                        url: "<?= site_url('inventory/category/edit') ?>",
-                        method: "POST",
-                        data: {
-                            value: $(this).val(),
-                            name: name
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                category.ajax.reload();
-                            } else {
-                                Swal.fire({
-                                    title: "Error",
-                                    text: response.error,
-                                    icon: "warning"
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    });
-
-    $('#frmDamage').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSubmit').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/damage')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSubmit').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmDamage').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $(document).on('click', '.restore', function() {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to restore this records?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, restore it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?=site_url('inventory/item/restore')?>",
-                    method: "POST",
-                    data: {
-                        value: $(this).val()
-                    },
-                    success: function(response) {
-                        if (response === "success") {
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "warning"
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    $('#frmBorrow').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSend').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/borrow')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSend').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmDamage').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $('#frmReturn').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnReturn').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/return')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnReturn').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmReturn').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
     $(document).on('click', '.accept', function() {
         Swal.fire({
             title: "Are you sure?",
-            text: "Do you want to accept this request?",
+            text: "Do you want to tag this as paid?",
             icon: "question",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -453,14 +152,24 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?=site_url('inventory/item/accept')?>",
+                    url: "<?=site_url('inventory/return/accept')?>",
                     method: "POST",
                     data: {
                         value: $(this).val()
                     },
                     success: function(response) {
                         if (response.success) {
-                            location.reload();
+                            Swal.fire({
+                                title: "Great!",
+                                text: "Successfully tagged as paid",
+                                icon: "success",
+                                confirmButtonText: 'Continue'
+                            }).then((result) => {
+                                // Action based on user's choice
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
                         } else {
                             Swal.fire({
                                 title: "Error",
@@ -474,37 +183,16 @@
         });
     });
 
-    $(document).on('click', '.decline', function() {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to decline this request?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, decline it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?=site_url('inventory/item/decline')?>",
-                    method: "POST",
-                    data: {
-                        value: $(this).val()
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "warning"
-                            });
-                        }
-                    }
-                });
-            }
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('tblreturned');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
         });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'return-items.xls';
+        link.click();
     });
     </script>
 </body>
