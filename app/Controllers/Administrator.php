@@ -276,7 +276,6 @@ class Administrator extends BaseController
     {
         $studentModel = new studentModel();
         $validation = $this->validate([
-            'fullname'=>'required',
             'school_id'=>'required',
             'email'=>'required|valid_email',
             'status'=>'required',
@@ -290,7 +289,6 @@ class Administrator extends BaseController
         {
             $data = [
                     'school_id'=>$this->request->getPost('school_id'),
-                    'fullname'=>$this->request->getPost('fullname'),
                     'email'=>$this->request->getPost('email'),
                     'status'=>$this->request->getPost('status')
                 ];

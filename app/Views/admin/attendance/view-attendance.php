@@ -102,10 +102,11 @@
                                     <div class="row g-3">
                                         <div class="col-lg-4">
                                             <label class="form-label">Complete Name :</label>
-                                            <p class="form-control"><?=$student['fullname']?></p>
+                                            <p class="form-control"><?=$student['firstname']?>
+                                                <?=$student['middlename']?> <?=$student['lastname']?></p>
                                         </div>
                                         <div class="col-lg-4">
-                                            <label class="form-label">School ID :</label>
+                                            <label class="form-label">Student No :</label>
                                             <p class="form-control"><?=$student['school_id']?></p>
                                         </div>
                                         <div class="col-lg-4">

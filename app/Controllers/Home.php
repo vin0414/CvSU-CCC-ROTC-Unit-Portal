@@ -605,11 +605,11 @@ class Home extends BaseController
                                 ->findAll();
         $summary = $this->db->table('attendance a')
                     ->select('a.date,b.school_id,
-                    MAX(CASE WHEN a.remarks = "Out" THEN a.time END) timeOut,
-                    MIN(CASE WHEN a.remarks = "In" THEN a.time END) timeIn,
+                    MAX(CASE WHEN a.remarks = "OUT" THEN a.time END) timeOut,
+                    MIN(CASE WHEN a.remarks = "IN" THEN a.time END) timeIn,
                     SEC_TO_TIME(TIME_TO_SEC(TIMEDIFF(
-                            MAX(CASE WHEN a.remarks = "Out" THEN a.time END),
-                            MIN(CASE WHEN a.remarks = "In" THEN a.time END)
+                            MAX(CASE WHEN a.remarks = "OUT" THEN a.time END),
+                            MIN(CASE WHEN a.remarks = "IN" THEN a.time END)
                         ))) AS hours,a.token')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->where('a.student_id',session()->get('loggedUser'))

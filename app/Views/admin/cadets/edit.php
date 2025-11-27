@@ -87,7 +87,8 @@
                                         <div class="col-lg-12">
                                             <label class="form-label">Fullname</label>
                                             <input type="text" class="form-control" name="fullname" id="fullname"
-                                                placeholder="Enter Complete Name" value="<?=$student['fullname']?>" />
+                                                placeholder="Enter Complete Name"
+                                                value="<?=$student['firstname']?> <?=$student['middlename']?> <?=$student['lastname']?>" />
                                             <div id="fullname-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-12">
@@ -100,7 +101,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">Student ID</label>
+                                                    <label class="form-label">Student No</label>
                                                     <input type="text" class="form-control" name="school_id"
                                                         placeholder="Enter School ID"
                                                         value="<?=$student['school_id']?>" />

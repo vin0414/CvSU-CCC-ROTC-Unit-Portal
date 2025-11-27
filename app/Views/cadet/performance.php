@@ -50,7 +50,7 @@
                                             <div class="card">
                                                 <div class="card-body">
                                                     <h3>TOTAL ATTENDANCE</h3>
-                                                    <h1><?= $grades['present'] ?></h1>
+                                                    <h1><?= $grades['present'] ?? 0 ?></h1>
                                                 </div>
                                             </div>
                                         </div>
