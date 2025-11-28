@@ -109,7 +109,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">Schedules Module</label>
+                                                    <label class="form-label">Plans Module</label>
                                                     <div class="form-selectgroup-boxes row mb-3">
                                                         <div class="col-lg-6">
                                                             <label class="form-selectgroup-item">

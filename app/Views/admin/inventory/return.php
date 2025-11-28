@@ -96,21 +96,31 @@
                                                 <td><?= $row->item ?></td>
                                                 <td><?= $row->qty ?></td>
                                                 <td><?= $row->remarks ?></td>
-                                                <td><?= $row->lost_item ?></td>
-                                                <td><?= number_format($row->lost_item * $row->price,2) ?></td>
                                                 <td>
+                                                    <?= $row->lost_item ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($row->lost_item>0): ?>
+                                                    <?= number_format($row->lost_item * $row->price,2) ?>
+                                                    <?php endif;?>
+                                                </td>
+                                                <td>
+                                                    <?php if($row->lost_item>0): ?>
                                                     <?php if($row->status==0): ?>
                                                     <span class="badge bg-warning text-white">UNPAID</span>
                                                     <?php else: ?>
                                                     <span class="badge bg-success text-white">PAID</span>
                                                     <?php endif;?>
+                                                    <?php endif;?>
                                                 </td>
                                                 <td>
+                                                    <?php if($row->lost_item>0): ?>
                                                     <?php if($row->status==0): ?>
                                                     <button type="button" class="btn btn-primary accept"
                                                         value="<?= $row->return_id ?>">
                                                         <i class="ti ti-check"></i>&nbsp;Accept
                                                     </button>
+                                                    <?php endif;?>
                                                     <?php endif;?>
                                                 </td>
                                             </tr>

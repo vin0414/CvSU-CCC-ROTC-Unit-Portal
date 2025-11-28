@@ -1176,6 +1176,8 @@ class Administrator extends BaseController
                     $inventoryModel->where('status', 1);   // Active = 1
                 } elseif ($filter === 'Archive') {
                     $inventoryModel->where('status', 0);   // Archive = 0
+                }else{
+                    $inventoryModel->where('status', 2);   // Condemned = 2
                 }
             }
 
@@ -1217,7 +1219,9 @@ class Administrator extends BaseController
                                 ->join('students b','b.student_id=a.student_id','LEFT')
                                 ->groupBy('a.request_id')->get()->getResult();
             $inventoryModel = new inventoryModel();
-            $data['inventory'] = $inventoryModel->where('status',1)->findAll();
+            $data['inventory'] = $inventoryModel->where('status',1)
+                                ->where('quantity > min')
+                                ->findAll();
             return view('admin/inventory/borrow',$data);
         }
     }

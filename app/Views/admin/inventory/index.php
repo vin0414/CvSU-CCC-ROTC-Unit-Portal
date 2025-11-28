@@ -128,13 +128,16 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <select name="filter" class="form-select">
-                                                <option value="">Filter By</option>
+                                                <option value="">Filter</option>
                                                 <option value="Active"
                                                     <?= (isset($_GET['filter']) && $_GET['filter'] === "Active") ? 'selected' : '' ?>>
                                                     Active</option>
                                                 <option value="Archive"
                                                     <?= (isset($_GET['filter']) && $_GET['filter'] === "Archive") ? 'selected' : '' ?>>
                                                     Archive</option>
+                                                <option value="Condemned"
+                                                    <?= (isset($_GET['filter']) && $_GET['filter'] === "Condemned") ? 'selected' : '' ?>>
+                                                    Condemned</option>
                                             </select>
 
                                         </div>
@@ -177,6 +180,8 @@
                                                     <td>
                                                         <?php if($row['status']==1): ?>
                                                         <span class="badge bg-success text-white">ACTIVE</span>
+                                                        <?php elseif($row['status']==2):?>
+                                                        <span class="badge bg-danger text-white">CONDEMNED</span>
                                                         <?php else:?>
                                                         <span class="badge bg-default text-white">ARCHIVED</span>
                                                         <?php endif;?>
@@ -193,9 +198,21 @@
                                                                 <i class="ti ti-edit"></i>&nbsp;Edit Item
                                                             </a>
                                                             <?php if($row['status']==1): ?>
+                                                            <button type="button" class="dropdown-item addStock"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-plus"></i>Add Stock
+                                                            </button>
+                                                            <button type="button" class="dropdown-item damage"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-hammer"></i>Damage Item
+                                                            </button>
                                                             <button type="button" class="dropdown-item archive"
                                                                 value="<?= $row['inventory_id'] ?>">
                                                                 <i class="ti ti-archive"></i>Moved to Archives
+                                                            </button>
+                                                            <button type="button" class="dropdown-item condemn"
+                                                                value="<?= $row['inventory_id'] ?>">
+                                                                <i class="ti ti-trash"></i>Condemn
                                                             </button>
                                                             <?php else :?>
                                                             <button type="button" class="dropdown-item move"
@@ -203,10 +220,6 @@
                                                                 <i class="ti ti-restore"></i>Restore
                                                             </button>
                                                             <?php endif;?>
-                                                            <button type="button" class="dropdown-item damage"
-                                                                value="<?= $row['inventory_id'] ?>">
-                                                                <i class="ti ti-hammer"></i>Damage Item
-                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -332,6 +345,32 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="stockModal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">Add Stock</div>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" class="row g-2" id="frmStock">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="item" id="item">
+                        <div class="col-lg-12">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" name="qty" min="1">
+                            <div id="qty-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="form-control btn btn-primary" id="btnAdd">
+                                <i class="ti ti-send"></i>&nbsp;Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -343,6 +382,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     $('#tbldamaged').DataTable();
+
+    $(document).on('click', '.addStock', function() {
+        $('#stockModal').modal('show');
+        $('#item').attr("value", $(this).val());
+    });
 
     $(document).on('click', '.damage', function() {
         $('#damageModal').modal('show');
@@ -411,6 +455,48 @@
                 "data": "action"
             }
         ]
+    });
+
+    $('#frmStock').submit(function(e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $('.error-message').html('');
+        $('#btnAdd').attr('disabled', true).html(
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
+        );
+        $.ajax({
+            url: "<?=site_url('inventory/stock/add')?>",
+            method: "POST",
+            data: data,
+            success: function(response) {
+                $('#btnAdd').attr('disabled', false).html(
+                    '<span class="ti ti-send"></span>&nbsp;Submit'
+                );
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Great!',
+                        text: "Successfully added",
+                        icon: 'success',
+                        confirmButtonText: 'Continue'
+                    }).then((result) => {
+                        // Action based on user's choice
+                        if (result.isConfirmed) {
+                            // Perform some action when "Yes" is clicked
+                            location.reload();
+                        }
+                    });
+                } else {
+                    var errors = response.errors;
+                    // Iterate over each error and display it under the corresponding input field
+                    for (var field in errors) {
+                        $('#' + field + '-error').html('<p>' + errors[field] +
+                            '</p>'); // Show the first error message
+                        $('#' + field).addClass(
+                            'text-danger'); // Highlight the input field with an error
+                    }
+                }
+            }
+        });
     });
 
     $('#form').submit(function(e) {
@@ -530,153 +616,6 @@
         });
     });
 
-    $('#frmBorrow').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSend').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/borrow')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSend').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmDamage').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $('#frmReturn').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnReturn').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Sending...'
-        );
-        $.ajax({
-            url: "<?=site_url('inventory/item/return')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnReturn').attr('disabled', false).html('Submit');
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully submitted",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                            $('#frmReturn').modal('hide');
-                            location.reload();
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $(document).on('click', '.accept', function() {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to accept this request?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, accept it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?=site_url('inventory/item/accept')?>",
-                    method: "POST",
-                    data: {
-                        value: $(this).val()
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "warning"
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    $(document).on('click', '.decline', function() {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "Do you want to decline this request?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, decline it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?=site_url('inventory/item/decline')?>",
-                    method: "POST",
-                    data: {
-                        value: $(this).val()
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "warning"
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    });
 
     $(document).on('click', '.archive', function() {
         Swal.fire({
@@ -724,6 +663,39 @@
             if (result.isConfirmed) {
                 $.ajax({
                     url: "<?=site_url('inventory/restore')?>",
+                    method: "POST",
+                    data: {
+                        value: $(this).val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "warning"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.condemn', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to move this item to condemn?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?=site_url('inventory/condemn')?>",
                     method: "POST",
                     data: {
                         value: $(this).val()

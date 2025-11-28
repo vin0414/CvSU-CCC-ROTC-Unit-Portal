@@ -96,6 +96,8 @@ $routes->post('inventory/item/decline','Inventory::declineRequest');
 $routes->post('inventory/return/accept','Inventory::acceptReturn');
 $routes->post('inventory/archive','Inventory::archive');
 $routes->post('inventory/restore','Inventory::restore');
+$routes->post('inventory/condemn','Inventory::condemn');
+$routes->post('inventory/stock/add','Inventory::addStock');
 //excel scanner
 $routes->post('file/upload','ExcelScanner::upload');
 $routes->post('grades/file/upload','Enrolment::uploadFile');

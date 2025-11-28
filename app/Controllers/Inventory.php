@@ -327,39 +327,46 @@ class Inventory extends BaseController
                 $error = ['lost_qty'=>'Please enter number of items lost'];
                 return $this->response->setJSON(['errors'=>$error]);
             }
-            //update the borrow status 
-            $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
-                                  ->where('status',0)
-                                  ->first();
-            $record = ['status'=>1];
-            $borrowModel->update($borrow['borrow_id'],$record);
-            //save the data
-            $data = [
-                'borrow_id'=>$borrow['borrow_id'],
-                'inventory_id'=>$this->request->getPost('returnID'),
-                'qty'=>$this->request->getPost('return_qty'),
-                'borrower'=>'N/A',
-                'remarks'=>$this->request->getPost('remarks'),
-                'lost_item'=>$this->request->getPost('lost_qty'),
-                'status'=>0
-            ];
-            $returnModel->save($data);
-            //return the stocks
-            $inventory = $model->where('inventory_id',$this->request->getPost('returnID'))->first();
-            $oldQty = $inventory['quantity'];
-            $newQty = $oldQty+($this->request->getPost('return_qty')-$lost_qty);
-            $newData = ['quantity'=>$newQty];
-            $model->update($inventory['inventory_id'],$newData);
-            //logs 
-            date_default_timezone_set('Asia/Manila');
-            $logModel = new \App\Models\logModel();
-            $data = ['account_id'=>session()->get('loggedAdmin'),
-                    'activities'=>'Return items  total of :'.$this->request->getPost('return_qty'),
-                    'page'=>'Inventory',
-                    'datetime'=>date('Y-m-d h:i:s a')
-                    ];      
-            $logModel->save($data);
-            return $this->response->setJSON(['success'=>'Successfully saved']);
+            else
+            {
+                //update the borrow status 
+                $borrow = $borrowModel->where('inventory_id',$this->request->getPost('returnID'))
+                                    ->where('status',0)
+                                    ->first();
+                $record = ['status'=>1];
+                $borrowModel->update($borrow['borrow_id'],$record);
+                //save the data
+                $data = [
+                    'borrow_id'=>$borrow['borrow_id'],
+                    'inventory_id'=>$this->request->getPost('returnID'),
+                    'qty'=>$this->request->getPost('return_qty'),
+                    'borrower'=>'N/A',
+                    'remarks'=>$this->request->getPost('remarks'),
+                    'lost_item'=>$this->request->getPost('lost_qty'),
+                    'status'=>0
+                ];
+                $returnModel->save($data);
+                //return the stocks
+                $inventory = $model->where('inventory_id',$this->request->getPost('returnID'))->first();
+                $returnQty = (int) $this->request->getPost('return_qty');
+                $lostQty   = isset($lost_qty) ? (int) $lost_qty : 0;
+
+                $oldQty = (int) $inventory['quantity'];
+                $newQty = $oldQty + ($returnQty - $lostQty);
+                $newData = ['quantity'=>$newQty];
+                $model->update($inventory['inventory_id'],$newData);
+            
+                //logs 
+                date_default_timezone_set('Asia/Manila');
+                $logModel = new \App\Models\logModel();
+                $data = ['account_id'=>session()->get('loggedAdmin'),
+                        'activities'=>'Return items  total of :'.$this->request->getPost('return_qty'),
+                        'page'=>'Inventory',
+                        'datetime'=>date('Y-m-d h:i:s a')
+                        ];      
+                $logModel->save($data);
+                return $this->response->setJSON(['success'=>'Successfully saved']);
+            }
         }
     }
 
@@ -469,5 +476,37 @@ class Inventory extends BaseController
         $data = ['status'=>1];
         $model->update($val,$data);
         return $this->response->setJSON(['success'=>'Successfully restore the item']);
+    }
+
+    public function condemn()
+    {
+        $model = new inventoryModel();
+        $val = $this->request->getPost('value');
+        $data = ['status'=>2];
+        $model->update($val,$data);
+        return $this->response->setJSON(['success'=>'Successfully condemned the item']);
+    }
+
+    public function addStock()
+    {
+        $model = new inventoryModel();
+        $validation = $this->validate([
+            'qty'=>'required|numeric'
+        ]);
+
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $id = $this->request->getPost('item');
+            $qty = $this->request->getPost('qty');
+            $record = $model->where('inventory_id',$id)->first();
+            $newQty = $record['quantity'] + $qty;
+            $data = ['quantity'=>$newQty];
+            $model->update($id,$data);
+            return $this->response->setJSON(['success'=>'Successfully added']);
+        }
     }
 }

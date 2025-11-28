@@ -81,7 +81,7 @@
                                             <thead>
                                                 <th>Role</th>
                                                 <th>Cadet</th>
-                                                <th>Schedules</th>
+                                                <th>Plans</th>
                                                 <th>Attendance</th>
                                                 <th>Gradebook</th>
                                                 <th>Inventory</th>
