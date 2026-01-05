@@ -96,7 +96,13 @@
                                                 <?= date('M d, Y H:i:s',strtotime($row->date_return)) ?>
                                                 <?php endif;?>
                                             </td>
-                                            <td><?= $row->status ?></td>
+                                            <td>
+                                                <?php if($row->status==1): ?>
+                                                <span class="badge bg-success text-white">PAID</span>
+                                                <?php else :?>
+                                                <span class="badge bg-danger text-white">UNPAID</span>
+                                                <?php endif;?>
+                                            </td>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

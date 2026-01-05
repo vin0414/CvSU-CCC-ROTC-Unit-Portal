@@ -12,7 +12,7 @@ class borrowModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['inventory_id','qty','borrower','date_expected','details','status'];
+    protected $allowedFields    = ['inventory_id','qty','borrower','phone','email','date_expected','details','status'];
 
     // Dates
     protected $useTimestamps = true;

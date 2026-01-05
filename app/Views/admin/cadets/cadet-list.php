@@ -143,10 +143,10 @@
                                             <form method="GET" class="row g-3" id="form">
                                                 <?php
                                                 $startYear = date('Y');
-                                                $numberOfSemesters = 5;
+                                                $numberOfSemesters = 3;
 
                                                 $semesters = [];
-                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                for ($i = -1; $i < $numberOfSemesters; $i++) {
                                                     $from = $startYear + $i;
                                                     $to = $from + 1;
                                                     $semesters[] = "$from-$to";

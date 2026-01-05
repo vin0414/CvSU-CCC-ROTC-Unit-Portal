@@ -212,34 +212,81 @@
                     <form method="POST" class="row g-3" id="frmBorrow">
                         <?= csrf_field() ?>
                         <div class="col-lg-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped" id="table">
-                                    <thead>
-                                        <th>#</th>
-                                        <th>Item(s)</th>
-                                        <th>Qty</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($inventory as $row): ?>
-                                        <tr>
-                                            <td><input type="checkbox" style="width:20px;height:20px;" name="item[]"
-                                                    value="<?= $row['inventory_id'] ?>"></td>
-                                            <td>
-                                                <?= $row['item'] ?><br />
-                                                Qty: <?= $row['quantity'] ?>
-                                            </td>
-                                            <td><input type="number" name="qty[]" class="form-control" min="1"
-                                                    max="<?= $row['quantity'] ?>"></td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div id="item-container" class="col-lg-12">
+                                <div class="item-form card card-body mb-3" data-index="0">
+                                    <div class="row g-2">
+                                        <div class="col-lg-12">
+                                            <div class="row g-2">
+                                                <div class="col-lg-9">
+                                                    <label class="form-label" for="item_0">Item</label>
+                                                    <select name="item[]" id="item_0" class="form-select">
+                                                        <option value="">Choose</option>
+                                                        <?php foreach($inventory as $inv): ?>
+                                                        <option value="<?= $inv['inventory_id'] ?>"><?= $inv['item'] ?>
+                                                        </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <div id="item_0-error" class="error-message text-danger text-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label" for="qty_0">Qty</label>
+                                                    <input type="number" name="qty[]" id="qty_0" min="1"
+                                                        class="form-control" />
+                                                    <div id="qty_0-error" class="error-message text-danger text-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <button type="button" class="btn btn-danger" onclick="removeItem(this)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-circle-minus">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                    <path d="M9 12l6 0" />
+                                                </svg>
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="button" class="btn btn-primary" onclick="addItem()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-circle-plus">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                    <path d="M9 12h6" />
+                                    <path d="M12 9v6" />
+                                </svg>
+                                Add Another Item
+                            </button>
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Name of Borrower</label>
                             <input type="text" class="form-control" name="borrower">
                             <div id="borrower-error" class="error-message text-danger text-sm"></div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row g-2">
+                                <div class="col-lg-6">
+                                    <label class="form-label">Contact No</label>
+                                    <input type="phone" class="form-control" name="phone">
+                                    <div id="phone-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" name="email">
+                                    <div id="email-error" class="error-message text-danger text-sm"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Details</label>
@@ -248,7 +295,7 @@
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Date Return</label>
-                            <input type="date" class="form-control" name="date_return">
+                            <input type="date" class="form-control" name="date_return" min="<?= date('Y-m-d') ?>">
                             <div id="date_return-error" class="error-message text-danger text-sm"></div>
                         </div>
                         <div class="col-lg-12">
@@ -316,9 +363,70 @@
     <script>
     $('#tblborrowed').DataTable();
     $('#tblpurchase').DataTable();
-    $('#table').DataTable({
-        dom: 'ftp'
-    });
+
+    let workIndex = 1;
+
+    function addItem() {
+        const container = document.getElementById("item-container");
+        const forms = container.getElementsByClassName("item-form");
+        const lastForm = forms[forms.length - 1];
+        const newForm = lastForm.cloneNode(true); // deep clone
+
+        // Update index
+        newForm.setAttribute("data-index", workIndex);
+
+        // Clear and update input fields
+        const inputs = newForm.querySelectorAll("input, select, textarea");
+        inputs.forEach(input => {
+            const baseName = input.name.replace(/\[\]$/, "");
+            input.name = `${baseName}[]`;
+            input.id = `${baseName}_${workIndex}`;
+            input.value = "";
+        });
+
+        // Update labels and error containers
+        const labels = newForm.querySelectorAll("label");
+        labels.forEach(label => {
+            const htmlFor = label.getAttribute("for");
+            if (htmlFor) {
+                const baseFor = htmlFor.replace(/_\d+$/, "");
+                label.setAttribute("for", `${baseFor}_${workIndex}`);
+            }
+        });
+
+        const errors = newForm.querySelectorAll(".error-message");
+        errors.forEach(error => {
+            const baseId = error.id.replace(/_\d+-error$/, "");
+            error.id = `${baseId}_${workIndex}-error`;
+            error.innerHTML = "";
+        });
+
+        container.appendChild(newForm);
+        workIndex++;
+    }
+
+
+    function removeItem(button) {
+        const container = document.getElementById("item-container");
+        const form = button.closest(".item-form");
+
+        if (!form || !container.contains(form)) {
+            console.warn("Form not found or not in container.");
+            return;
+        }
+
+        const totalForms = container.getElementsByClassName("item-form").length;
+
+        if (totalForms > 1) {
+            container.removeChild(form);
+        } else {
+            Swal.fire({
+                title: 'Warning',
+                text: "At least one item entry is required.",
+                icon: 'warning',
+            });
+        }
+    }
 
     $('#remarks').change(function() {
         let val = $(this).val();
