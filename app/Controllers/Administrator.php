@@ -1610,7 +1610,7 @@ class Administrator extends BaseController
 
     public function createReport()
     {
-        $title = 'Create Report';
+        $title = 'Merits/Demerits Management';
         $pretitle = "Report";
         //student
         $studentModel = new studentModel();

@@ -178,7 +178,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M18.5 19.5l2.5 2.5" />
                             </svg>
                         </span>
-                        <span class="nav-link-title"> Create Report</span>
+                        <span class="nav-link-title"> Merits/Demerits Management</span>
                     </a>
                 </li>
                 <?php if($role['inventory']==1): ?>

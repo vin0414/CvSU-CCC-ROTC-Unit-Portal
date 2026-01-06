@@ -114,7 +114,7 @@
                                                 $numberOfSemesters = 5;
 
                                                 $semesters = [];
-                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                for ($i = -1; $i < $numberOfSemesters; $i++) {
                                                     $from = $startYear + $i;
                                                     $to = $from + 1;
                                                     $semesters[] = "$from-$to";
@@ -148,7 +148,7 @@
                                                     <button type="submit" class="btn btn-success">
                                                         <i class="ti ti-settings"></i>&nbsp;Generate
                                                     </button>
-                                                    <button type="button" class="btn btn-default">
+                                                    <button type="button" class="btn btn-default" id="btnDownload">
                                                         <i class="ti ti-download"></i>&nbsp;Download
                                                     </button>
                                                 </div>
@@ -160,11 +160,11 @@
                                                 <input type="hidden" name="id" id="id">
                                                 <div class="col-lg-12">
                                                     <div class="table-responsive" style="height:400px;overflow-y:auto;">
-                                                        <table class="table table-bordered table-striped">
+                                                        <table class="table table-bordered table-striped" id="table1">
                                                             <thead>
                                                                 <th>#</th>
                                                                 <th>Student No</th>
-                                                                <th>Student Name</th>
+                                                                <th>Cadet Name</th>
                                                                 <th>Raw Score</th>
                                                                 <th>Final Grade</th>
                                                                 <th>Remarks</th>
@@ -184,6 +184,9 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-others-8">
+                                    <button type="button" class="btn btn-default" id="btnExport">
+                                        <i class="ti ti-download"></i>&nbsp;Download
+                                    </button>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="tables">
                                             <thead>
@@ -191,7 +194,7 @@
                                                 <th>Type</th>
                                                 <th>Category</th>
                                                 <th>Details</th>
-                                                <th>Student</th>
+                                                <th>Cadets</th>
                                                 <th>Points</th>
                                                 <th>Action</th>
                                             </thead>
@@ -228,6 +231,9 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-activity-8">
+                                    <button type="button" class="btn btn-default" id="btnExports">
+                                        <i class="ti ti-download"></i>&nbsp;Download
+                                    </button>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="table">
                                             <thead>
@@ -235,7 +241,7 @@
                                                 <th>Title</th>
                                                 <th>Category</th>
                                                 <th>Details</th>
-                                                <th>Student</th>
+                                                <th>Cadets</th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach($violation as $row): ?>
@@ -454,6 +460,42 @@
                 }
             }
         });
+    });
+
+    document.getElementById('btnDownload').addEventListener('click', function() {
+        const table = document.getElementById('table1');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'grades.xls';
+        link.click();
+    });
+
+    document.getElementById('btnExport').addEventListener('click', function() {
+        const table = document.getElementById('tables');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'merits-demerits.xls';
+        link.click();
+    });
+
+    document.getElementById('btnExports').addEventListener('click', function() {
+        const table = document.getElementById('table');
+        let html = table.outerHTML;
+        let blob = new Blob([html], {
+            type: 'application/vnd.ms-excel'
+        });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'violations.xls';
+        link.click();
     });
     </script>
 </body>

@@ -165,7 +165,7 @@
                                                 $numberOfSemesters = 5;
 
                                                 $semesters = [];
-                                                for ($i = 0; $i < $numberOfSemesters; $i++) {
+                                                for ($i = -2; $i < $numberOfSemesters; $i++) {
                                                     $from = $startYear + $i;
                                                     $to = $from + 1;
                                                     $semesters[] = "$from-$to";

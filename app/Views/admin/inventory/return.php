@@ -85,7 +85,7 @@
                                             <th>Quantity</th>
                                             <th>Remarks</th>
                                             <th>Lost Item</th>
-                                            <th>Total Price</th>
+                                            <th>Declared Value</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </thead>

@@ -34,7 +34,7 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?> | Add Batch</h2>
+                            <h2 class="page-title">Add Batch</h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">

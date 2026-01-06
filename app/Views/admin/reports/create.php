@@ -49,7 +49,7 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="card-title">Create Report</div>
+                                    <div class="card-title">Create</div>
                                     <form method="POST" class="row g-2" id="form">
                                         <?= csrf_field() ?>
                                         <div class="col-lg-12">
@@ -72,7 +72,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    <label class="form-label">Type of Report</label>
+                                                    <label class="form-label">Type</label>
                                                     <select class="form-select" name="report">
                                                         <option value="">Choose</option>
                                                         <option value="Merits">Merits</option>
@@ -83,7 +83,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label class="form-label">Student Name</label>
+                                                    <label class="form-label">Cadet Name</label>
                                                     <select class="form-select" name="student">
                                                         <option value="">Choose</option>
                                                         <?php foreach($student as $row): ?>
