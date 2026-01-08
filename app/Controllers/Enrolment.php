@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 use App\Models\attendanceModel;
-use App\Models\studentModel;
+use App\Models\accountModel;
 use Config\App;
 use \App\Models\cadetTrainingModel;
 use \App\Models\performanceModel;
@@ -390,7 +390,8 @@ class Enrolment extends BaseController
             'category'=>'required',
             'report'=>'required',
             'student'=>'required',
-            'details'=>'required'
+            'details'=>'required',
+            'points'=>'required'
         ]);  
         
         if(!$validation)
@@ -399,16 +400,37 @@ class Enrolment extends BaseController
         }
         else
         {
-            $data = [
+            //check the role of the user
+            $roleModel = new \App\Models\roleModel();
+            $accountModel = new accountModel();
+            $account = $accountModel->WHERE('account_id',session()->get('loggedAdmin'))->first();
+            $role = $roleModel->WHERE('role_id',$account['role_id'])->first();
+            if($role['report'] != 1)
+            {
+                $data = [
                     'violation'=>$this->request->getPost('title'),
                     'category'=>$this->request->getPost('category'),
                     'type_report'=>$this->request->getPost('report'),
                     'student_id'=>$this->request->getPost('student'),
                     'details'=>$this->request->getPost('details'),
-                    'points'=>0,
+                    'points'=>$this->request->getPost('points'),
                     'status'=>0
                 ];
-            $reportModel->save($data);
+                $reportModel->save($data);
+            }
+            else
+            {
+                $data = [
+                    'violation'=>$this->request->getPost('title'),
+                    'category'=>$this->request->getPost('category'),
+                    'type_report'=>$this->request->getPost('report'),
+                    'student_id'=>$this->request->getPost('student'),
+                    'details'=>$this->request->getPost('details'),
+                    'points'=>$this->request->getPost('points'),
+                    'status'=>1
+                ];
+                $reportModel->save($data);
+            }
             return $this->response->setJSON(['success'=>'Successfully submitted']);
         }
     }
@@ -473,7 +495,7 @@ class Enrolment extends BaseController
     {
         $model = new reportModel();
         $validation = $this->validate([
-            'points'=>'required|numeric|min_length[1]|max_length[5]'
+            'reportID'=>'required|numeric'
         ]);
 
         if(!$validation)
@@ -483,7 +505,7 @@ class Enrolment extends BaseController
         else
         {
             $id = $this->request->getPost('reportID');
-            $data = ['points'=>$this->request->getPost('points'),'status'=>1];
+            $data = ['status'=>1];
             $model->update($id,$data);
             return $this->response->setJSON(['success'=>'Successfully submitted']);
         }

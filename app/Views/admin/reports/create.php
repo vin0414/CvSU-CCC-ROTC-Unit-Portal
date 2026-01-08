@@ -105,6 +105,11 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
+                                            <label class="form-label">Points</label>
+                                            <input type="number" class="form-control" name="points" min="1">
+                                            <div id="points-error" class="error-message text-danger text-sm"></div>
+                                        </div>
+                                        <div class="col-lg-12">
                                             <button type="submit" class="btn btn-primary" id="btnSave">
                                                 <i class="ti ti-device-floppy"></i>&nbsp;Submit
                                             </button>

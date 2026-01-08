@@ -170,6 +170,8 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     //reports
     $routes->get('reports','Administrator::report');
     $routes->get('reports/create','Administrator::createReport');
+    $routes->get('reports/records','Administrator::allMerits');
+    $routes->get('reports/violations','Administrator::allViolations');
     //maintenance
     $routes->get('maintenance/accounts','Administrator::accounts');
     $routes->get('maintenance/accounts/create','Administrator::createAccount');

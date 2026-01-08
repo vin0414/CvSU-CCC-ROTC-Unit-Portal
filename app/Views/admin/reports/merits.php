@@ -87,93 +87,15 @@
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
-                                    <a href="#tabs-home-8" class="nav-link active" data-bs-toggle="tab">
-                                        <i class="ti ti-devices-cog"></i>&nbsp;Grades
+                                    <a href="#tabs-others-8" class="nav-link active" data-bs-toggle="tab">
+                                        <i class="ti ti-award"></i>&nbsp;Merits/Demerits
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane fade active show" id="tabs-home-8">
-                                    <div class="row g-3">
-                                        <div class="col-lg-12">
-                                            <form method="GET" class="row g-3" id="form">
-                                                <?php
-                                                $startYear = date('Y');
-                                                $numberOfSemesters = 5;
-
-                                                $semesters = [];
-                                                for ($i = -1; $i < $numberOfSemesters; $i++) {
-                                                    $from = $startYear + $i;
-                                                    $to = $from + 1;
-                                                    $semesters[] = "$from-$to";
-                                                }
-                                                ?>
-                                                <div class="col-lg-3">
-                                                    <label class="form-label">School Year</label>
-                                                    <select name="year" class="form-select" id="year">
-                                                        <option value="">Choose</option>
-                                                        <?php foreach ($semesters as $semester): ?>
-                                                        <option value="<?= $semester ?>"><?= $semester ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-2">
-                                                    <label class="form-label">Semester</label>
-                                                    <select name="semester" class="form-select" id="semester">
-                                                        <option value="">Choose</option>
-                                                        <option>1st</option>
-                                                        <option>2nd</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-4">
-                                                    <label class="form-label">Name of Batch</label>
-                                                    <select name="batchName" class="form-select" id="batchName">
-                                                        <option value="">Choose</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-lg-3">
-                                                    <label class="form-label">&nbsp;</label>
-                                                    <button type="submit" class="btn btn-success">
-                                                        <i class="ti ti-settings"></i>&nbsp;Generate
-                                                    </button>
-                                                    <button type="button" class="btn btn-default" id="btnDownload">
-                                                        <i class="ti ti-download"></i>&nbsp;Download
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <form method="POST" class="row g-3" id="frmGenerate">
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="id" id="id">
-                                                <div class="col-lg-12">
-                                                    <div class="table-responsive" style="height:400px;overflow-y:auto;">
-                                                        <table class="table table-bordered table-striped" id="table1">
-                                                            <thead>
-                                                                <th>#</th>
-                                                                <th>Student No</th>
-                                                                <th>Cadet Name</th>
-                                                                <th>Raw Score</th>
-                                                                <th>Final Grade</th>
-                                                                <th>Remarks</th>
-                                                                <th>Status</th>
-                                                            </thead>
-                                                            <tbody id="result"></tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12" style="display:none;" id="btn">
-                                                    <button type="submit" class="btn btn-primary" id="btnSave">
-                                                        <i class="ti ti-device-floppy"></i>&nbsp;Save Changes
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-others-8">
+                                <div class="tab-pane fade active show" id="tabs-others-8">
                                     <button type="button" class="btn btn-default" id="btnExport">
                                         <i class="ti ti-download"></i>&nbsp;Download
                                     </button>
@@ -220,35 +142,6 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="tabs-activity-8">
-                                    <button type="button" class="btn btn-default" id="btnExports">
-                                        <i class="ti ti-download"></i>&nbsp;Download
-                                    </button>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped" id="table">
-                                            <thead>
-                                                <th>Date</th>
-                                                <th>Title</th>
-                                                <th>Category</th>
-                                                <th>Details</th>
-                                                <th>Cadets</th>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach($violation as $row): ?>
-                                                <tr>
-                                                    <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
-                                                    <td><?= $row->violation ?></td>
-                                                    <td><?= $row->category ?></td>
-                                                    <td><?= $row->details ?></td>
-                                                    <td>
-                                                        <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
-                                                    </td>
-                                                </tr>
-                                                <?php endforeach;?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -277,13 +170,8 @@
                             <textarea name="details" class="form-control" style="height: 150px;"></textarea>
                         </div>
                         <div class="col-lg-12">
-                            <label class="form-label">Points</label>
-                            <input type="number" class="form-control" name="points" min="1" max="5">
-                            <div id="points-error" class="error-message text-danger text-sm"></div>
-                        </div>
-                        <div class="col-lg-12">
                             <button type="submit" class="form-control btn btn-primary" id="btnSend">
-                                <i class="ti ti-send"></i>&nbsp;Submit
+                                <i class="ti ti-send"></i>&nbsp;Approve
                             </button>
                         </div>
                     </form>

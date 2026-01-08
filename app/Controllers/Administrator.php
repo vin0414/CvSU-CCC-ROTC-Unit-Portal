@@ -1610,13 +1610,57 @@ class Administrator extends BaseController
 
     public function createReport()
     {
-        $title = 'Merits/Demerits Management';
-        $pretitle = "Report";
+        $title = 'Merits/Demerits';
+        $pretitle = "Create Report";
         //student
         $studentModel = new studentModel();
         $student = $studentModel->where('status',1)->findAll();
         $data = ['title'=>$title,'student'=>$student,'pretitle'=>$pretitle];
         return view('admin/reports/create',$data);
+    }
+
+    public function allMerits()
+    {
+        if(!$this->hasPermission('report'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Merits/Demerits';
+            $pretitle = "Merits/Demerits";
+            //merits/demerits
+            $others = $this->db->table('reports a')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->where('type_report !=','Violations')
+                        ->groupBy('a.report_id')
+                        ->get()->getResult();
+            $data = ['title'=>$title,'others'=>$others,'pretitle'=>$pretitle];
+            return view('admin/reports/merits',$data);
+        }
+    }
+
+    public function allViolations()
+    {
+        if(!$this->hasPermission('report'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $title = 'Merits/Demerits';
+            $pretitle = "Violations";
+            //merits/demerits
+            $violation = $this->db->table('reports a')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->where('type_report','Violations')
+                        ->groupBy('a.report_id')
+                        ->get()->getResult();
+            $data = ['title'=>$title,'violation'=>$violation,'pretitle'=>$pretitle];
+            return view('admin/reports/violations',$data);
+        }
     }
 
     public function accounts()
