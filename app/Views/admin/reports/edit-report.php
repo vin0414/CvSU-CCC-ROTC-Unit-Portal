@@ -37,6 +37,18 @@
                             <h2 class="page-title"><?=$title?></h2>
                         </div>
                         <!-- Page title actions -->
+                        <div class="col-auto ms-auto d-print-none">
+                            <div class="btn-list">
+                                <a href="<?=site_url('reports/records')?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block">
+                                    <i class="ti ti-arrow-left"></i>&nbsp;Back
+                                </a>
+                                <a href="<?=site_url('reports/records')?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon">
+                                    <i class="ti ti-arrow-left"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,12 +61,14 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="card-title">Create Request</div>
+                                    <div class="card-title">Edit Request</div>
                                     <form method="POST" class="row g-2" id="form">
                                         <?= csrf_field() ?>
+                                        <input type="hidden" name="id" value="<?= $report['report_id'] ?>">
                                         <div class="col-lg-12">
                                             <label class="form-label">Title</label>
-                                            <input type="text" class="form-control" name="title">
+                                            <input type="text" class="form-control" name="title"
+                                                value="<?= $report['violation'] ?>">
                                             <div id="title-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-12">
@@ -64,7 +78,7 @@
                                                     <select class="form-select" name="category">
                                                         <option value="">Choose</option>
                                                         <option value="Attire">Attire</option>
-                                                        <option value="Attire">Attitude</option>
+                                                        <option value="Attitude">Attitude</option>
                                                         <option value="Appearance">Appearance</option>
                                                         <option value="Others">Others</option>
                                                     </select>
@@ -100,18 +114,19 @@
                                         <div class="col-lg-12">
                                             <label class="form-label">Details</label>
                                             <textarea name="details" class="form-control"
-                                                style="height: 200px;"></textarea>
+                                                style="height: 200px;"><?= $report['details'] ?></textarea>
                                             <div id="details-error" class="error-message text-danger text-sm">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <label class="form-label">Points</label>
-                                            <input type="number" class="form-control" name="points" min="1">
+                                            <input type="number" class="form-control" name="points" min="1"
+                                                value="<?= $report['points'] ?>">
                                             <div id="points-error" class="error-message text-danger text-sm"></div>
                                         </div>
                                         <div class="col-lg-12">
                                             <button type="submit" class="btn btn-primary" id="btnSave">
-                                                <i class="ti ti-device-floppy"></i>&nbsp;Submit
+                                                <i class="ti ti-device-floppy"></i>&nbsp;Save Changes
                                             </button>
                                         </div>
                                     </form>
@@ -142,12 +157,12 @@
             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
         );
         $.ajax({
-            url: "<?=site_url('report/save')?>",
+            url: "<?=site_url('report/modify')?>",
             method: "POST",
             data: data,
             success: function(response) {
                 $('#btnSave').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Submit'
+                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Changes'
                 );
                 if (response.success) {
                     Swal.fire({
@@ -159,7 +174,7 @@
                         // Action based on user's choice
                         if (result.isConfirmed) {
                             // Perform some action when "Yes" is clicked
-                            $('#form')[0].reset();
+                            history.back();
                         }
                     });
                 } else {

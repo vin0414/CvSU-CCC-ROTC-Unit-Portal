@@ -80,6 +80,7 @@ $routes->post('report/grades/update','Enrolment::updateGrades');
 $routes->post('report/save','Enrolment::saveReport');
 $routes->get('report/view','Enrolment::viewReport');
 $routes->post('report/update','Enrolment::updateReport');
+$routes->post('report/modify','Enrolment::modifyReport');
 //inventory
 $routes->post('inventory/category/add','Inventory::addCategory');
 $routes->post('inventory/category/edit','Inventory::editCategory');
@@ -171,7 +172,8 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('reports','Administrator::report');
     $routes->get('reports/create','Administrator::createReport');
     $routes->get('reports/records','Administrator::allMerits');
-    $routes->get('reports/violations','Administrator::allViolations');
+    $routes->get('reports/review','Administrator::forReview');
+    $routes->get('reports/edit/(:any)','Administrator::editReport/$1');
     //maintenance
     $routes->get('maintenance/accounts','Administrator::accounts');
     $routes->get('maintenance/accounts/create','Administrator::createAccount');

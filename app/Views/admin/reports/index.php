@@ -91,6 +91,16 @@
                                         <i class="ti ti-devices-cog"></i>&nbsp;Grades
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-others-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-award"></i>&nbsp;Merits/Demerits
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-activity-8" class="nav-link" data-bs-toggle="tab">
+                                        <i class="ti ti-list"></i>&nbsp;Violations
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -180,18 +190,18 @@
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="tables">
                                             <thead>
-                                                <th>Date</th>
+                                                <th>Date & Time</th>
                                                 <th>Type</th>
                                                 <th>Category</th>
                                                 <th>Details</th>
                                                 <th>Cadets</th>
                                                 <th>Points</th>
-                                                <th>Action</th>
+                                                <th>Approver</th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach($others as $row): ?>
                                                 <tr>
-                                                    <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
+                                                    <td><?= date('M d, Y h:i a',strtotime($row->created_at)) ?></td>
                                                     <td><?= $row->type_report ?></td>
                                                     <td><?= $row->category ?></td>
                                                     <td><?= $row->details ?></td>
@@ -199,21 +209,7 @@
                                                         <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
                                                     </td>
                                                     <td><?= $row->points ?></td>
-                                                    <td>
-                                                        <?php if($row->status==0): ?>
-                                                        <button type="button" class="btn dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                            role="button">
-                                                            <span>More</span>
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <button type="button" class="dropdown-item view"
-                                                                value="<?= $row->report_id ?>">
-                                                                <i class="ti ti-search"></i>&nbsp;View
-                                                            </button>
-                                                        </div>
-                                                        <?php endif;?>
-                                                    </td>
+                                                    <td><?= $row->fullname ?></td>
                                                 </tr>
                                                 <?php endforeach;?>
                                             </tbody>
@@ -227,22 +223,24 @@
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="table">
                                             <thead>
-                                                <th>Date</th>
+                                                <th>Date & Time</th>
                                                 <th>Title</th>
                                                 <th>Category</th>
                                                 <th>Details</th>
                                                 <th>Cadets</th>
+                                                <th>Approver</th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach($violation as $row): ?>
                                                 <tr>
-                                                    <td><?= date('M d, Y',strtotime($row->created_at)) ?></td>
+                                                    <td><?= date('M d, Y h:i a',strtotime($row->created_at)) ?></td>
                                                     <td><?= $row->violation ?></td>
                                                     <td><?= $row->category ?></td>
                                                     <td><?= $row->details ?></td>
                                                     <td>
                                                         <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
                                                     </td>
+                                                    <td><?= $row->fullname ?></td>
                                                 </tr>
                                                 <?php endforeach;?>
                                             </tbody>

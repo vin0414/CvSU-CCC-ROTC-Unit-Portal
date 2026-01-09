@@ -12,7 +12,7 @@ class reportModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['violation','category','type_report','student_id','details','points','status'];
+    protected $allowedFields    = ['violation','category','type_report','student_id','details','points','status','approver'];
 
     // Dates
     protected $useTimestamps = true;

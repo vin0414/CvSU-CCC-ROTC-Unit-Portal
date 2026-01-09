@@ -435,6 +435,37 @@ class Enrolment extends BaseController
         }
     }
 
+    public function modifyReport()
+    {
+        $reportModel = new reportModel();
+        $validation = $this->validate([
+            'title'=>'required',
+            'category'=>'required',
+            'report'=>'required',
+            'student'=>'required',
+            'details'=>'required',
+            'points'=>'required'
+        ]);  
+        
+        if(!$validation)
+        {
+            return $this->response->setJSON(['errors'=>$this->validator->getErrors()]);
+        }
+        else
+        {
+            $data = [
+                'violation'=>$this->request->getPost('title'),
+                'category'=>$this->request->getPost('category'),
+                'type_report'=>$this->request->getPost('report'),
+                'student_id'=>$this->request->getPost('student'),
+                'details'=>$this->request->getPost('details'),
+                'points'=>$this->request->getPost('points'),
+            ];
+            $reportModel->update($this->request->getPost('id'),$data);
+            return $this->response->setJSON(['success'=>'Successfully applied changes']);
+        }
+    }
+
     public function uploadFile()
     {
         $validation = $this->validate([
@@ -495,7 +526,7 @@ class Enrolment extends BaseController
     {
         $model = new reportModel();
         $validation = $this->validate([
-            'reportID'=>'required|numeric'
+            'value'=>'required|numeric'
         ]);
 
         if(!$validation)
@@ -504,10 +535,10 @@ class Enrolment extends BaseController
         }
         else
         {
-            $id = $this->request->getPost('reportID');
-            $data = ['status'=>1];
+            $id = $this->request->getPost('value');
+            $data = ['status'=>1,'approver'=>session()->get('loggedAdmin')];
             $model->update($id,$data);
-            return $this->response->setJSON(['success'=>'Successfully submitted']);
+            return $this->response->setJSON(['success'=>'Successfully approved']);
         }
     }
 

@@ -1591,16 +1591,20 @@ class Administrator extends BaseController
             $pretitle = "Reports";
             //violations
             $violation = $this->db->table('reports a')
-                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname')
                         ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->join('accounts c','c.account_id=a.approver','LEFT')
                         ->where('type_report','Violations')
+                        ->where('a.status',1)
                         ->groupBy('a.report_id')
                         ->get()->getResult();
             //merits/demerits
             $others = $this->db->table('reports a')
-                        ->select('a.*,b.lastname,b.firstname,b.middlename')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname')
                         ->join('students b','b.student_id=a.student_id','LEFT')
+                        ->join('accounts c','c.account_id=a.approver','LEFT')
                         ->where('type_report !=','Violations')
+                        ->where('a.status',1)
                         ->groupBy('a.report_id')
                         ->get()->getResult();
             $data = ['title'=>$title,'violation'=>$violation,'others'=>$others,'pretitle'=>$pretitle];
@@ -1628,20 +1632,19 @@ class Administrator extends BaseController
         else
         {
             $title = 'Merits/Demerits';
-            $pretitle = "Merits/Demerits";
+            $pretitle = "All Records";
             //merits/demerits
             $others = $this->db->table('reports a')
                         ->select('a.*,b.lastname,b.firstname,b.middlename')
                         ->join('students b','b.student_id=a.student_id','LEFT')
-                        ->where('type_report !=','Violations')
                         ->groupBy('a.report_id')
                         ->get()->getResult();
             $data = ['title'=>$title,'others'=>$others,'pretitle'=>$pretitle];
-            return view('admin/reports/merits',$data);
+            return view('admin/reports/all-records',$data);
         }
     }
 
-    public function allViolations()
+    public function forReview()
     {
         if(!$this->hasPermission('report'))
         {
@@ -1650,16 +1653,36 @@ class Administrator extends BaseController
         else
         {
             $title = 'Merits/Demerits';
-            $pretitle = "Violations";
+            $pretitle = "For Review";
             //merits/demerits
-            $violation = $this->db->table('reports a')
+            $records = $this->db->table('reports a')
                         ->select('a.*,b.lastname,b.firstname,b.middlename')
                         ->join('students b','b.student_id=a.student_id','LEFT')
-                        ->where('type_report','Violations')
+                        ->where('a.status',0)
                         ->groupBy('a.report_id')
                         ->get()->getResult();
-            $data = ['title'=>$title,'violation'=>$violation,'pretitle'=>$pretitle];
-            return view('admin/reports/violations',$data);
+            $data = ['title'=>$title,'records'=>$records,'pretitle'=>$pretitle];
+            return view('admin/reports/for-review',$data);
+        }
+    }
+
+    public function editReport($id)
+    {
+        $reportModel = new \App\Models\reportModel;
+        $report = $reportModel->where('report_id',$id)->first();
+        if(!$report || empty($report))
+        {
+            return redirect()->to('/reports/records')->with('fail', 'Sorry! Data not found. Please try again');
+        }
+        else
+        {
+            $data['title'] = 'Merits/Demerits';
+            $data['pretitle'] = "All Records";
+            //merits/demerits
+            $data['report'] = $report;
+            $studentModel = new studentModel();
+            $data['student'] = $studentModel->where('status',1)->findAll();
+            return view('admin/reports/edit-report',$data);
         }
     }
 

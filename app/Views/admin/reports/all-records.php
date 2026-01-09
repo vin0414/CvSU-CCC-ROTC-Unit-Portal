@@ -34,7 +34,7 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title"><?=$title?></h2>
+                            <h2 class="page-title"><?=$pretitle?></h2>
                         </div>
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
@@ -83,12 +83,17 @@
             <!-- BEGIN PAGE BODY -->
             <div class="page-body">
                 <div class="container-xl">
+                    <?php if(!empty(session()->getFlashdata('fail'))) : ?>
+                    <div class="alert alert-important alert-danger alert-dismissible" role="alert">
+                        <?= session()->getFlashdata('fail'); ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                                 <li class="nav-item">
                                     <a href="#tabs-others-8" class="nav-link active" data-bs-toggle="tab">
-                                        <i class="ti ti-award"></i>&nbsp;Merits/Demerits
+                                        <i class="ti ti-award"></i>&nbsp;All Records
                                     </a>
                                 </li>
                             </ul>
@@ -96,9 +101,6 @@
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade active show" id="tabs-others-8">
-                                    <button type="button" class="btn btn-default" id="btnExport">
-                                        <i class="ti ti-download"></i>&nbsp;Download
-                                    </button>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="tables">
                                             <thead>
@@ -108,6 +110,7 @@
                                                 <th>Details</th>
                                                 <th>Cadets</th>
                                                 <th>Points</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </thead>
                                             <tbody>
@@ -122,7 +125,13 @@
                                                     </td>
                                                     <td><?= $row->points ?></td>
                                                     <td>
-                                                        <?php if($row->status==0): ?>
+                                                        <?php if($row->status ==1):?>
+                                                        <span class="badge bg-success text-white">Approved</span>
+                                                        <?php else :?>
+                                                        <span class="badge bg-warning text-white">Pending</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
                                                         <button type="button" class="btn dropdown-toggle"
                                                             data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                                             role="button">
@@ -131,10 +140,15 @@
                                                         <div class="dropdown-menu">
                                                             <button type="button" class="dropdown-item view"
                                                                 value="<?= $row->report_id ?>">
-                                                                <i class="ti ti-search"></i>&nbsp;View
+                                                                <i class="ti ti-search"></i>&nbsp;View Report
                                                             </button>
+                                                            <?php if($row->status == 0):?>
+                                                            <a href="<?= site_url('reports/edit/') ?><?= $row->report_id ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-edit"></i>&nbsp;Edit Report
+                                                            </a>
+                                                            <?php endif;?>
                                                         </div>
-                                                        <?php endif;?>
                                                     </td>
                                                 </tr>
                                                 <?php endforeach;?>
@@ -152,7 +166,7 @@
     </div>
 
     <div class="modal modal-blur fade" id="viewModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-title">View Details</div>
@@ -167,12 +181,7 @@
                         </div>
                         <div class="col-lg-12">
                             <label class="form-label">Details</label>
-                            <textarea name="details" class="form-control" style="height: 150px;"></textarea>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="form-control btn btn-primary" id="btnSend">
-                                <i class="ti ti-send"></i>&nbsp;Approve
-                            </button>
+                            <textarea name="details" class="form-control" style="height: auto;"></textarea>
                         </div>
                     </form>
                 </div>
@@ -190,7 +199,6 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#table').DataTable();
     $('#tables').DataTable();
 
     $(document).on('click', '.view', function() {
@@ -225,155 +233,6 @@
                 });
             }
         });
-    });
-
-    $('#frmReport').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('.error-message').html('');
-        $('#btnSend').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Submitting...'
-        );
-        $.ajax({
-            url: "<?= site_url('report/update') ?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSend').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Submit'
-                );
-                if (response.success) {
-                    location.reload();
-                } else {
-                    var errors = response.errors;
-                    // Iterate over each error and display it under the corresponding input field
-                    for (var field in errors) {
-                        $('#' + field + '-error').html('<p>' + errors[field] +
-                            '</p>'); // Show the first error message
-                        $('#' + field).addClass(
-                            'text-danger'); // Highlight the input field with an error
-                    }
-                }
-            }
-        });
-    });
-
-    $('#semester').change(function() {
-        let semester = $(this).val();
-        let year = $('#year').val();
-        $.ajax({
-            url: "<?= site_url('gradebook/batch/list') ?>",
-            method: "GET",
-            data: {
-                year: year,
-                semester: semester
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
-                const dropdown = $('#batchName');
-                dropdown.empty();
-                dropdown.append('<option value="">Choose</option>');
-                response.batch.forEach(function(item) {
-                    dropdown.append(
-                        `<option value="${item.batch_id}">${item.batchName} - ${item.section}</option>`
-                    );
-                });
-
-            }
-        });
-    });
-
-    $('#form').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('#result').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>');
-        $.ajax({
-            url: "<?= site_url('report/grades') ?>",
-            method: "GET",
-            data: data,
-            success: function(response) {
-                if (response === "") {
-                    $('#result').html(
-                        '<tr><td colspan="7" class="text-center">No Data(s) found</td></tr>');
-                    document.getElementById('btn').style = "display:none";
-                } else {
-                    $('#result').html(response);
-                    $('#id').attr("value", $('#className').val());
-                    document.getElementById('btn').style = "display:block";
-                }
-            }
-        });
-    });
-
-    $('#frmGenerate').submit(function(e) {
-        e.preventDefault();
-        let data = $(this).serialize();
-        $('#btnSave').attr('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;Saving...'
-        );
-        $.ajax({
-            url: "<?=site_url('report/grades/update')?>",
-            method: "POST",
-            data: data,
-            success: function(response) {
-                $('#btnSave').attr('disabled', false).html(
-                    '<span class="ti ti-device-floppy"></span>&nbsp;Save Changes'
-                );
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Great!',
-                        text: "Successfully saved",
-                        icon: 'success',
-                        confirmButtonText: 'Continue'
-                    }).then((result) => {
-                        // Action based on user's choice
-                        if (result.isConfirmed) {
-                            // Perform some action when "Yes" is clicked
-                        }
-                    });
-                } else {
-                    var errors = response.errors;
-                    alert(errors);
-                }
-            }
-        });
-    });
-
-    document.getElementById('btnDownload').addEventListener('click', function() {
-        const table = document.getElementById('table1');
-        let html = table.outerHTML;
-        let blob = new Blob([html], {
-            type: 'application/vnd.ms-excel'
-        });
-        let link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'grades.xls';
-        link.click();
-    });
-
-    document.getElementById('btnExport').addEventListener('click', function() {
-        const table = document.getElementById('tables');
-        let html = table.outerHTML;
-        let blob = new Blob([html], {
-            type: 'application/vnd.ms-excel'
-        });
-        let link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'merits-demerits.xls';
-        link.click();
-    });
-
-    document.getElementById('btnExports').addEventListener('click', function() {
-        const table = document.getElementById('table');
-        let html = table.outerHTML;
-        let blob = new Blob([html], {
-            type: 'application/vnd.ms-excel'
-        });
-        let link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'violations.xls';
-        link.click();
     });
     </script>
 </body>

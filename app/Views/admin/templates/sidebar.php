@@ -182,7 +182,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                         <span class="nav-link-title"> Manage Merits/Demerits</span>
                     </a>
                     <div
-                        class="dropdown-menu <?= ($pretitle == 'Create Report' || $pretitle == 'Merits/Demerits' || $pretitle == 'Violations') ? 'show' : '' ?>">
+                        class="dropdown-menu <?= ($pretitle == 'Create Report' || $pretitle == 'All Records' || $pretitle == 'For Review') ? 'show' : '' ?>">
                         <a href="<?= site_url('reports/create') ?>"
                             class="dropdown-item <?= ($pretitle == 'Create Report') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -196,10 +196,10 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M10 14h4" />
                                 <path d="M12 12v4" />
                             </svg>
-                            Create
+                            Create Request
                         </a>
                         <a href="<?= site_url('reports/records') ?>"
-                            class="dropdown-item <?= ($pretitle == 'Merits/Demerits') ? 'active' : '' ?>">
+                            class="dropdown-item <?= ($pretitle == 'All Records') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -211,23 +211,24 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M9 12h6" />
                                 <path d="M9 16h6" />
                             </svg>
-                            Merits/Demerits
+                            All Records
                         </a>
-                        <a href="<?= site_url('reports/violations') ?>"
-                            class="dropdown-item <?= ($pretitle == 'Violations') ? 'active' : '' ?>">
+                        <?php if($role['report']==1): ?>
+                        <a href="<?= site_url('reports/review') ?>"
+                            class="dropdown-item <?= ($pretitle == 'For Review') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-text">
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-check">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                 <path
                                     d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
                                 <path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" />
-                                <path d="M9 12h6" />
-                                <path d="M9 16h6" />
+                                <path d="M9 14l2 2l4 -4" />
                             </svg>
-                            Violations
+                            For Review
                         </a>
+                        <?php endif;?>
                     </div>
                 </li>
                 <?php if($role['inventory']==1): ?>
