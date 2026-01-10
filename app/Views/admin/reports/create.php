@@ -8,6 +8,8 @@
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <title>CvSU-CCC ROTC Unit Portal</title>
+    <link href="<?=base_url('assets/css/nouislider.min.css')?>" rel="stylesheet" />
+    <link href="<?=base_url('assets/css/tom-select.css')?>" rel="stylesheet" />
     <link href="<?=base_url('assets/css/tabler.min.css')?>" rel="stylesheet" />
     <link href="<?=base_url('assets/css/demo.min.css')?>" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
@@ -84,7 +86,7 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <label class="form-label">Cadet Name</label>
-                                                    <select class="form-select" name="student">
+                                                    <select class="form-select" name="student" id="student">
                                                         <option value="">Choose</option>
                                                         <?php foreach($student as $row): ?>
                                                         <option value="<?= $row['student_id'] ?>">
@@ -125,6 +127,9 @@
         </div>
     </div>
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="<?=base_url('assets/js/nouislider.min.js')?>" defer></script>
+    <script src="<?=base_url('assets/js/litepicker.js')?>" defer></script>
+    <script src="<?=base_url('assets/js/tom-select.js')?>" defer></script>
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN DEMO SCRIPTS -->
@@ -134,6 +139,31 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var el;
+        window.TomSelect &&
+            new TomSelect((el = document.getElementById("student")), {
+                copyClassesToDropdown: false,
+                dropdownParent: "body",
+                controlInput: "<input>",
+                render: {
+                    item: function(data, escape) {
+                        if (data.customProperties) {
+                            return '<div><span class="dropdown-item-indicator">' + data
+                                .customProperties + "</span>" + escape(data.text) + "</div>";
+                        }
+                        return "<div>" + escape(data.text) + "</div>";
+                    },
+                    option: function(data, escape) {
+                        if (data.customProperties) {
+                            return '<div><span class="dropdown-item-indicator">' + data
+                                .customProperties + "</span>" + escape(data.text) + "</div>";
+                        }
+                        return "<div>" + escape(data.text) + "</div>";
+                    },
+                },
+            });
+    });
     $('#form').submit(function(e) {
         e.preventDefault();
         let data = $(this).serialize();

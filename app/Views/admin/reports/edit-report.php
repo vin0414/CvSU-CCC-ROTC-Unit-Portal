@@ -8,6 +8,8 @@
     <link rel="apple-touch-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <link rel="shortcut icon" type="image/x-icon" href="<?=base_url('assets/images/cvsu-logo.png')?>">
     <title>CvSU-CCC ROTC Unit Portal</title>
+    <link href="<?=base_url('assets/css/nouislider.min.css')?>" rel="stylesheet" />
+    <link href="<?=base_url('assets/css/tom-select.css')?>" rel="stylesheet" />
     <link href="<?=base_url('assets/css/tabler.min.css')?>" rel="stylesheet" />
     <link href="<?=base_url('assets/css/demo.min.css')?>" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
@@ -140,6 +142,9 @@
         </div>
     </div>
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="<?=base_url('assets/js/nouislider.min.js')?>" defer></script>
+    <script src="<?=base_url('assets/js/litepicker.js')?>" defer></script>
+    <script src="<?=base_url('assets/js/tom-select.js')?>" defer></script>
     <script src="<?=base_url('assets/js/tabler.min.js')?>" defer></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN DEMO SCRIPTS -->

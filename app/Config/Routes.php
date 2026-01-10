@@ -163,6 +163,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('inventory/borrow','Administrator::borrowInventory');
     $routes->get('inventory/return','Administrator::returnInventory');
     $routes->get('inventory/report','Administrator::reportInventory');
+    $routes->get('export/inventory','Export::exportInventory');
     //announcement
     $routes->match(['get','post'],'announcement','Administrator::announcement');
     $routes->get('announcement/create','Administrator::createAnnouncement');
@@ -174,6 +175,8 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('reports/records','Administrator::allMerits');
     $routes->get('reports/review','Administrator::forReview');
     $routes->get('reports/edit/(:any)','Administrator::editReport/$1');
+    $routes->get('export/merits-demerits','Export::exportMeritsDemerits');
+    $routes->get('export/violations','Export::exportViolations');
     //maintenance
     $routes->get('maintenance/accounts','Administrator::accounts');
     $routes->get('maintenance/accounts/create','Administrator::createAccount');

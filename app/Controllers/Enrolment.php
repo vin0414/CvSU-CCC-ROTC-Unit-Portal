@@ -414,7 +414,8 @@ class Enrolment extends BaseController
                     'student_id'=>$this->request->getPost('student'),
                     'details'=>$this->request->getPost('details'),
                     'points'=>$this->request->getPost('points'),
-                    'status'=>0
+                    'status'=>0,
+                    'user'=>session()->get('loggedAdmin')
                 ];
                 $reportModel->save($data);
             }
@@ -427,7 +428,8 @@ class Enrolment extends BaseController
                     'student_id'=>$this->request->getPost('student'),
                     'details'=>$this->request->getPost('details'),
                     'points'=>$this->request->getPost('points'),
-                    'status'=>1
+                    'status'=>1,
+                    'user'=>session()->get('loggedAdmin')
                 ];
                 $reportModel->save($data);
             }

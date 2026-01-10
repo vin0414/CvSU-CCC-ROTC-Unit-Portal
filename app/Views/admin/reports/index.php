@@ -184,9 +184,10 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-others-8">
-                                    <button type="button" class="btn btn-default" id="btnExport">
+                                    <a href="<?= site_url('export/merits-demerits') ?>" class="btn btn-default"
+                                        target="_blank">
                                         <i class="ti ti-download"></i>&nbsp;Download
-                                    </button>
+                                    </a>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="tables">
                                             <thead>
@@ -196,6 +197,7 @@
                                                 <th>Details</th>
                                                 <th>Cadets</th>
                                                 <th>Points</th>
+                                                <th>Reported By</th>
                                                 <th>Approver</th>
                                             </thead>
                                             <tbody>
@@ -209,6 +211,7 @@
                                                         <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
                                                     </td>
                                                     <td><?= $row->points ?></td>
+                                                    <td><?= $row->user ?></td>
                                                     <td><?= $row->fullname ?></td>
                                                 </tr>
                                                 <?php endforeach;?>
@@ -217,9 +220,10 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tabs-activity-8">
-                                    <button type="button" class="btn btn-default" id="btnExports">
+                                    <a href="<?= site_url('export/violations') ?>" class="btn btn-default"
+                                        target="_blank">
                                         <i class="ti ti-download"></i>&nbsp;Download
-                                    </button>
+                                    </a>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped" id="table">
                                             <thead>
@@ -228,6 +232,7 @@
                                                 <th>Category</th>
                                                 <th>Details</th>
                                                 <th>Cadets</th>
+                                                <th>Reported By</th>
                                                 <th>Approver</th>
                                             </thead>
                                             <tbody>
@@ -240,6 +245,7 @@
                                                     <td>
                                                         <?= $row->lastname ?>,&nbsp;<?= $row->firstname ?>&nbsp;<?= $row->middlename ?>
                                                     </td>
+                                                    <td><?= $row->user ?></td>
                                                     <td><?= $row->fullname ?></td>
                                                 </tr>
                                                 <?php endforeach;?>

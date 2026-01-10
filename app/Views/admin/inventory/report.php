@@ -39,10 +39,12 @@
                         <!-- Page title actions -->
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
-                                <a href="#" class="btn btn-success btn-5 d-none d-sm-inline-block" id="btnExport">
+                                <a href="<?= site_url('export/inventory') ?>"
+                                    class="btn btn-success btn-5 d-none d-sm-inline-block" target="_blank">
                                     <i class="ti ti-download"></i>&nbsp;Export
                                 </a>
-                                <a href="#" class="btn btn-success btn-6 d-sm-none btn-icon" id="btnExport">
+                                <a href="<?= site_url('export/inventory') ?>"
+                                    class="btn btn-success btn-6 d-sm-none btn-icon" target="_blank">
                                     <i class="ti ti-download"></i>
                                 </a>
                             </div>

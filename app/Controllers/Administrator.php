@@ -1591,18 +1591,20 @@ class Administrator extends BaseController
             $pretitle = "Reports";
             //violations
             $violation = $this->db->table('reports a')
-                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname,d.fullname as user')
                         ->join('students b','b.student_id=a.student_id','LEFT')
                         ->join('accounts c','c.account_id=a.approver','LEFT')
+                        ->join('accounts d','d.account_id=a.user','LEFT')
                         ->where('type_report','Violations')
                         ->where('a.status',1)
                         ->groupBy('a.report_id')
                         ->get()->getResult();
             //merits/demerits
             $others = $this->db->table('reports a')
-                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname')
+                        ->select('a.*,b.lastname,b.firstname,b.middlename,c.fullname,d.fullname as user')
                         ->join('students b','b.student_id=a.student_id','LEFT')
                         ->join('accounts c','c.account_id=a.approver','LEFT')
+                        ->join('accounts d','d.account_id=a.user','LEFT')
                         ->where('type_report !=','Violations')
                         ->where('a.status',1)
                         ->groupBy('a.report_id')
