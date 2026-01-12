@@ -83,7 +83,8 @@
                                         <th>Date Borrowed</th>
                                         <th>Due Date</th>
                                         <th>Date Returned</th>
-                                        <th>Remarks</th>
+                                        <th>Conditions</th>
+                                        <th>Status</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach($report as $row): ?>
@@ -98,6 +99,7 @@
                                                 <?= date('M d, Y H:i:s',strtotime($row->date_return)) ?>
                                                 <?php endif;?>
                                             </td>
+                                            <td><?= $row->remarks ?></td>
                                             <td>
                                                 <?php if($row->status==1): ?>
                                                 <span class="badge bg-success text-white">PAID</span>

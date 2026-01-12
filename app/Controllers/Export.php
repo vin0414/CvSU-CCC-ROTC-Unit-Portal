@@ -50,6 +50,7 @@ class Export extends BaseController
                         <th>Category</th>
                         <th>Details</th>
                         <th>Cadets</th>
+                        <th>Points</th>
                         <th>Reported By</th>
                         <th>Approver</th>
                     </tr>
@@ -62,6 +63,7 @@ class Export extends BaseController
                             <td>'.$row->category.'</td>
                             <td>'.$row->details.'</td>
                             <td>'.$row->lastname.',&nbsp;'.$row->firstname.'&nbsp;'.$row->middlename.'</td>
+                            <td>'.$row->points.'</td>
                             <td>'.$row->user.'</td>
                             <td>'.$row->fullname.'</td>
                         </tr>';
@@ -83,7 +85,7 @@ class Export extends BaseController
         $dompdf->render();
 
         // Stream to browser
-        $dompdf->stream("merits-demerits.pdf", ["Attachment" => false]);
+        $dompdf->stream("merits-demerits.pdf", ["Attachment" => true]);
     }
 
     public function exportViolations()
@@ -158,13 +160,13 @@ class Export extends BaseController
         $dompdf->render();
 
         // Stream to browser
-        $dompdf->stream("violations.pdf", ["Attachment" => false]);
+        $dompdf->stream("violations.pdf", ["Attachment" => true]);
     }
 
     public function exportInventory()
     {
         $result = $this->db->table('inventory a')
-        ->select('a.item,a.details,b.borrower,b.created_at,b.date_expected,c.created_at as date_return,c.status')
+        ->select('a.item,a.details,b.borrower,b.created_at,b.date_expected,c.created_at as date_return,c.status,c.remarks')
         ->join('borrow_item b','b.inventory_id=a.inventory_id','INNER')
         ->join('return_item c','c.borrow_id=b.borrow_id','LEFT')
         ->groupBy('b.borrow_id')->get()->getResult();
@@ -200,6 +202,7 @@ class Export extends BaseController
                         <th>Date Borrowed</th>
                         <th>Due Date</th>
                         <th>Date Returned</th>
+                        <th>Conditions</th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -213,6 +216,7 @@ class Export extends BaseController
                     <td>'.date('M d, Y H:i:s',strtotime($row->created_at)).'</td>
                     <td>'.date('M d, Y H:i:s',strtotime($row->date_expected)).'</td>
                     <td>'.date('M d, Y H:i:s',strtotime($row->date_return)).'</td>
+                    <td>'.$row->remarks.'</td>
                 </tr>';
                 }
                 else
@@ -224,6 +228,7 @@ class Export extends BaseController
                     <td>'.date('M d, Y H:i:s',strtotime($row->created_at)).'</td>
                     <td>'.date('M d, Y H:i:s',strtotime($row->date_expected)).'</td>
                     <td>-</td>
+                    <td>'.$row->remarks.'</td>
                 </tr>';
                 }
                 }
@@ -245,6 +250,6 @@ class Export extends BaseController
         $dompdf->render();
 
         // Stream to browser
-        $dompdf->stream("inventory.pdf", ["Attachment" => false]);
+        $dompdf->stream("inventory.pdf", ["Attachment" => true]);
     }
 }

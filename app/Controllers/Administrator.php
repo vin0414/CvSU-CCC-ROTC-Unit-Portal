@@ -1299,7 +1299,7 @@ class Administrator extends BaseController
             $data['pretitle']="Inventory Report";
             //create query
             $data['report'] = $this->db->table('inventory a')
-                                ->select('a.item,a.details,b.borrower,b.created_at,b.date_expected,c.created_at as date_return,c.status')
+                                ->select('a.item,a.details,b.borrower,b.created_at,b.date_expected,c.created_at as date_return,c.status,c.remarks')
                                 ->join('borrow_item b','b.inventory_id=a.inventory_id','INNER')
                                 ->join('return_item c','c.borrow_id=b.borrow_id','LEFT')
                                 ->groupBy('b.borrow_id')->get()->getResult();
