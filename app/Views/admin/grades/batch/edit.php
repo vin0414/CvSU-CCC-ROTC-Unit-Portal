@@ -113,12 +113,6 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <label class="form-label">Details</label>
-                                    <textarea name="details" class="form-control"
-                                        style="height:120px;"><?= $batch['details'] ?></textarea>
-                                    <div id="details-error" class="error-message text-danger text-sm"></div>
-                                </div>
-                                <div class="col-lg-12">
                                     <div class="row g-3">
                                         <div class="col-lg-8">
                                             <label class="form-label">Coordinator/Account ID</label>

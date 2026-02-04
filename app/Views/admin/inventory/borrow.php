@@ -115,7 +115,7 @@
                                             <th>Quantity</th>
                                             <th>Borrower</th>
                                             <th>Details</th>
-                                            <th>Expected Date</th>
+                                            <th>Date To Be Return</th>
                                             <th>Action</th>
                                         </thead>
                                         <tbody>

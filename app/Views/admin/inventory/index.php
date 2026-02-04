@@ -40,11 +40,11 @@
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
                                 <a href="#" class="btn btn-default" id="btnExport">
-                                    <i class="ti ti-download"></i>&nbsp;Export
+                                    <i class="ti ti-download"></i>&nbsp;Export Inventory
                                 </a>
                                 <a href="<?=site_url('inventory/stock/add')?>"
                                     class="btn btn-success btn-5 d-none d-sm-inline-block">
-                                    <i class="ti ti-package-import"></i>&nbsp;Add Stock
+                                    <i class="ti ti-package-import"></i>&nbsp;Add Item
                                 </a>
                                 <a href="<?=site_url('inventory/stock/add')?>"
                                     class="btn btn-success btn-6 d-sm-none btn-icon">

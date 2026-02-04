@@ -301,9 +301,9 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M22 18h-7" />
                                 <path d="M18 15l-3 3l3 3" />
                             </svg>
-                            Returned Items
+                            Borrowed History
                         </a>
-                        <a href="<?= site_url('inventory/report') ?>"
+                        <!-- <a href="<?= site_url('inventory/report') ?>"
                             class="dropdown-item <?= ($pretitle == 'Inventory Report') ? 'active' : '' ?>">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -316,7 +316,7 @@ $role = $roleModel->where('role_id', session()->get('role'))->first();
                                 <path d="M4 20h14" />
                             </svg>
                             Equipment Report
-                        </a>
+                        </a> -->
                     </div>
                 </li>
                 <?php endif;?>

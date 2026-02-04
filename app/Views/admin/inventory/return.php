@@ -34,7 +34,7 @@
                         <div class="col">
                             <!-- Page pre-title -->
                             <div class="page-pretitle">CvSU-CCC ROTC Unit Portal</div>
-                            <h2 class="page-title">Returned Items</h2>
+                            <h2 class="page-title">Borrowed History</h2>
                         </div>
                         <div class="col-auto ms-auto d-print-none">
                             <div class="btn-list">
@@ -70,7 +70,7 @@
                                             <path d="M22 18h-7" />
                                             <path d="M18 15l-3 3l3 3" />
                                         </svg>
-                                        &nbsp;Returned items
+                                        &nbsp;Borrowed History
                                     </a>
                                 </li>
                             </ul>

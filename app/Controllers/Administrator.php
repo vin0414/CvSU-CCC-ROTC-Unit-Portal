@@ -1052,7 +1052,6 @@ class Administrator extends BaseController
             'semester'=>'required',
             'section'=>'required',
             'batch'=>'required',
-            'details'=>'required',
             'account'=>'required|numeric',
         ]);
 
@@ -1067,7 +1066,7 @@ class Administrator extends BaseController
                 'semester'=>$this->request->getPost('semester'),
                 'batchName'=>$this->request->getPost('batch'),
                 'section'=>$this->request->getPost('section'),
-                'details'=>$this->request->getPost('details'),
+                'details'=>'N/A',
                 'account_id'=>$this->request->getPost('account'),
                 'status'=>1
             ];
@@ -1093,7 +1092,6 @@ class Administrator extends BaseController
             'semester'=>'required',
             'batch'=>'required',
             'section'=>'required',
-            'details'=>'required',
             'account'=>'required|numeric',
             'status'=>'required'
         ]);
@@ -1110,7 +1108,6 @@ class Administrator extends BaseController
                 'semester'=>$this->request->getPost('semester'),
                 'batchName'=>$this->request->getPost('batch'),
                 'section'=>$this->request->getPost('section'),
-                'details'=>$this->request->getPost('details'),
                 'account_id'=>$this->request->getPost('account'),
                 'status'=>$this->request->getPost('status')
             ];
@@ -1217,6 +1214,7 @@ class Administrator extends BaseController
             $data['request'] = $this->db->table('requests a')
                                 ->select('a.*,b.lastname,b.firstname,b.middlename')
                                 ->join('students b','b.student_id=a.student_id','LEFT')
+                                ->where('a.status',0)
                                 ->groupBy('a.request_id')->get()->getResult();
             $inventoryModel = new inventoryModel();
             $data['inventory'] = $inventoryModel->where('status',1)
