@@ -55,7 +55,7 @@
                                     <div class="mb-3">
                                         <label class="form-label">Student No</label>
                                         <input type="text" name="student_number" class="form-control"
-                                            placeholder="ABC-0001" autocomplete="off" required />
+                                            placeholder="Enter here..." autocomplete="off" required />
                                         <div class="text-danger">
                                             <small><?= $validation->getError('student_number'); ?></small>
                                         </div>

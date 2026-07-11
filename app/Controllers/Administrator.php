@@ -168,17 +168,6 @@ class Administrator extends BaseController
         $query = $this->db->query($sql, [$currentDate]);
 
         $attendance = $query->getResultArray();
-        //count the total cadet
-        $studentModel = new studentModel();
-        $total = $studentModel->countAllResults();
-        //count the total enrolled cadet
-        $totalEnrolled = $studentModel->where('is_enroll',1)->countAllResults();
-        //total training
-        $scheduleModel = new scheduleModel();
-        $training = $scheduleModel->countAllResults();
-        //staff
-        $assignmentModel = new assignmentModel();
-        $staff = $assignmentModel->where('account_id<>',0)->countAllResults();
         //assignment
         $assignment = $this->db->table('assignments a')
                     ->select('c.batchName,b.name,b.details,b.day,b.from_time,b.to_time,a.schedule_id')
@@ -196,13 +185,35 @@ class Administrator extends BaseController
         $return = $returnModel->countAllResults();
         $requestModel = new requestModel();
         $requests = $requestModel->countAllResults();
+        //count
+        $studentModel = new studentModel();
+
 
         $pretitle = "Dashboard";
 
-        $data = ['title'=>$title,'announcement'=>$announcement,'assignment'=>$assignment,
-                'attendance'=>$attendance,'total'=>$total,'staff'=>$staff,
-                'enrolled'=>$totalEnrolled,'training'=>$training,'pretitle'=>$pretitle,
-                'stocks'=>$stocks,'borrow'=>$borrow,'return'=>$return,'purchase'=>$requests
+        $data = ['title'=>$title,
+                'announcement'=>$announcement,
+                'assignment'=>$assignment,
+                'attendance'=>$attendance,
+                'total'=> $studentModel->countAllResults(),
+                'male' => $this->db->table('students as a')
+                        ->join('cadets as b', 'b.student_id = a.student_id', 'inner')
+                        ->where('a.is_enroll', 1)
+                        ->where('b.gender', 'Male')
+                        ->countAllResults(),
+                'female' => $this->db->table('students as a')
+                        ->join('cadets as b', 'b.student_id = a.student_id', 'inner')
+                        ->where('a.is_enroll', 1)
+                        ->where('b.gender', 'Female')
+                        ->countAllResults(),
+                'pending'=> $studentModel->where('is_enroll',0)->countAllResults(),
+                'enrolled'=> $studentModel->where('is_enroll',1)->countAllResults(),
+                'dropout'=> $studentModel->where('status',2)->countAllResults(),
+                'pretitle'=>$pretitle,
+                'stocks'=>$stocks,
+                'borrow'=>$borrow,
+                'return'=>$return,
+                'purchase'=>$requests
             ];
         return view('admin/dashboard',$data);
     }
@@ -356,16 +367,16 @@ class Administrator extends BaseController
     {
         $searchTerm = $_GET['search']['value'] ?? '';
         $builder = $this->db->table('students a');
-        $builder->select('a.student_id,a.school_id,a.firstname,a.middlename,a.lastname,a.token,a.photo,b.course,b.year,b.section');
+        $builder->select('a.student_id,a.school_id,a.firstname,a.middlename,a.lastname,a.token,a.photo,a.is_enroll,b.course,b.year,b.section');
         $builder->join('cadets b','b.student_id=a.student_id','LEFT');
-        $builder->where('a.is_enroll',1)->groupBy('a.student_id');
+        $builder->groupBy('a.student_id,b.course,b.year,b.section');
         if ($searchTerm) {
             $builder->groupStart()
-                    ->like('a.firstname', $searchTerm)
-                    ->orLike('a.lastname', $searchTerm)
-                    ->orLike('a.school_id', $searchTerm)
-                    ->orLike('b.course', $searchTerm)
-                    ->groupEnd();  
+            ->like('a.firstname', $searchTerm)
+            ->orLike('a.lastname', $searchTerm)
+            ->orLike('a.school_id', $searchTerm)
+            ->orLike('b.course', $searchTerm)
+            ->groupEnd();  
         }
         $limit = $_GET['length'] ?? 10;  
         $offset = $_GET['start'] ?? 0;  
@@ -386,6 +397,7 @@ class Administrator extends BaseController
                 'fullname' => htmlspecialchars($row->firstname." ".$row->middlename." ".$row->lastname, ENT_QUOTES),
                 'course' => htmlspecialchars($row->course, ENT_QUOTES).'-'.htmlspecialchars($row->year, ENT_QUOTES),
                 'section' => htmlspecialchars($row->section, ENT_QUOTES),
+                'status' => ($row->is_enroll==1) ? '<i class="badge bg-success text-white">Enrolled</i>' : '<i class="badge bg-danger text-white">Drop-out</i>',
                 'action'=>'<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button">
                             <span>More</span>
                         </button>

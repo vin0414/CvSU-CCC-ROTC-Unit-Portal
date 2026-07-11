@@ -110,65 +110,51 @@
                     <div class="row g-3">
                         <div class="col-lg-9">
                             <div class="row g-3 mb-3">
-                                <div class="col-lg-3">
+                                <div class="col-lg-2">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <img src="<?=base_url('assets/images/student.png')?>"
-                                                        width="50px" />
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium"><?= $total ?></div>
-                                                    <div class="text-secondary">Total Cadets</div>
-                                                </div>
-                                            </div>
+                                            Total Cadets
+                                            <h1><?= $total ?></h1>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-2">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <img src="<?=base_url('assets/images/student.png')?>"
-                                                        width="50px" />
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium"><?= $enrolled ?></div>
-                                                    <div class="text-secondary">Enrolled Cadets</div>
-                                                </div>
-                                            </div>
+                                            Total Male
+                                            <h1><?= $male ?></h1>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-2">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <img src="<?=base_url('assets/images/team.png')?>" width="50px" />
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium"><?= $staff ?></div>
-                                                    <div class="text-secondary">Total Officers</div>
-                                                </div>
-                                            </div>
+                                            Total Female
+                                            <h1><?= $female ?></h1>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-2">
                                     <div class="card">
                                         <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <img src="<?=base_url('assets/images/book.png')?>" width="50px" />
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium"><?= $training ?></div>
-                                                    <div class="text-secondary">Total Training(s)</div>
-                                                </div>
-                                            </div>
+                                            Enrolled
+                                            <h1><?= $enrolled ?></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            Pending
+                                            <h1><?= $pending ?></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            Dropout
+                                            <h1><?= $dropout ?></h1>
                                         </div>
                                     </div>
                                 </div>

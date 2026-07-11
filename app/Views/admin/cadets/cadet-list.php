@@ -113,7 +113,7 @@
                                     <table class="table table-bordered table-striped" id="table1">
                                         <thead>
                                             <th>Image</th>
-                                            <th>Student ID</th>
+                                            <th>Student No</th>
                                             <th>Fullname</th>
                                             <th>Email</th>
                                             <th>Status</th>
@@ -127,10 +127,11 @@
                                         <table class="table table-bordered table-striped" id="table2">
                                             <thead>
                                                 <th>Image</th>
-                                                <th>Student ID</th>
+                                                <th>Student No</th>
                                                 <th>Fullname</th>
                                                 <th>Course & Year</th>
                                                 <th>Section</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </thead>
                                             <tbody></tbody>
@@ -440,6 +441,9 @@
             },
             {
                 "data": "section"
+            },
+            {
+                "data": "status"
             },
             {
                 "data": "action"

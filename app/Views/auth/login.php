@@ -42,7 +42,7 @@
                         <?=csrf_field();?>
                         <div class="mb-3">
                             <label class="form-label">Account ID</label>
-                            <input type="text" class="form-control" name="employee_id" placeholder="EMP-000001"
+                            <input type="text" class="form-control" name="employee_id" placeholder="Enter here"
                                 value="<?=set_value('employee_id')?>" autocomplete="off" />
                             <div class="text-danger">
                                 <small><?= $validation->getError('employee_id'); ?></small>
