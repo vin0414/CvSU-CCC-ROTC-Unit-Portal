@@ -16,6 +16,7 @@ use App\Models\assignmentModel;
 use App\Models\batchModel;
 use App\Models\requestModel;
 use App\Models\subjectModel;
+use App\Models\performanceModel;
 
 class Administrator extends BaseController
 {
@@ -229,6 +230,13 @@ class Administrator extends BaseController
             $title = 'Cadets';
             $data['pretitle']="Cadets";
             $data['title'] = $title;
+                $builder = $this->db->table('students a');
+                $builder->select('a.student_id,a.school_id,a.firstname,a.middlename,a.lastname,a.token,a.photo,a.is_enroll,b.course,b.year,b.section');
+                $builder->join('cadets b','b.student_id=a.student_id','LEFT');
+                $builder->where('a.is_enroll <>',0);
+                $builder->where('YEAR(a.created_at) <', date('Y'));
+                $builder->groupBy('a.student_id,b.course,b.year,b.section');       
+            $data['archives'] = $builder->get()->getResult();
             return view('admin/cadets/cadet-list',$data);
         }
     }
@@ -283,14 +291,48 @@ class Administrator extends BaseController
         }
     }
 
+    public function cadetPerformance($id)
+    {
+        if(!$this->hasPermission('cadet'))
+        {
+            return redirect()->to('/dashboard')->with('fail', 'You do not have permission to access that page!');
+        }
+        else
+        {
+            $data['title'] = 'Performance';
+            $data['pretitle'] = "Cadet Performance";
+            $studentModel = new studentModel();
+            $infoModel = new cadetModel();
+            $attachment = new \App\Models\attachmentModel();
+            $student = $studentModel->where('token',$id)->first();
+            $data['cadet'] = $student;
+            $info = $infoModel->where('student_id',$student['student_id'])->first();
+            if(empty($info))
+            {
+                return redirect()->to('/cadets')->with('fail', 'Cadet information not found!');
+            }
+            else
+            {
+                $performanceModel = new performanceModel();
+                $data['grades'] = $performanceModel->where('student_id',$student['student_id'])->first();
+                return view('admin/cadets/performance',$data);
+            }
+        }
+    }
+
     public function modifyCadet()
     {
         $studentModel = new studentModel();
         $validation = $this->validate([
             'school_id'=>'required',
+            'serial_number'=>'required',
             'email'=>'required|valid_email',
             'status'=>'required',
             'id'=>'required|numeric'
+        ],[
+            'serial_number' => [
+                'required' => 'Enter Serial Number'
+            ]
         ]);
         if(!$validation)
         {
@@ -301,7 +343,8 @@ class Administrator extends BaseController
             $data = [
                     'school_id'=>$this->request->getPost('school_id'),
                     'email'=>$this->request->getPost('email'),
-                    'status'=>$this->request->getPost('status')
+                    'status'=>$this->request->getPost('status'),
+                    'serial_number'=>$this->request->getPost('serial_number')
                 ];
             $studentModel->update($this->request->getPost('id'),$data);
             return $this->response->setJSON(['success'=>'Successfully applied changes']);
@@ -337,9 +380,10 @@ class Administrator extends BaseController
             'data' => [] 
         ];
         foreach ($students as $row) {
+            $image = base_url('assets/images/profile/').$row['photo'];
             $response['data'][] = [
-                'image'=>'<img src="assets/images/profile/'.$row['photo'].'" width="30px;"/>',
-                'id' => htmlspecialchars($row['school_id'], ENT_QUOTES),
+                'image'=>'<img src="'.$image.'" width="30px;"/>',
+                'id' => "SN : ".htmlspecialchars($row['school_id'], ENT_QUOTES),
                 'fullname' => htmlspecialchars($row['firstname']." ".$row['middlename']." ".$row['lastname'] , ENT_QUOTES),
                 'email' => htmlspecialchars($row['email'], ENT_QUOTES),
                 'status' => ($row['status']==1) ? '<i class="ti ti-check"></i>&nbsp;Active' : '<i class="ti ti-x"></i>&nbsp;Inactive',
@@ -348,7 +392,7 @@ class Administrator extends BaseController
                         </button>
                         <div class="dropdown-menu">
                             <a href="cadets/edit/'.$row['token'].'" class="dropdown-item">
-                                <i class="ti ti-edit"></i>&nbsp;Edit
+                                <i class="ti ti-edit"></i>&nbsp;Edit Info
                             </a>
                             <a href="cadets/info/'.$row['token'].'" class="dropdown-item">
                                 <i class="ti ti-list"></i>&nbsp;View Info
@@ -369,6 +413,8 @@ class Administrator extends BaseController
         $builder = $this->db->table('students a');
         $builder->select('a.student_id,a.school_id,a.firstname,a.middlename,a.lastname,a.token,a.photo,a.is_enroll,b.course,b.year,b.section');
         $builder->join('cadets b','b.student_id=a.student_id','LEFT');
+        $builder->where('a.is_enroll <>',0);
+        $builder->where('YEAR(a.created_at)', date('Y'));
         $builder->groupBy('a.student_id,b.course,b.year,b.section');
         if ($searchTerm) {
             $builder->groupStart()
@@ -391,22 +437,26 @@ class Administrator extends BaseController
             'data' => [] 
         ];
         foreach ($students as $row) {
+            $image = base_url('assets/images/profile/').$row->photo;
             $response['data'][] = [
-                'image'=>'<img src="assets/images/profile/'.$row->photo.'" width="30px;"/>',
-                'id' => htmlspecialchars($row->school_id, ENT_QUOTES),
+                'image'=>'<img src="'.$image.'" width="30px;"/>',
+                'id' => "SN : ".htmlspecialchars($row->school_id, ENT_QUOTES),
                 'fullname' => htmlspecialchars($row->firstname." ".$row->middlename." ".$row->lastname, ENT_QUOTES),
                 'course' => htmlspecialchars($row->course, ENT_QUOTES).'-'.htmlspecialchars($row->year, ENT_QUOTES),
                 'section' => htmlspecialchars($row->section, ENT_QUOTES),
-                'status' => ($row->is_enroll==1) ? '<i class="badge bg-success text-white">Enrolled</i>' : '<i class="badge bg-danger text-white">Drop-out</i>',
+                'status' => ($row->is_enroll==1) ? '<span class="badge bg-success text-white">Enrolled</span>' : '<span class="badge bg-danger text-white">Drop-out</span>',
                 'action'=>'<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button">
                             <span>More</span>
                         </button>
                         <div class="dropdown-menu">
                             <a href="cadets/edit/'.$row->token.'" class="dropdown-item">
-                                <i class="ti ti-edit"></i>&nbsp;Edit
+                                <i class="ti ti-edit"></i>&nbsp;Edit Info
                             </a>
                             <a href="cadets/info/'.$row->token.'" class="dropdown-item">
-                                <i class="ti ti-list"></i>&nbsp;View Info
+                                <i class="ti ti-list-search"></i>&nbsp;View Info
+                            </a>
+                            <a href="cadets/performance/'.$row->token.'" class="dropdown-item">
+                                <i class="ti ti-report-search"></i>&nbsp;View Performance
                             </a>
                         </div>
                     '
@@ -784,7 +834,7 @@ class Administrator extends BaseController
                                 MIN(CASE WHEN a.remarks = "In" THEN a.time END)
                             ))) AS hours,a.token')
                        ->join('students b','b.student_id=a.student_id','LEFT')
-                       ->groupBy('a.date,a.student_id')
+                       ->groupBy('a.date,a.student_id,a.token')
                        ->get()->getResult();
             $data['summary']=$summary;
             return view('admin/attendance/all-attendance',$data);
@@ -890,7 +940,7 @@ class Administrator extends BaseController
                         ->join('accounts c','c.account_id=b.account_id','LEFT')
                         ->join('(Select schedule_id,count(*)total from trainings group by schedule_id) d','d.schedule_id=a.schedule_id','LEFT')
                         ->join('batches e','e.batch_id=a.batch_id','LEFT')
-                        ->groupBy('a.schedule_id')
+                        ->groupBy('a.schedule_id,c.fullname,d.total')
                         ->get()->getResult();
             //total active subject
             $subject = new subjectModel();
@@ -965,7 +1015,7 @@ class Administrator extends BaseController
                         ->join('students b','b.student_id=a.student_id','LEFT')
                         ->join('cadets c','c.student_id=b.student_id','LEFT')
                         ->where('a.schedule_id',$id)
-                        ->groupBy('a.training_id')
+                        ->groupBy('a.training_id,c.course,c.year,c.section')
                         ->get()->getResult();
             $fileModel = new \App\Models\scheduleFileModel();
             $files = $fileModel->where('schedule_id',$id)->findAll();

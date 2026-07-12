@@ -162,6 +162,9 @@
                                                         class="dropdown-item">
                                                         <i class="ti ti-search"></i>&nbsp;View Students
                                                     </a>
+                                                    <a href="" class="dropdown-item">
+                                                        <i class="ti ti-file-spreadsheet"></i>&nbsp;Grade Sheet
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

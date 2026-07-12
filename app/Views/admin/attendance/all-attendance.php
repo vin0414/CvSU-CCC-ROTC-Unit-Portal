@@ -92,10 +92,9 @@
                                             <thead>
                                                 <th>Date</th>
                                                 <th>Time</th>
-                                                <th>School ID</th>
+                                                <th>Student No</th>
                                                 <th>Complete Name</th>
                                                 <th>Remarks</th>
-                                                <th>Token</th>
                                             </thead>
                                             <tbody>
                                                 <?php foreach($attendance as $row): ?>
@@ -106,7 +105,6 @@
                                                     <td><?=$row->firstname?>&nbsp;<?=$row->middlename?>&nbsp;<?=$row->lastname?>
                                                     </td>
                                                     <td><?=$row->remarks?></td>
-                                                    <td><?=$row->token?></td>
                                                 </tr>
                                                 <?php endforeach;?>
                                             </tbody>
@@ -118,10 +116,9 @@
                                         <table class="table table-bordered table-striped" id="table2">
                                             <thead>
                                                 <th>Date</th>
-                                                <th>School ID</th>
+                                                <th>Student No</th>
                                                 <th>Fullname</th>
-                                                <th>Hours</th>
-                                                <th>Token</th>
+                                                <th>No. of Hours</th>
                                                 <th>Action</th>
                                             </thead>
                                             <tbody>
@@ -131,8 +128,7 @@
                                                     <td><?=$row->school_id?></td>
                                                     <td><?=$row->firstname?>&nbsp;<?=$row->middlename?>&nbsp;<?=$row->lastname?>
                                                     </td>
-                                                    <td><?=date('h:i',strtotime($row->hours))?></td>
-                                                    <td><?=$row->token?></td>
+                                                    <td><?=date('H:i',strtotime($row->hours))?></td>
                                                     <td>
                                                         <a href="<?=site_url('attendance/view/')?><?=$row->date?>/<?=$row->token?>"
                                                             class="btn btn-primary">

@@ -128,6 +128,7 @@ $routes->group('',['filter'=>'AdminCheck'],function($routes)
     $routes->get('cadets','Administrator::cadetInformation');
     $routes->get('cadets/edit/(:any)','Administrator::editCadet/$1');
     $routes->get('cadets/info/(:any)','Administrator::cadetInfo/$1');
+    $routes->get('cadets/performance/(:any)','Administrator::cadetPerformance/$1');
     //schedules
     $routes->get('schedules','Administrator::trainingSchedule');
     $routes->get('schedules/create','Administrator::createSchedule');

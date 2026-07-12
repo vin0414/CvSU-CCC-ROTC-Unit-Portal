@@ -266,7 +266,7 @@ class Enrolment extends BaseController
                     ->join('students c','c.student_id=b.student_id','LEFT')
                     ->join('cadet_roles d','d.student_id=c.student_id','LEFT')
                     ->where('a.batch_id',$batchName)
-                    ->groupBy('a.student_id')->get()->getResult();
+                    ->groupBy('b.course,b.year,b.section,c.student_id,c.firstname,c.middlename,c.lastname,c.school_id,d.company,d.platoon_type,d.designation,d.others')->get()->getResult();
         foreach($result as $row)
         {
             $output.='<tr>
@@ -329,7 +329,9 @@ class Enrolment extends BaseController
                     ->select('b.school_id,b.firstname,b.middlename,b.lastname,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
                     ->join('students b','b.student_id=a.student_id','LEFT')
                     ->join('student_performance c','c.student_id=a.student_id','LEFT')
-                    ->where('a.batch_id',$batchName)->groupBy('a.student_id')->get()->getResult();
+                    ->where('a.batch_id',$batchName)
+                    ->groupBy('a.student_id,c.finalScore,c.finalGrade,c.remarks,c.status,c.performance_id')
+                    ->get()->getResult();
         foreach($result as $row)
         {
             $output .= '<tr>

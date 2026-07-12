@@ -84,7 +84,7 @@
                                             <path d="M15.97 17.25l1.3 .75" />
                                             <path d="M20.733 20l1.3 .75" />
                                         </svg>
-                                        &nbsp;Enrolled Cadets
+                                        &nbsp;Current Enrolled
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -103,6 +103,25 @@
                                             <path d="M12 16l1 1l3 -3" />
                                         </svg>
                                         &nbsp;Master List
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tabs-archive-8" class="nav-link" data-bs-toggle="tab">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-server-2">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M3 7a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-2" />
+                                            <path
+                                                d="M3 15a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3l0 -2" />
+                                            <path d="M7 8l0 .01" />
+                                            <path d="M7 16l0 .01" />
+                                            <path d="M11 8h6" />
+                                            <path d="M11 16h6" />
+                                        </svg>
+                                        &nbsp;Old Records
                                     </a>
                                 </li>
                             </ul>
@@ -209,6 +228,51 @@
                                                 </table>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tabs-archive-8">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="archive">
+                                            <thead>
+                                                <th>Image</th>
+                                                <th>Student No</th>
+                                                <th>Fullname</th>
+                                                <th>Course & Year</th>
+                                                <th>Section</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach($archives as $row): ?>
+                                                <tr>
+                                                    <td><img src="<?= base_url('assets/images/profile/').$row->photo ?>"
+                                                            width="30px;" /></td>
+                                                    <td>SN : <?= $row->school_id ?></td>
+                                                    <td><?= $row->firstname." ".$row->middlename." ".$row->lastname ?>
+                                                    </td>
+                                                    <td><?= $row->course ?></td>
+                                                    <td><?= $row->section ?></td>
+                                                    <td>
+                                                        <button type="button" class="btn dropdown-toggle"
+                                                            data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                            role="button">
+                                                            <span>More</span>
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a href="<?= site_url('cadets/info') ?>/<?= $row->token ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-list-search"></i>&nbsp;View Info
+                                                            </a>
+                                                            <a href="<?= site_url('cadets/performance') ?>/<?= $row->token ?>"
+                                                                class="dropdown-item">
+                                                                <i class="ti ti-report-search"></i>&nbsp;View
+                                                                Performance
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -374,6 +438,8 @@
             }
         });
     });
+
+    $('#archive').DataTable();
 
     let table1 = $('#table1').DataTable({
         "processing": true,

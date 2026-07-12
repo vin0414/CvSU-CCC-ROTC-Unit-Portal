@@ -80,7 +80,8 @@
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="card-title"><i class="ti ti-edit"></i>&nbsp;<?=$title?></div>
+                                    <div class="card-title"><i class="ti ti-edit"></i>&nbsp;Edit <?=$title?> Information
+                                    </div>
                                     <form method="POST" class="row g-3" id="frmCadet">
                                         <?=csrf_field()?>
                                         <input type="hidden" name="id" value="<?=$student['student_id']?>" />
@@ -100,12 +101,20 @@
                                                     <div id="email-error" class="error-message text-danger text-sm">
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-3">
                                                     <label class="form-label">Student No</label>
                                                     <input type="text" class="form-control" name="school_id"
-                                                        placeholder="Enter School ID"
+                                                        placeholder="Enter School Number"
                                                         value="<?=$student['school_id']?>" />
                                                     <div id="employee_id-error"
+                                                        class="error-message text-danger text-sm"></div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label class="form-label">Serial No</label>
+                                                    <input type="text" class="form-control" name="serial_number"
+                                                        placeholder="Enter Serial Number"
+                                                        value="<?=$student['serial_number']?>" />
+                                                    <div id="serial_number-error"
                                                         class="error-message text-danger text-sm"></div>
                                                 </div>
                                             </div>
@@ -207,7 +216,7 @@
                         }
                     });
                 } else {
-                    var errors = response.error;
+                    var errors = response.errors;
                     // Iterate over each error and display it under the corresponding input field
                     for (var field in errors) {
                         $('#' + field + '-error').html('<p>' + errors[field] +

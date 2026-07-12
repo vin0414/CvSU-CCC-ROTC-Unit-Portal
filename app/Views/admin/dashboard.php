@@ -159,75 +159,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row row-deck mb-3">
-                                <div class="col-lg-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <div class="card-title">
-                                                <i class="ti ti-calendar"></i>&nbsp;My Planner
-                                            </div>
-                                            <div class="card-actions">
-                                                <a href="<?= site_url('gradebook') ?>" class="btn btn-link">
-                                                    <i class="ti ti-search"></i>&nbsp;View All
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="list-group list-group-flush">
-                                            <?php if(empty($assignment)): ?>
-                                            <div class="list-group-item">
-                                                No Schedule(s) assign yet
-                                            </div>
-                                            <?php else: ?>
-                                            <?php foreach($assignment as $row): ?>
-                                            <div class="list-group-item">
-                                                <div class="row align-items-center">
-                                                    <div class="col-auto">
-                                                        <a href="javascript:void(0);">
-                                                            <span class="avatar avatar-1"
-                                                                style="background-image: url(<?=base_url('assets/images/logo.png')?>)">
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col text-truncate">
-                                                        <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
-                                                            class="text-reset d-block"><?=$row->batchName?> |
-                                                            <?=$row->name?></a>
-                                                        <div class="d-block text-secondary text-truncate mt-n1">
-                                                            <small>
-                                                                <?= date('h:i:s a',strtotime($row->from_time)) ?> to
-                                                                <?= date('h:i:s a',strtotime($row->to_time)) ?>
-                                                                | <?= $row->day ?>
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php endforeach;?>
-                                            <?php endif;?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <div class="card-title">
-                                                <i class="ti ti-calendar-plus"></i>&nbsp;Attendance
-                                            </div>
-                                            <div class="card-actions">
-                                                <select class="form-select">
-                                                    <option>Today</option>
-                                                    <option>This Week</option>
-                                                    <option>This Month</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="attendanceChart" style="height: 300px;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-3">
+                            <div class="row g-3 mb-3">
                                 <div class="col-lg-3">
                                     <div class="card">
                                         <div class="card-body">
@@ -287,6 +219,74 @@
                                                     <div class="text-secondary">Request Items</div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row row-deck">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <i class="ti ti-calendar"></i>&nbsp;My Planner
+                                            </div>
+                                            <div class="card-actions">
+                                                <a href="<?= site_url('gradebook') ?>" class="btn btn-link">
+                                                    <i class="ti ti-search"></i>&nbsp;View All
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="list-group list-group-flush">
+                                            <?php if(empty($assignment)): ?>
+                                            <div class="list-group-item">
+                                                No Schedule(s) assign yet
+                                            </div>
+                                            <?php else: ?>
+                                            <?php foreach($assignment as $row): ?>
+                                            <div class="list-group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <a href="javascript:void(0);">
+                                                            <span class="avatar avatar-1"
+                                                                style="background-image: url(<?=base_url('assets/images/logo.png')?>)">
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col text-truncate">
+                                                        <a href="<?= site_url('gradebook/view/') ?><?= $row->schedule_id ?>"
+                                                            class="text-reset d-block"><?=$row->batchName?> |
+                                                            <?=$row->name?></a>
+                                                        <div class="d-block text-secondary text-truncate mt-n1">
+                                                            <small>
+                                                                <?= date('h:i a',strtotime($row->from_time)) ?> to
+                                                                <?= date('h:i a',strtotime($row->to_time)) ?>
+                                                                | <?= $row->day ?> Days
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach;?>
+                                            <?php endif;?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="card-title">
+                                                <i class="ti ti-calendar-plus"></i>&nbsp;Attendance
+                                            </div>
+                                            <div class="card-actions">
+                                                <select class="form-select">
+                                                    <option>Today</option>
+                                                    <option>This Week</option>
+                                                    <option>This Month</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="attendanceChart" style="height: 300px;"></div>
                                         </div>
                                     </div>
                                 </div>
